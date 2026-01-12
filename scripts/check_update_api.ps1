@@ -1,10 +1,11 @@
 Param(
   [string]$Id = '7',
   [string]$Lang = 'en',
-  [string]$Base = 'http://localhost:8787'
+  [string]$Base = 'http://localhost:8787',
+  [switch]$Single
 )
 
-$uri = "$Base/api/updates?id=$Id&lang=$Lang"
+if ($Single.IsPresent){ $uri = "$Base/api/update?id=$Id&lang=$Lang" } else { $uri = "$Base/api/updates?id=$Id&lang=$Lang" }
 try{
   Write-Output "Requesting: $uri"
   $r = Invoke-RestMethod -Uri $uri -Method Get -UseBasicParsing -ErrorAction Stop

@@ -39,7 +39,7 @@
 
     try{
       const params = new URLSearchParams(); params.set('id', String(id)); params.set('lang', lang);
-      const res = await fetch(API_PATH + '?' + params.toString(), {cache:'no-cache'});
+      const res = await fetch('/api/update' + '?' + params.toString(), {cache:'no-cache'});
       if (!res.ok){
         // try to surface any JSON error message from the API
         let msg = 'HTTP ' + res.status;
