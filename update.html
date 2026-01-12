@@ -18,49 +18,58 @@
       <button class="nav-toggle" aria-controls="primary-nav" aria-expanded="false" aria-label="Toggle navigation">
         <span class="hamburger" aria-hidden="true"></span>
       </button>
+
       <nav id="primary-nav" class="primary-nav" role="navigation" aria-label="Primary">
         <ul>
           <li class="has-dropdown">
-            <button class="drop-toggle" aria-haspopup="true" aria-expanded="false">About Us <span aria-hidden="true">+</span></button>
+            <button class="drop-toggle" aria-haspopup="true" aria-expanded="false" data-i18n="header_about_us">About Us <span aria-hidden="true">+</span></button>
             <ul class="dropdown" aria-label="About Us submenu">
-              <li><a href="/about.html">About Us</a></li>
-              <li><a href="/who-we-are.html">Who We Are</a></li>
-              <li><a href="/contact.html">Contact Us</a></li>
+              <li><a href="/about.html" data-i18n="nav_about_us">About Us</a></li>
+              <li><a href="/who-we-are.html" data-i18n="nav_who_we_are">Who We Are</a></li>
+              <li><a href="/contact.html" data-i18n="nav_contact_us">Contact Us</a></li>
             </ul>
           </li>
 
           <li class="has-dropdown">
-            <button class="drop-toggle" aria-haspopup="true" aria-expanded="false">Our Work <span aria-hidden="true">+</span></button>
+            <button class="drop-toggle" aria-haspopup="true" aria-expanded="false" data-i18n="header_our_work">Our Work <span aria-hidden="true">+</span></button>
             <ul class="dropdown" aria-label="Our Work submenu">
-              <li><a href="/where-we-work.html">Where We Work</a></li>
-              <li><a href="/what-we-do.html">What We Do</a></li>
-              <li><a href="/our-approach.html">Our Approach</a></li>
+              <li><a href="/where-we-work.html" data-i18n="nav_where_we_work">Where We Work</a></li>
+              <li><a href="/what-we-do.html" data-i18n="nav_what_we_do">What We Do</a></li>
+              <li><a href="/our-approach.html" data-i18n="nav_our_approach">Our Approach</a></li>
+              <li><a href="/education.html" data-i18n="nav_education">Education</a></li>
+              <li><a href="/food-security.html" data-i18n="nav_food_security">Food Security</a></li>
+              <li><a href="/inclusion.html" data-i18n="nav_inclusion">Inclusion</a></li>
+              <li><a href="/relief-drr.html" data-i18n="nav_relief_drr">Relief &amp; DRR</a></li>
             </ul>
           </li>
 
           <li class="has-dropdown">
-            <button class="drop-toggle" aria-haspopup="true" aria-expanded="false">News <span aria-hidden="true">+</span></button>
+            <button class="drop-toggle" aria-haspopup="true" aria-expanded="false" data-i18n="header_news">News <span aria-hidden="true">+</span></button>
             <ul class="dropdown" aria-label="News submenu">
-              <li><a href="/updates.html">Updates &amp; Reports</a></li>
+              <li><a href="/updates.html" data-i18n="nav_updates_reports">Updates &amp; Reports</a></li>
             </ul>
           </li>
 
           <li class="has-dropdown">
-            <button class="drop-toggle" aria-haspopup="true" aria-expanded="false">Get Involved <span aria-hidden="true">+</span></button>
+            <button class="drop-toggle" aria-haspopup="true" aria-expanded="false" data-i18n="header_get_involved">Get Involved <span aria-hidden="true">+</span></button>
             <ul class="dropdown" aria-label="Get Involved submenu">
-              <li><a href="/get-involved.html">How to Get Involved</a></li>
-              <li><a href="/partnership.html">Partnership</a></li>
-              <li><a href="/donate.html">Donate</a></li>
+              <li><a href="/get-involved.html" data-i18n="nav_how_to_get_involved">How to Get Involved</a></li>
+              <li><a href="/partners.html" data-i18n="nav_partnership">Partnership</a></li>
+              <li><a href="/education-ambassadors.html" data-i18n="nav_education_ambassadors">Education Ambassadors</a></li>
+              <li><a href="/join-our-team.html" data-i18n="nav_join_our_team">Join our Team</a></li>
+              <li><a href="/donate.html" data-i18n="nav_donate">Donate</a></li>
             </ul>
           </li>
         </ul>
       </nav>
+
       <div class="header-actions">
         <div class="lang-wrap">
           <label for="site-lang-select" class="visually-hidden">Language</label>
           <select id="site-lang-select" class="lang-select" aria-label="Language">
             <option value="en">English</option>
             <option value="mrh">Mara</option>
+            <option value="my">Burmese</option>
           </select>
         </div>
         <div class="theme-wrap">
