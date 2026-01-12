@@ -1,0 +1,32 @@
+# Crowdin configuration for tsdmyanmar
+# - Set the environment variable CROWDIN_API_TOKEN with your Crowdin API token before using the Crowdin CLI
+# - The config syncs the source English JSON to language folders (e.g. i18n/mrh/common.json, i18n/my/common.json)
+
+version: "2"
+
+project_identifier: tsdmyanmar
+api_token: $CROWDIN_API_TOKEN
+
+# Local repo base path (relative to this file)
+base_path: "."
+
+# Source language used in source files
+source_language: en
+
+# Keep hierarchy as-is to match our i18n folder structure
+preserve_hierarchy: true
+
+files:
+  - source: "i18n/en/common.json"
+    translation: "i18n/%locale%/common.json"
+    # Explicit target languages for this source file
+    languages:
+      - mrh
+      - my
+    # Export pattern controls where translated files are written back to the repo
+    export_patterns:
+      - "i18n/%locale%/common.json"
+
+# Optional: add language mapping here if you need to map Crowdin locale codes to project codes
+# language_mapping:
+#   crowdin_locale_code: project_locale_code
