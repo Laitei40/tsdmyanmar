@@ -10,7 +10,20 @@ Steps to set up D1 and seed data
    - Install wrangler: `npm install -g wrangler`
    - Authenticate: `wrangler login`
    - Use the seed SQL file: `wrangler d1 execute <DB_NAME> --file scripts/seed_updates.sql` (or paste SQL into the D1 UI query console).
+   - If your Cloudflare database name is `tsd_updates`, you can seed remote with:
+     `wrangler d1 execute tsd_updates --file scripts/seed_updates.sql --remote`
+   - Or use the provided helper script: `./scripts/seed_d1.ps1 -DbName tsd_updates` (add `-UseRemote` to force remote)
 3. Bind the D1 database to Pages as an environment variable named `UPDATES_DB` (Pages → Functions → Environment variables & Bindings → Add D1 binding with name `UPDATES_DB`).
+
+   Example `wrangler.toml` snippet to bind `tsd_updates` to `UPDATES_DB`:
+
+```toml
+[[d1_databases]]
+binding = "UPDATES_DB"
+database_name = "tsd_updates"
+```
+
+If you add the binding to `wrangler.toml`, local `wrangler d1 execute UPDATES_DB --file scripts/seed_updates.sql` will work without `--remote`.
 
 Deployment
 - The Pages Function `functions/api/updates.js` will be deployed with your Pages site. Ensure the D1 binding is configured for the environment (production branch).
