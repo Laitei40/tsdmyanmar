@@ -6,7 +6,8 @@
  * - Minimal, dependency-free, optimized for low-bandwidth
  */
 (function(){
-  const DATA_PATH = 'assets/documents/reports/updates.json';
+  const API_PATH = '/api/updates';
+  const FALLBACK_PATH = 'assets/documents/reports/updates.json';
   const CONTAINER_ID = 'updates-list';
   const FILTER_ID = 'updates-year-filter';
   const LOADING_MSG_ID = 'updates-loading';
@@ -147,7 +148,11 @@
     if (!container) return;
     try{
       loading && (loading.textContent = 'Loading updates…');
-      const res = await fetch(DATA_PATH, {cache:'no-cache'});
+      // Try the dynamic API first (Cloudflare D1-backed), fall back to static JSON if necessary
+      let res;
+      try{ res = await fetch(API_PATH, {cache:'no-cache'}); if (!res.ok) throw new Error('API fetch ' + res.status); }
+      catch(apiErr){ console.warn('Updates API failed, falling back to static JSON', apiErr); res = await fetch(FALLBACK_PATH, {cache:'no-cache'}); }
+
       if (!res.ok) throw new Error('Network response ' + res.status);
       const items = await res.json();
       // Normalize keys to support merged translations coming from l10n_main (mara, mrh-MM, my-MM etc.)
