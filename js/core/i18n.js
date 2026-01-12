@@ -102,6 +102,21 @@ function applySiteTranslations(){
           if (btn.firstChild && btn.firstChild.nodeType === Node.TEXT_NODE){ btn.firstChild.textContent = newText + ' '; } else { btn.insertBefore(document.createTextNode(newText + ' '), span || null); }
         }
       });
+
+      // support data-i18n-placeholder and ARIA labels
+      document.querySelectorAll('[data-i18n-placeholder]').forEach(el => {
+        const key = el.getAttribute('data-i18n-placeholder');
+        if (!key) return;
+        const val = window.I18N[key];
+        if (typeof val === 'string') el.setAttribute('placeholder', val); else if (val && typeof val === 'object') el.setAttribute('placeholder', val[lang] || val.en || '');
+      });
+
+      document.querySelectorAll('[data-i18n-aria]').forEach(el => {
+        const key = el.getAttribute('data-i18n-aria');
+        if (!key) return;
+        const val = window.I18N[key];
+        if (typeof val === 'string') el.setAttribute('aria-label', val); else if (val && typeof val === 'object') el.setAttribute('aria-label', val[lang] || val.en || '');
+      });
     }
 
     // Update logos / favicons and document title

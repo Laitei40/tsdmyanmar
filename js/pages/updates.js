@@ -53,9 +53,11 @@
   // Render functions
   function renderEmpty(container){
     container.innerHTML = '';
+    const title = (window.I18N && window.I18N.no_updates) || 'No updates yet';
+    const body = (window.I18N && window.I18N.no_updates_body) || 'We publish regular updates about our programs and finance reports. Check back soon or subscribe to our mailing list for alerts.';
     container.appendChild(el('div',{class:'empty-state'},
-      el('h3',{},'No updates yet'),
-      el('p',{},'We publish regular updates about our programs and finance reports. Check back soon or subscribe to our mailing list for alerts.')
+      el('h3',{}, title),
+      el('p',{}, body)
     ));
   }
 
@@ -89,115 +91,171 @@
   }
 
   function renderItems(container, items, lang){
+    // Render a grouped list (year headers) using list items for accessibility
     container.innerHTML = '';
     if (!items.length) return renderEmpty(container);
 
-    // Group by year and render in descending order
     const grouped = groupByYear(items);
     const years = Object.keys(grouped).sort((a,b)=>b-a);
     years.forEach(year=>{
       const yearHeader = el('h3',{class:'year'},year);
       container.appendChild(yearHeader);
+      const list = el('ul',{class:'updates-list-inner', attrs:{role:'list'}});
       grouped[year].sort((a,b)=> new Date(b.date)-new Date(a.date)).forEach(it=>{
         const title = (typeof it.title === 'string') ? it.title : (pickLangField(it.title, lang) || 'Untitled');
         const summary = (typeof it.summary === 'string') ? it.summary : (pickLangField(it.summary, lang) || '');
         const body = (typeof it.body === 'string') ? it.body : (pickLangField(it.body, lang) || '');
-        const article = el('article',{class:'timeline-item reveal', attrs:{role:'article'}});
-        const hdr = el('header',{}, el('h3',{}, title), el('time', {attrs:{datetime:it.date}}, formatDate(it.date)) );
-        const summ = el('div',{class:'summary'}, summary);
-        const actions = el('div',{class:'update-actions'});
-        const btn = el('button',{class:'btn-plain', attrs:{'aria-expanded':'false','aria-controls':'more-'+it.id}}, 'Read more');
-        actions.appendChild(btn);
-        const more = el('div',{class:'more', attrs:{id:'more-'+it.id,'aria-hidden':'true'}}, el('div',{class:'body'}, body));
 
+        const article = el('article',{class:'update-card reveal', attrs:{role:'article'}});
+        const meta = el('div',{class:'update-meta'}, el('time',{class:'update-date', attrs:{datetime:it.date}}, formatDate(it.date)), (it.isLatest? el('span',{class:'badge'},'Latest'): null));
+        const hdr = el('h3',{class:'update-title'}, title);
+        const summ = el('p',{class:'update-summary'}, summary);
+        const actions = el('div',{class:'update-cta'});
+        const cta = el('a',{class:'btn-link', attrs:{href: 'updates/'+(it.id || '')+'.html'}}, 'Read more');
+        actions.appendChild(cta);
+
+        article.appendChild(meta);
         article.appendChild(hdr);
         if (summary) article.appendChild(summ);
         article.appendChild(actions);
-        article.appendChild(more);
-        container.appendChild(article);
 
-        // wire button
-        btn.addEventListener('click', ()=>{
-          const expanded = btn.getAttribute('aria-expanded') === 'true';
-          btn.setAttribute('aria-expanded', String(!expanded));
-          if (!expanded) openPanel(more); else closePanel(more);
-        });
-        // allow keyboard toggling (Space/Enter)
-        btn.addEventListener('keydown', (e)=>{
-          if (e.key === ' ' || e.key === 'Enter'){ e.preventDefault(); btn.click(); }
-        });
+        const li = el('li',{}, article);
+        list.appendChild(li);
       });
+      container.appendChild(list);
     });
 
-    // reveal on scroll (simple IntersectionObserver)
+    // Simple reveal animation using IntersectionObserver
     requestAnimationFrame(()=>{
       const obs = new IntersectionObserver((entries, o)=>{
-        entries.forEach(en=>{
-          if (en.isIntersecting){ en.target.classList.add('visible'); o.unobserve(en.target); }
-        });
+        entries.forEach(en=>{ if (en.isIntersecting){ en.target.classList.add('visible'); o.unobserve(en.target); } });
       },{threshold:0.08});
       container.querySelectorAll('.reveal').forEach(n=>obs.observe(n));
     });
   }
 
+  // Paging + filter state
+  const PAGE_SIZE = 6;
+  let offset = 0;
+  let total = 0;
+  let query = '';
+  let yearFilter = '';
+  let isLoading = false;
+
+  function showSkeleton(container, count){
+    container.innerHTML = '';
+    for (let i=0;i<count;i++){ const li = el('li',{class:'skeleton-card', attrs:{role:'listitem','aria-hidden':'true'}}); container.appendChild(li); }
+  }
+
   // Load + filter
-  async function loadAndRender(){
+  async function loadAndRender(reset){
     const container = document.getElementById(CONTAINER_ID);
     const filter = document.getElementById(FILTER_ID);
     const loading = document.getElementById(LOADING_MSG_ID);
+    const loadMoreBtn = document.getElementById('updates-load-more');
     if (!container) return;
+
     try{
-      loading && (loading.textContent = 'Loading updates…');
-      // Pick language early and prefer localized API response
+      if (isLoading) return;
+      isLoading = true;
+      const loadingLabel = (window.I18N && window.I18N.loading) || 'Loading updates…';
+      loading && (loading.textContent = loadingLabel);
+
+      // determine lang early
       const lang = (window.tsdI18n && window.tsdI18n.getSiteLang && window.tsdI18n.getSiteLang()) || 'en';
 
-      // Try the dynamic API first (Cloudflare D1-backed), request localized feed, fall back to static JSON if necessary
+      if (reset){ offset = 0; total = 0; }
+
+      // show skeletons for perceived speed
+      showSkeleton(container, 3);
+
+      // Build query params
+      const params = new URLSearchParams();
+      params.set('lang', lang);
+      params.set('limit', String(PAGE_SIZE));
+      params.set('offset', String(offset));
+      if (query) params.set('q', query);
+      if (yearFilter) params.set('year', String(yearFilter));
+
       let res;
-      try{ res = await fetch(API_PATH + '?lang=' + encodeURIComponent(lang), {cache:'no-cache'}); if (!res.ok) throw new Error('API fetch ' + res.status); }
+      try{ res = await fetch(API_PATH + '?' + params.toString(), {cache:'no-cache'}); if (!res.ok) throw new Error('API fetch ' + res.status); }
       catch(apiErr){ console.warn('Updates API failed, falling back to static JSON', apiErr); res = await fetch(FALLBACK_PATH, {cache:'no-cache'}); }
 
       if (!res.ok) throw new Error('Network response ' + res.status);
-      const items = await res.json();
-      // Normalize keys to support merged translations coming from l10n_main (mara, mrh-MM, my-MM etc.)
+      const data = await res.json();
+      // API returns { items: [...], total: N } when paged; fallback may return array
+      const items = Array.isArray(data) ? data : (data.items || []);
+      total = (typeof data.total === 'number') ? data.total : (items.length + offset);
+
       items.forEach(normalizeItemLangKeys);
 
-      // optionally mark latest update
-      items.sort((a,b)=> new Date(b.date) - new Date(a.date));
-      if (items.length) items[0].isLatest = true;
+      // optionally mark latest update (only on first page)
+      if (offset === 0 && items.length) items[0].isLatest = true;
 
-      renderItems(container, items, lang);
+      // render: append or replace
+      if (reset){ container.innerHTML = ''; renderItems(container, items, lang); }
+      else { renderItems(container, items, lang); }
 
-      // build year filter
+      // update offset
+      offset += items.length;
+
+      // build year filter using total results from server (we still calculate from loaded items as fallback)
       const years = Array.from(new Set(items.map(i=> new Date(i.date).getFullYear()))).sort((a,b)=>b-a);
-      if (filter){
+      if (filter && reset){
         // clear existing options, add 'All' + year options
         filter.innerHTML = '';
         const optAll = el('option',{value:''}, 'All years');
         filter.appendChild(optAll);
         years.forEach(y=>{ filter.appendChild(el('option',{value:y}, String(y))); });
-        filter.addEventListener('change', ()=>{
-          const v = filter.value;
-          if (!v) return renderItems(container, items, lang);
-          const filtered = items.filter(i=> String(new Date(i.date).getFullYear()) === v);
-          renderItems(container, filtered, lang);
-        });
+      }
+
+      // Load more button state
+      if (loadMoreBtn){
+        const loadMoreLabel = (window.I18N && window.I18N.load_more) || 'Load more';
+        loadMoreBtn.textContent = loadMoreLabel;
+        if (offset >= total) loadMoreBtn.setAttribute('disabled','disabled'); else loadMoreBtn.removeAttribute('disabled');
       }
 
       loading && (loading.textContent = '');
-      // if no items
-      if (!items.length) renderEmpty(container);
+      if (!items.length && offset === 0) renderEmpty(container);
 
     }catch(err){
       if (loading) loading.textContent = 'Failed to load updates';
       container.innerHTML = '<p class="empty-state">Unable to load updates at this time. Please try again later.</p>';
       console.error('updates load error', err);
-    }
+    } finally { isLoading = false; }
   }
 
-  // Wire language change to re-render
+  // Wire language change and UI controls
   document.addEventListener('DOMContentLoaded', ()=>{
-    loadAndRender();
-    window.addEventListener('site:langchange', ()=>{ loadAndRender(); });
+    const filter = document.getElementById(FILTER_ID);
+    const search = document.getElementById('updates-search');
+    const loadMoreBtn = document.getElementById('updates-load-more');
+
+    // Initial load
+    loadAndRender(true);
+
+    // Re-load when site language changes
+    window.addEventListener('site:langchange', ()=>{ loadAndRender(true); });
+
+    // Year filter
+    if (filter){
+      filter.addEventListener('change', ()=>{ yearFilter = filter.value; loadAndRender(true); });
+    }
+
+    // Debounced search
+    if (search){
+      let t = null;
+      search.addEventListener('input', (e)=>{
+        clearTimeout(t);
+        t = setTimeout(()=>{ query = (search.value || '').trim(); loadAndRender(true); }, 350);
+      });
+    }
+
+    // Load more
+    if (loadMoreBtn){
+      loadMoreBtn.addEventListener('click', ()=>{ loadAndRender(false); });
+    }
   });
 })();
 

@@ -32,5 +32,16 @@
   "impact_title": "Impact & Reports",
   "donate_title": "Thyu",
   "get_involved_title": "Thyu",
-  "contact_title": "Azaona"
+  "contact_title": "Azaona",
+
+  "updates_title": "Thâtihzy & Updates",
+  "updates_subtitle": "Keimo thâtih, phuahna & phudau",
+  "loading": "Thâtih ngai hna…",
+  "load_more": "Thiat hna",
+  "no_updates": "Thâtih ngai lo",
+  "search_placeholder": "Thâtih tsi lo",
+  "all_years": "Hli", 
+  "latest_badge": "Thiat hna",
+  "read_more": "Thiat lo",
+  "no_updates_body": "Keimo thâtih phuahna ata report phuahna lianah. Hniang lo thei lo, kan site hnga chungin check sia."
 }

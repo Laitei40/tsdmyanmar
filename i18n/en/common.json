@@ -37,5 +37,16 @@
   "impact_title": "Impact & Reports",
   "donate_title": "Support / Donate",
   "get_involved_title": "Volunteers & Partners",
-  "contact_title": "Contact"
+  "contact_title": "Contact",
+
+  "updates_title": "News & Updates",
+  "updates_subtitle": "Latest news, reports, and announcements.",
+  "loading": "Loading updates…",
+  "load_more": "Load more",
+  "no_updates": "No updates yet",
+  "search_placeholder": "Search updates",
+  "all_years": "All years",
+  "latest_badge": "Latest",
+  "read_more": "Read more",
+  "no_updates_body": "We publish regular updates about our programs and finance reports. Check back soon or subscribe to our mailing list for alerts."
 }
