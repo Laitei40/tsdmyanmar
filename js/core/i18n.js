@@ -2,7 +2,7 @@
 // Requirements: use /i18n/en/common.json and /i18n/mrh/common.json, use ISO 'mrh' for Mara
 const TSD_LANG_KEY = 'tsd_site_lang';
 const DEFAULT_LANG = 'en';
-const SUPPORTED_LANGS = ['en','mrh'];
+const SUPPORTED_LANGS = ['en','mrh','my'];
 
 function normalizeLang(l){
   if (!l) return DEFAULT_LANG;
@@ -116,7 +116,7 @@ function ensureLangSelector(){
     try{
       if (!sel.dataset.i18nAttached){
         // ensure options exist (safe, idempotent)
-        sel.innerHTML = '<option value="en">English</option><option value="mrh">Mara</option>';
+        sel.innerHTML = '<option value="en">English</option><option value="mrh">Mara</option><option value="my">Burmese</option>';
         sel.value = getSiteLang();
 
         const handler = (e)=>{
