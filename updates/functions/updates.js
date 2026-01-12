@@ -13,7 +13,7 @@ export async function onRequest(context) {
       // import updates from '../data/updates.json' assert { type: 'json' };
       // data = updates;
       // Fallback: fetch relative path from the site root
-      const url = new URL('/updates/data/updates.json', context.env.URL || 'https://example.com');
+      const url = new URL('assets/documents/reports/updates.json', context.env.URL || 'https://example.com');
       const res = await fetch(url.toString());
       data = await res.json();
     } catch (e) {
@@ -30,3 +30,5 @@ export async function onRequest(context) {
     });
   }
 }
+
+
