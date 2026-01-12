@@ -99,9 +99,9 @@
       const yearHeader = el('h3',{class:'year'},year);
       container.appendChild(yearHeader);
       grouped[year].sort((a,b)=> new Date(b.date)-new Date(a.date)).forEach(it=>{
-        const title = pickLangField(it.title, lang) || 'Untitled';
-        const summary = pickLangField(it.summary, lang) || '';
-        const body = pickLangField(it.body, lang) || '';
+        const title = (typeof it.title === 'string') ? it.title : (pickLangField(it.title, lang) || 'Untitled');
+        const summary = (typeof it.summary === 'string') ? it.summary : (pickLangField(it.summary, lang) || '');
+        const body = (typeof it.body === 'string') ? it.body : (pickLangField(it.body, lang) || '');
         const article = el('article',{class:'timeline-item reveal', attrs:{role:'article'}});
         const hdr = el('header',{}, el('h3',{}, title), el('time', {attrs:{datetime:it.date}}, formatDate(it.date)) );
         const summ = el('div',{class:'summary'}, summary);
@@ -148,16 +148,18 @@
     if (!container) return;
     try{
       loading && (loading.textContent = 'Loading updates…');
-      // Try the dynamic API first (Cloudflare D1-backed), fall back to static JSON if necessary
+      // Pick language early and prefer localized API response
+      const lang = (window.tsdI18n && window.tsdI18n.getSiteLang && window.tsdI18n.getSiteLang()) || 'en';
+
+      // Try the dynamic API first (Cloudflare D1-backed), request localized feed, fall back to static JSON if necessary
       let res;
-      try{ res = await fetch(API_PATH, {cache:'no-cache'}); if (!res.ok) throw new Error('API fetch ' + res.status); }
+      try{ res = await fetch(API_PATH + '?lang=' + encodeURIComponent(lang), {cache:'no-cache'}); if (!res.ok) throw new Error('API fetch ' + res.status); }
       catch(apiErr){ console.warn('Updates API failed, falling back to static JSON', apiErr); res = await fetch(FALLBACK_PATH, {cache:'no-cache'}); }
 
       if (!res.ok) throw new Error('Network response ' + res.status);
       const items = await res.json();
       // Normalize keys to support merged translations coming from l10n_main (mara, mrh-MM, my-MM etc.)
       items.forEach(normalizeItemLangKeys);
-      const lang = (window.tsdI18n && window.tsdI18n.getSiteLang && window.tsdI18n.getSiteLang()) || 'en';
 
       // optionally mark latest update
       items.sort((a,b)=> new Date(b.date) - new Date(a.date));

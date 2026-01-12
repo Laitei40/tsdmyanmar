@@ -14,7 +14,7 @@ Steps to set up D1 and seed data
 
 Deployment
 - The Pages Function `functions/api/updates.js` will be deployed with your Pages site. Ensure the D1 binding is configured for the environment (production branch).
-- After deployment, verify: `https://<your-site>/api/updates` returns JSON of updates.
+- After deployment, verify: `https://<your-site>/api/updates` returns JSON of updates. You can request a localized feed with `https://<your-site>/api/updates?lang=mrh` (supported: `en`, `my`, `mrh`) — the API will return title/summary/body as strings in the requested language and fall back to other languages when needed.
 
 Notes
 - Ensure the D1 table matches the seed SQL: `updates(id INTEGER PRIMARY KEY, date TEXT, title TEXT, summary TEXT, body TEXT)`.
