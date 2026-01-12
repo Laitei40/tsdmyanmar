@@ -1,108 +1,31 @@
 <!doctype html>
 <html lang="en">
-<header class="site-header" role="banner">
-  <div class="site-inner">
-
-    <!-- Brand -->
-    <a class="brand" href="../index.html">
-      <img src="/assets/icons/logo_en.svg" alt="TSD Myanmar logo" class="brand-logo">
-      <span class="brand-text">TSD Myanmar</span>
-    </a>
-
-    <!-- Mobile toggle -->
-    <button class="nav-toggle" type="button"
-      aria-controls="primary-nav"
-      aria-expanded="false"
-      aria-label="Toggle navigation">
-      <span class="hamburger"></span>
-    </button>
-
-    <!-- Navigation -->
-    <nav id="primary-nav" class="primary-nav" aria-label="Primary navigation">
-      <ul>
-        <li class="has-dropdown">
-          <button class="drop-toggle" type="button" aria-expanded="false">
-            About Us <span aria-hidden="true">+</span>
-          </button>
-          <ul class="dropdown">
-            <li><a href="../about.html">About Us</a></li>
-            <li><a href="../who-we-are.html">Who We Are</a></li>
-            <li><a href="../contact.html">Contact Us</a></li>
-          </ul>
-        </li>
-
-        <li class="has-dropdown">
-          <button class="drop-toggle" type="button" aria-expanded="false">
-            Our Work <span aria-hidden="true">+</span>
-          </button>
-          <ul class="dropdown">
-            <li><a href="../where-we-work.html">Where We Work</a></li>
-            <li><a href="../what-we-do.html">What We Do</a></li>
-            <li><a href="../our-approach.html">Our Approach</a></li>
-            <li><a href="../education.html">Education</a></li>
-            <li><a href="../food-security.html">Food Security</a></li>
-            <li><a href="../inclusion.html">Inclusion</a></li>
-            <li><a href="../relief-drr.html">Relief & DRR</a></li>
-          </ul>
-        </li>
-
-        <li class="has-dropdown">
-          <button class="drop-toggle" type="button" aria-expanded="false">
-            News <span aria-hidden="true">+</span>
-          </button>
-          <ul class="dropdown">
-            <li><a href="updates.html">Updates & Reports</a></li>
-          </ul>
-        </li>
-
-        <li class="has-dropdown">
-          <button class="drop-toggle" type="button" aria-expanded="false">
-            Get Involved <span aria-hidden="true">+</span>
-          </button>
-          <ul class="dropdown">
-            <li><a href="../get-involved.html">How to Get Involved</a></li>
-            <li><a href="../partnership.html">Partnership</a></li>
-            <li><a href="../education-ambassadors.html">Education Ambassadors</a></li>
-            <li><a href="../join-our-team.html">Join our Team</a></li>
-            <li><a href="../donate.html">Donate</a></li>
-          </ul>
-        </li>
-      </ul>
-    </nav>
-
-    <!-- Header actions -->
-    <div class="header-actions">
-
-      <!-- Language -->
-      <div class="lang-wrap">
-        <label for="site-lang-select" class="visually-hidden">Language</label>
-        <select id="site-lang-select">
-          <option value="mara">Mara</option>
-          <option value="en">English</option>
-          <option value="my">Burmese</option>
-        </select>
-      </div>
-
-      <!-- Theme -->
-      <div class="theme-wrap">
-        <label for="site-theme-select" class="visually-hidden">Theme</label>
-        <select id="site-theme-select">
-          <option value="system">System</option>
-          <option value="light">Light</option>
-          <option value="dark">Dark</option>
-        </select>
-      </div>
-
-      <a class="btn btn-primary" href="../donate.html">Donate</a>
-    </div>
-  </div>
-</header>
-
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Updates — TSD Myanmar</title>
+  <link rel="stylesheet" href="../css/style.css">
+  <link rel="stylesheet" href="css/updates.css">
+  <script>
+    (function(){
+      try{
+        const k = 'tsd_theme';
+        const stored = localStorage.getItem(k) || 'system';
+        if (stored === 'system'){
+          const dark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+          document.documentElement.setAttribute('data-theme', dark? 'dark':'light');
+        } else {
+          document.documentElement.setAttribute('data-theme', stored);
+        }
+      }catch(e){}
+    })();
+  </script>
+</head>
 <body>
   <header class="site-header" role="banner">
     <div class="site-inner">
       <a class="brand" href="../index.html" data-i18n="site_title">
-        <img class="brand-logo" src="/assets/icons/logo_en.svg" alt="TSD Myanmar logo">
+        <img class="brand-logo" src="../assets/images/logo_en.svg" alt="TSD Myanmar logo">
         <span class="brand-text">TSD Myanmar</span>
       </a>
       <button class="nav-toggle" aria-controls="primary-nav" aria-expanded="false" aria-label="Toggle navigation">
