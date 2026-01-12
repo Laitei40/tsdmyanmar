@@ -29,22 +29,34 @@ function setSiteLang(l){
   }).catch(()=>{});
 }
 
+// Build list of candidate translation URLs for a given normalized lang
+function getTranslationUrlsFor(lang){
+  lang = normalizeLang(lang);
+  if (lang === 'en') return ['/i18n/en/common.json'];
+  if (lang === 'mrh') return ['/mrh/i18n/mrh-MM/common.json','/i18n/mrh/common.json'];
+  if (lang === 'my') return ['/my/i18n/my-MM/common.json','/i18n/my/common.json'];
+  return ['/i18n/' + lang + '/common.json'];
+}
+
 async function loadTranslations(lang){
   lang = normalizeLang(lang);
-  const url = '/i18n/' + lang + '/common.json';
-  try{
-    const res = await fetch(url, {cache: 'no-cache'});
-    if (!res.ok) throw new Error('Fetch failed');
-    const data = await res.json();
-    // window.I18N should be a simple key->string map
-    window.I18N = Object.assign({}, data);
-    return window.I18N;
-  }catch(err){
-    console.warn('i18n: failed to load', url, '- falling back to en');
-    if (lang !== 'en') return loadTranslations('en');
-    // if en also fails, keep any existing window.I18N
-    return window.I18N || {};
+  const candidates = getTranslationUrlsFor(lang);
+  for (let i = 0; i < candidates.length; i++){
+    const url = candidates[i];
+    try{
+      const res = await fetch(url, {cache: 'no-cache'});
+      if (!res.ok) throw new Error('Fetch failed');
+      const data = await res.json();
+      // window.I18N should be a simple key->string map
+      window.I18N = Object.assign({}, data);
+      return window.I18N;
+    }catch(err){
+      console.warn('i18n: failed to load', url, '- trying next fallback');
+    }
   }
+  // final fallback to English
+  if (lang !== 'en') return loadTranslations('en');
+  return window.I18N || {};
 }
 
 function applySiteTranslations(){
