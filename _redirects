@@ -1,0 +1,2 @@
+/updates/:id    /updates/update.html    200
+/updates/:id/*  /updates/update.html    200
