@@ -9,8 +9,8 @@ compatibility_date = "2026-01-12"
 [[d1_databases]]
 binding = "UPDATES_DB"
 database_name = "tsd_updates"
-# Optional: the D1 database ID (uncomment and set if you want to pin to a specific DB)
-# database_id = "bb376db4-497c-4ac3-9761-675b8a537422"
+# Pin to specific D1 database (useful for local dev)
+database_id = "bb376db4-497c-4ac3-9761-675b8a537422"
 
 # Optional: add other settings such as zone_id, account_id, or site configuration
 # Example:
