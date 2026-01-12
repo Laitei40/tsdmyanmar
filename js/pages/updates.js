@@ -69,6 +69,24 @@
     return '';
   }
 
+  // Normalize per-item language keys to handle legacy and locale-variant keys
+  // - copies `mara` -> `mrh` when present
+  // - copies variant keys like `mrh-MM` or `my-MM` -> base codes `mrh`/`my`
+  function normalizeItemLangKeys(item){
+    if (!item || typeof item !== 'object') return;
+    ['title','summary','body'].forEach(field => {
+      const obj = item[field];
+      if (!obj || typeof obj !== 'object') return;
+      // Legacy: mara -> mrh
+      if (obj.mara && !obj.mrh) obj.mrh = obj.mara;
+      // Variant keys: copy base locale from variants like 'mrh-MM' -> 'mrh'
+      Object.keys(obj).forEach(k => {
+        const m = k.match(/^([a-z]{2,3})(?:[-_].+)$/i);
+        if (m){ const base = m[1].toLowerCase(); if (!obj[base]) obj[base] = obj[k]; }
+      });
+    });
+  }
+
   function renderItems(container, items, lang){
     container.innerHTML = '';
     if (!items.length) return renderEmpty(container);
@@ -132,6 +150,8 @@
       const res = await fetch(DATA_PATH, {cache:'no-cache'});
       if (!res.ok) throw new Error('Network response ' + res.status);
       const items = await res.json();
+      // Normalize keys to support merged translations coming from l10n_main (mara, mrh-MM, my-MM etc.)
+      items.forEach(normalizeItemLangKeys);
       const lang = (window.tsdI18n && window.tsdI18n.getSiteLang && window.tsdI18n.getSiteLang()) || 'en';
 
       // optionally mark latest update
