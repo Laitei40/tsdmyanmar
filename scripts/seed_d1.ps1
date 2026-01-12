@@ -14,8 +14,9 @@ if (-not (Test-Path $seedFile)){
 }
 
 try{
-  Write-Output "Seeding D1 via wrangler d1 execute --binding UPDATES_DB --file $seedFile"
-  & wrangler d1 execute --binding UPDATES_DB --file $seedFile
+  $binding = 'UPDATES_DB'
+  Write-Output "Seeding D1 via: wrangler d1 execute $binding --file $seedFile"
+  & wrangler d1 execute $binding --file $seedFile
   if ($LASTEXITCODE -ne 0){ throw "wrangler d1 execute returned exit $LASTEXITCODE" }
   Write-Output "Seeding completed."
 }catch{
