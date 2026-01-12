@@ -1,0 +1,217 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>TSD Myanmar - Home</title>
+  <link rel="stylesheet" href="css/style.css">
+  <link id="site-favicon" rel="icon" href="assets/images/logo_en.svg" type="image/svg+xml">
+  <script>
+    // Early theme application to avoid flash; reads saved preference and applies immediately.
+    (function(){
+      try{
+        const k = 'tsd_theme';
+        const stored = localStorage.getItem(k) || 'system';
+        if (stored === 'system'){
+          const dark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+          document.documentElement.setAttribute('data-theme', dark? 'dark':'light');
+        } else {
+          document.documentElement.setAttribute('data-theme', stored);
+        }
+      }catch(e){ /* ignore */ }
+    })();
+  </script>
+</head>
+<body>
+  <header class="site-header" role="banner">
+    <div class="site-inner">
+      <a class="brand" href="index.html" data-i18n="site_title">
+        <img class="brand-logo" src="assets/images/logo_en.svg" alt="TSD Myanmar logo">
+        <span class="brand-text">TSD Myanmar</span>
+      </a>
+      <button class="nav-toggle" aria-controls="primary-nav" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="hamburger" aria-hidden="true"></span>
+      </button>
+
+      <nav id="primary-nav" class="primary-nav" role="navigation" aria-label="Primary">
+        <ul>
+          <li class="has-dropdown">
+            <button class="drop-toggle" aria-haspopup="true" aria-expanded="false">About Us <span aria-hidden="true">+</span></button>
+            <ul class="dropdown" aria-label="About Us submenu">
+              <li><a href="about.html">About Us</a></li>
+              <li><a href="who-we-are.html">Who We Are</a></li>
+              <li><a href="contact.html">Contact Us</a></li>
+            </ul>
+          </li>
+
+          <li class="has-dropdown">
+            <button class="drop-toggle" aria-haspopup="true" aria-expanded="false">Our Work <span aria-hidden="true">+</span></button>
+            <ul class="dropdown" aria-label="Our Work submenu">
+              <li><a href="where-we-work.html">Where We Work</a></li>
+              <li><a href="what-we-do.html">What We Do</a></li>
+              <li><a href="our-approach.html">Our Approach</a></li>
+              <li><a href="education.html">Education</a></li>
+              <li><a href="food-security.html">Food Security</a></li>
+              <li><a href="inclusion.html">Inclusion</a></li>
+              <li><a href="relief-drr.html">Relief &amp; DRR</a></li>
+            </ul>
+          </li>
+
+          <li class="has-dropdown">
+            <button class="drop-toggle" aria-haspopup="true" aria-expanded="false">News <span aria-hidden="true">+</span></button>
+            <ul class="dropdown" aria-label="News submenu">
+              <li><a href="updates/updates.html">Updates &amp; Reports</a></li>
+            </ul>
+          </li>
+
+          <li class="has-dropdown">
+            <button class="drop-toggle" aria-haspopup="true" aria-expanded="false">Get Involved <span aria-hidden="true">+</span></button>
+            <ul class="dropdown" aria-label="Get Involved submenu">
+              <li><a href="get-involved.html">How to Get Involved</a></li>
+              <li><a href="partnership.html">Partnership</a></li>
+              <li><a href="education-ambassadors.html">Education Ambassadors</a></li>
+              <li><a href="join-our-team.html">Join our Team</a></li>
+              <li><a href="donate.html">Donate</a></li>
+            </ul>
+          </li>
+        </ul>
+      </nav>
+
+      <div class="header-actions">
+        <div class="lang-wrap">
+          <label for="site-lang-select" class="visually-hidden">Language</label>
+          <select id="site-lang-select" class="lang-select" aria-label="Language">
+            <option value="mara">Mara</option>
+            <option value="en">English</option>
+            <option value="my">Burmese</option>
+          </select>
+        </div>
+        <div class="theme-wrap">
+          <label for="site-theme-select" class="visually-hidden">Theme</label>
+          <select id="site-theme-select" class="theme-select" aria-label="Theme (System, Light, Dark)">
+            <option value="system">System</option>
+            <option value="light">Light</option>
+            <option value="dark">Dark</option>
+          </select>
+        </div>
+        <a class="btn btn-primary" href="donate.html">Donate</a>
+      </div>
+    </div>
+  </header>
+  <main>
+    <section class="hero" aria-labelledby="hero-heading">
+      <div class="hero-inner reveal" id="hero-content">
+        <h1 id="hero-heading">Together for Sustainable Development — supporting resilient communities in Chin State</h1>
+        <p class="lead">We partner with remote villages to co-design durable livelihoods, education, and healthcare solutions centered on local knowledge and long-term resilience.</p>
+        <div class="hero-ctas">
+          <a class="btn btn-primary" href="donate.html" aria-label="Donate to TSD">Donate</a>
+          <a class="btn btn-ghost" href="get-involved.html" aria-label="Get involved with TSD">Get Involved</a>
+        </div>
+
+        <div class="stats" aria-hidden="false">
+          <div class="stat">
+            <div class="num" data-count="128">0</div>
+            <div class="label">Community leaders trained</div>
+          </div>
+          <div class="stat">
+            <div class="num" data-count="42">0</div>
+            <div class="label">Active community projects</div>
+          </div>
+          <div class="stat">
+            <div class="num" data-count="5600">0</div>
+            <div class="label">People reached</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="hero-media reveal" aria-hidden="true">
+        <div style="border-radius:12px;overflow:hidden;box-shadow:0 6px 18px rgba(0,0,0,0.06)">
+          <img src="assets/images/hero.jpeg" alt="Community members participating in a meeting" loading="lazy">
+        </div>
+      </div>
+    </section>
+
+    <section class="projects" aria-labelledby="projects-heading">
+      <h2 id="projects-heading">Featured projects</h2>
+      <div class="projects-grid">
+        <article class="project reveal" tabindex="0">
+          <div class="thumb">IMG</div>
+          <div>
+            <h3>Community Water & Sanitation</h3>
+            <p>Locally managed water systems and hygiene training reduce water-borne illness and free time for learning and livelihoods.</p>
+          </div>
+        </article>
+
+        <article class="project reveal" tabindex="0">
+          <div class="thumb">IMG</div>
+          <div>
+            <h3>Sustainable Agroforestry</h3>
+            <p>Agroforestry demonstrations increase soil fertility and provide diversified income for smallholder farmers.</p>
+          </div>
+        </article>
+
+        <article class="project reveal" tabindex="0">
+          <div class="thumb">IMG</div>
+          <div>
+            <h3>Community Health Workers Program</h3>
+            <p>Training local health workers for primary care and referrals strengthens rural health access.</p>
+          </div>
+        </article>
+      </div>
+    </section>
+
+    <section class="updates-preview" aria-labelledby="updates-heading">
+      <h2 id="updates-heading">Latest updates</h2>
+      <div id="updates-preview-list">
+        <p>Loading updates…</p>
+      </div>
+      <p><a href="updates/updates.html">See all updates</a></p>
+    </section>
+
+    <section class="trust" aria-label="Trust and transparency">
+      <div class="badge reveal">
+        <h4>Community-led</h4>
+        <p>Programs are co-created with local leaders and reflect local priorities.</p>
+      </div>
+      <div class="badge reveal">
+        <h4>Transparent reporting</h4>
+        <p>Annual reports and financial summaries shared publicly for accountability.</p>
+      </div>
+      <div class="badge reveal">
+        <h4>Ethical partnerships</h4>
+        <p>We work with local and international partners with long-term commitments.</p>
+      </div>
+    </section>
+  </main>
+  <footer class="site-footer" role="contentinfo">
+    <div class="footer-grid site-inner">
+      <div class="col about">
+        <h3>About TSD</h3>
+        <p>Together for Sustainable Development partners with remote communities in Chin State to co-design resilient livelihoods, education, and health services.</p>
+      </div>
+      <div class="col links">
+        <h4>Quick Links</h4>
+        <ul class="footer-links">
+          <li><a href="index.html">Home</a></li>
+          <li><a href="projects.html">Projects</a></li>
+          <li><a href="updates/updates.html">Updates</a></li>
+          <li><a href="donate.html">Donate</a></li>
+        </ul>
+      </div>
+      <div class="col contact">
+        <h4>Contact</h4>
+        <address>Phone: +95 9 1234 5678<br>Email: info@tsdmyanmar.org<br>Hakha, Chin State, Myanmar</address>
+      </div>
+      <div class="col legal">
+        <h4>Community</h4>
+        <p>Local leadership and long-term partnerships guide our work; we publish reports for transparency.</p>
+      </div>
+    </div>
+    <div class="footer-bar">© 2026 Together for Sustainable Development — Built with care for communities</div>
+  </footer>
+  <script src="js/theme.js"></script>
+  <script src="js/header.js"></script>
+  <script src="js/i18n.js"></script>
+  <script src="js/main.js"></script>
+</body>
+</html>
