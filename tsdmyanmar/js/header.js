@@ -3,7 +3,7 @@
  * active link highlighting, and basic keyboard accessibility.
  * Lightweight, no dependencies.
  */
-(function(){
+(function(){ try{ if (window && window.console && window.console.debug) console.debug('header: script loaded'); window.addEventListener('error', (e)=>{ try{ console.error('header: window.error', e.error || e.message || e); }catch(_){} }); window.addEventListener('unhandledrejection', (e)=>{ try{ console.error('header: unhandledrejection', e.reason || e); }catch(_){} });
   const HEADER = document.querySelector('.site-header');
   const TOGGLE = document.querySelector('.nav-toggle');
   const NAV = document.getElementById('primary-nav');
@@ -401,5 +401,6 @@
     }
 
   // Expose for debugging/testing
-  window.tsdHeader = { toggleMenu };
+  window.tsdHeader = { toggleMenu }
+  }catch(e){ try{ console.error('header: fatal error', e); }catch(_){} }
 })();
