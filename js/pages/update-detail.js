@@ -29,13 +29,49 @@
 
   function getSiteLang(){ try{ if (window.tsdI18n && window.tsdI18n.getSiteLang) return window.tsdI18n.getSiteLang(); }catch(e){} return (navigator.language||'en').split('-')[0]; }
 
-  function showMessage(msg){ TITLE.textContent = ''; DATE.textContent=''; BODY.textContent = msg; CRUMB.textContent = ''; BADGE.textContent = ''; }
+  function showMessage(msg){ TITLE.textContent = ''; DATE.textContent=''; BODY.innerHTML = '<p class="small-muted">'+msg+'</p>'; CRUMB.textContent = ''; BADGE.textContent = ''; }
+
+  function showSkeleton(){
+    // ensure skeletons are visible while loading
+    updateBodyInnerHTML('<div class="skeleton skel-title"></div><div class="skeleton skel-meta"></div><div class="skeleton skel-para"></div><div class="skeleton skel-para"></div><div class="skeleton skel-para" style="width:80%"></div>');
+  }
+
+  function updateBodyInnerHTML(html){ BODY.innerHTML = html; }
+
+  function wrapMediaAndSetup(root){
+    // Wrap iframes for responsive video
+    root.querySelectorAll('iframe').forEach(ifr => {
+      const wrap = document.createElement('div'); wrap.className = 'video-wrapper';
+      ifr.parentNode.replaceChild(wrap, ifr); wrap.appendChild(ifr);
+    });
+    // Image fallback and styling
+    root.querySelectorAll('img').forEach(img => {
+      img.style.maxWidth = '100%'; img.style.height = 'auto'; img.style.borderRadius = '8px';
+      img.addEventListener('error', ()=>{
+        const ph = document.createElement('div'); ph.className='img-fallback center'; ph.textContent = (window.I18N && window.I18N.image_unavailable) || 'Image not available';
+        img.parentNode.replaceChild(ph, img);
+      });
+    });
+  }
+
+  function extractDownloads(root){
+    // Move PDF links to the aside CTAs and style them as buttons
+    const ctas = document.getElementById('update-ctas'); ctas.innerHTML = '';
+    root.querySelectorAll('a[href$=".pdf"]').forEach(a=>{
+      const href = a.getAttribute('href'); const label = a.textContent.trim() || 'Download (PDF)';
+      const btn = document.createElement('a'); btn.className='btn-download'; btn.href = href; btn.target = '_blank'; btn.rel='noopener noreferrer';
+      btn.innerHTML = '<svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path fill="#fff" d="M5 20h14v-2H5v2zm7-18v10l4-4 1.4 1.4L12 16 6.6 9.4 8 8l4 4V2h0z"/></svg>' + label;
+      ctas.appendChild(btn);
+      // remove original link from content
+      try{ a.parentNode.removeChild(a); }catch(e){}
+    });
+  }
 
   async function load(id){
     if (!id){ showMessage('No article id provided'); return; }
     const lang = getSiteLang() || 'en';
     const loadingLabel = (window.I18N && window.I18N.loading) || 'Loading…';
-    TITLE.textContent = loadingLabel; BODY.textContent = '';
+    TITLE.textContent = loadingLabel; showSkeleton();
 
     try{
       const params = new URLSearchParams(); params.set('id', String(id)); params.set('lang', lang);
@@ -59,7 +95,10 @@
         if (date) DATE.textContent = formatDate(date);
         CRUMB.textContent = title;
         BADGE.textContent = item.isLatest ? ((window.I18N && window.I18N.latest_badge) || 'Latest') : '';
-        BODY.innerHTML = body || ((window.I18N && window.I18N.no_updates_body) || 'No content available.');
+        // Inject content, then post-process media and downloads
+        updateBodyInnerHTML(body || ((window.I18N && window.I18N.no_updates_body) || '<p>No content available.</p>'));
+        wrapMediaAndSetup(BODY);
+        extractDownloads(BODY);
         try{ document.title = title + ' — ' + ((window.I18N && window.I18N.site_title) || document.title); }catch(e){}
         TITLE.setAttribute('tabindex','-1'); TITLE.focus();
       }
@@ -86,7 +125,10 @@
       BADGE.textContent = item.isLatest ? ((window.I18N && window.I18N.latest_badge) || 'Latest') : '';
 
       // Body may contain HTML; assume server provides safe HTML
-      BODY.innerHTML = body || ((window.I18N && window.I18N.no_updates_body) || 'No content available.');
+      updateBodyInnerHTML(body || ((window.I18N && window.I18N.no_updates_body) || '<p>No content available.</p>'));
+      // Post-process media and downloads
+      wrapMediaAndSetup(BODY);
+      extractDownloads(BODY);
 
       // Update document title
       try{ document.title = title + ' — ' + ((window.I18N && window.I18N.site_title) || document.title); }catch(e){}
