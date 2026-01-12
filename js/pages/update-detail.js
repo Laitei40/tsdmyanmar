@@ -41,15 +41,10 @@
       const params = new URLSearchParams(); params.set('id', String(id)); params.set('lang', lang);
       const res = await fetch('/api/update' + '?' + params.toString(), {cache:'no-cache'});
       if (!res.ok){
-        // try to surface any JSON error message from the API
+        // Surface any JSON error message from the API
         let msg = 'HTTP ' + res.status;
         try{ const j = await res.json(); msg += ' - ' + (j && (j.error || j.message) ? (j.error || j.message) : JSON.stringify(j)); }catch(e){ try{ const t = await res.text(); if (t) msg += ' - ' + t; }catch(e){} }
         console.error('update detail fetch non-ok', res.status, msg);
-        // Attempt fallback to static JSON when the API fails
-        try{
-          const fb = await fetch('/assets/documents/reports/updates.json', {cache:'no-cache'});
-          if (fb.ok){ const arr = await fb.json(); const found = arr.find(it => String(it.id) === String(id)); if (found){ normalizeItemLangKeys(found); renderFound(found); return; } }
-        }catch(e){ /* ignore fallback errors */ }
         showMessage((window.I18N && window.I18N.no_updates_body) ? (window.I18N.no_updates_body + '\n' + msg) : ('Unable to load the article at this time. ' + msg));
         return;
       }
@@ -101,11 +96,6 @@
 
     }catch(err){
       console.error('update detail load error', err);
-      // try static fallback when API can't be reached
-      try{
-        const fb = await fetch('/assets/documents/reports/updates.json', {cache:'no-cache'});
-        if (fb.ok){ const arr = await fb.json(); const found = arr.find(it => String(it.id) === String(id)); if (found){ normalizeItemLangKeys(found); renderFound(found); return; } }
-      }catch(e){ /* ignore fallback errors */ }
       const em = err && err.message ? (': ' + err.message) : '';
       showMessage(((window.I18N && window.I18N.no_updates_body) || 'Unable to load the article at this time.') + em);
     }

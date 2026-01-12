@@ -2,7 +2,7 @@ Cloudflare D1 integration for Updates & News
 
 Overview
 - We'll serve the Updates feed from a Cloudflare D1 database via a Pages Function at `/api/updates`.
-- The client will fetch `/api/updates` and fall back to the static JSON in `assets/documents/reports/updates.json` if the API is unavailable.
+- The client will fetch `/api/updates` and expects the D1-backed API to be the authoritative source for updates (no static fallback).
 
 Steps to set up D1 and seed data
 1. Create a D1 database in Cloudflare (Dashboard → Workers & D1 → Create database).

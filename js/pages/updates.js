@@ -7,7 +7,6 @@
  */
 (function(){
   const API_PATH = '/api/updates';
-  const FALLBACK_PATH = 'assets/documents/reports/updates.json';
   const CONTAINER_ID = 'updates-list';
   const FILTER_ID = 'updates-year-filter';
   const LOADING_MSG_ID = 'updates-loading';
@@ -111,7 +110,9 @@
         const hdr = el('h3',{class:'update-title'}, title);
         const summ = el('p',{class:'update-summary'}, summary);
         const actions = el('div',{class:'update-cta'});
-        const cta = el('a',{class:'btn-link', attrs:{href: 'updates/'+(it.id || '')+'.html'}}, 'Read more');
+        const ctaLabel = (window.I18N && window.I18N.read_more) || 'Read more';
+        const href = 'updates/update.html?id=' + encodeURIComponent(it.id || '');
+        const cta = el('a',{class:'btn-link', attrs:{href}}, ctaLabel);
         actions.appendChild(cta);
 
         article.appendChild(meta);
@@ -177,11 +178,18 @@
       if (query) params.set('q', query);
       if (yearFilter) params.set('year', String(yearFilter));
 
+      // Fetch updates from the API (no fallback to static JSON)
       let res;
-      try{ res = await fetch(API_PATH + '?' + params.toString(), {cache:'no-cache'}); if (!res.ok) throw new Error('API fetch ' + res.status); }
-      catch(apiErr){ console.warn('Updates API failed, falling back to static JSON', apiErr); res = await fetch(FALLBACK_PATH, {cache:'no-cache'}); }
-
-      if (!res.ok) throw new Error('Network response ' + res.status);
+      try{
+        res = await fetch(API_PATH + '?' + params.toString(), {cache:'no-cache'});
+      }catch(apiErr){
+        console.error('Updates API network error', apiErr);
+        throw apiErr;
+      }
+      if (!res.ok){
+        const text = await res.text().catch(()=>null);
+        throw new Error('API error: ' + res.status + (text ? ' - ' + text : ''));
+      }
       const data = await res.json();
       // API returns { items: [...], total: N } when paged; fallback may return array
       const items = Array.isArray(data) ? data : (data.items || []);
@@ -213,7 +221,7 @@
       if (loadMoreBtn){
         const loadMoreLabel = (window.I18N && window.I18N.load_more) || 'Load more';
         loadMoreBtn.textContent = loadMoreLabel;
-        if (offset >= total) loadMoreBtn.setAttribute('disabled','disabled'); else loadMoreBtn.removeAttribute('disabled');
+        if (offset >= total){ loadMoreBtn.setAttribute('disabled','disabled'); loadMoreBtn.setAttribute('aria-disabled','true'); } else { loadMoreBtn.removeAttribute('disabled'); loadMoreBtn.setAttribute('aria-disabled','false'); }
       }
 
       loading && (loading.textContent = '');
