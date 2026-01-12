@@ -58,6 +58,17 @@
     ));
   }
 
+  // Helper to pick field by language with legacy 'mara' fallback for 'mrh'
+  function pickLangField(obj, lang){
+    if (!obj) return '';
+    const candidates = (lang === 'mrh') ? ['mrh', 'mara', 'en'] : [lang, 'en'];
+    for (let i = 0; i < candidates.length; i++){
+      const k = candidates[i];
+      if (obj[k]) return obj[k];
+    }
+    return '';
+  }
+
   function renderItems(container, items, lang){
     container.innerHTML = '';
     if (!items.length) return renderEmpty(container);
@@ -69,9 +80,9 @@
       const yearHeader = el('h3',{class:'year'},year);
       container.appendChild(yearHeader);
       grouped[year].sort((a,b)=> new Date(b.date)-new Date(a.date)).forEach(it=>{
-        const title = (it.title && (it.title[lang] || it.title.en)) || 'Untitled';
-        const summary = (it.summary && (it.summary[lang] || it.summary.en)) || '';
-        const body = (it.body && (it.body[lang] || it.body.en)) || '';
+        const title = pickLangField(it.title, lang) || 'Untitled';
+        const summary = pickLangField(it.summary, lang) || '';
+        const body = pickLangField(it.body, lang) || '';
         const article = el('article',{class:'timeline-item reveal', attrs:{role:'article'}});
         const hdr = el('header',{}, el('h3',{}, title), el('time', {attrs:{datetime:it.date}}, formatDate(it.date)) );
         const summ = el('div',{class:'summary'}, summary);
