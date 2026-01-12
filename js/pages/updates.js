@@ -111,7 +111,7 @@
         const summ = el('p',{class:'update-summary'}, summary);
         const actions = el('div',{class:'update-cta'});
         const ctaLabel = (window.I18N && window.I18N.read_more) || 'Read more';
-        const href = 'updates/update.html?id=' + encodeURIComponent(it.id || '');
+        const href = '/update.html?id=' + encodeURIComponent(it.id || '');
         const cta = el('a',{class:'btn-link', attrs:{href}}, ctaLabel);
         actions.appendChild(cta);
 

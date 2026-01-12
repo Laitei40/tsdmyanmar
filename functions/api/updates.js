@@ -105,7 +105,8 @@ export async function onRequest(context){
     if (q){
       // Search in localized title/summary, fall back to en
       const like = '%' + q + '%';
-      where += ' AND ( (json_extract(title, '$."' || ? || '"') LIKE ?) OR (json_extract(summary, '$."' || ? || '"') LIKE ?) OR (json_extract(title, '$.en') LIKE ?) OR (json_extract(summary, '$.en') LIKE ?) )';
+      // Use template literal to avoid single-quote escaping issues
+      where += ` AND ( (json_extract(title, '$."' || ? || '"') LIKE ?) OR (json_extract(summary, '$."' || ? || '"') LIKE ?) OR (json_extract(title, '$.en') LIKE ?) OR (json_extract(summary, '$.en') LIKE ?) )`;
       params.push(lang, like, lang, like, like, like);
     }
 
