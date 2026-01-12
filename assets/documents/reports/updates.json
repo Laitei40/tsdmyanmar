@@ -1,0 +1,30 @@
+[
+  {
+    "id": 1,
+    "title": {
+      "mara": "Mara: TSD hla pauh a um chungtel project",
+      "en": "TSD launches new community project",
+      "my": "TSD သည် အသိုင်းအဝိုင်း ပရောဂျက် အသစ် မိတ်ဆက်သည်"
+    },
+    "date": "2026-01-10",
+    "summary": {
+      "mara": "Mara: Chungtel project nih a ruat lo chungtel khual.",
+      "en": "A short summary about the new community project launch.",
+      "my": "အသိုင်းအဝိုင်း ပရောဂျက် စတင်ခြင်း အကျဉ်းချုပ်။"
+    }
+  },
+  {
+    "id": 2,
+    "title": {
+      "mara": "Mara: Volunteer hriatna — March 2026",
+      "en": "Volunteer call — March 2026",
+      "my": "Volunteer ခေါ်ယူခြင်း — ၂၀၂၆ မတ်"
+    },
+    "date": "2026-01-05",
+    "summary": {
+      "mara": "Mara: Outreach program ah volunteer ngaihna nih.",
+      "en": "Seeking volunteers for upcoming outreach programs.",
+      "my": "လာမည့် outreach အစီအစဉ်များအတွက် volunteer များကို ရှာနေပါသည်။"
+    }
+  }
+]
