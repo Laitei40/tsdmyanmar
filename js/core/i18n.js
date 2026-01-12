@@ -71,6 +71,18 @@ function applySiteTranslations(){
 
     // Update logos after applying translations
     updateLogos();
+
+    // Update document.title to match localized site title (if available)
+    try {
+      const siteTitle = (window.I18N && window.I18N.site_title && window.I18N.site_title[lang]) || 'TSD Myanmar';
+      if (document.title && document.title.includes('—')) {
+        const parts = document.title.split('—');
+        document.title = siteTitle + ' — ' + parts.slice(1).join('—').trim();
+      } else {
+        document.title = siteTitle + (document.title ? ' — ' + document.title : '');
+      }
+    } catch(e){ /* ignore */ }
+
     console.log('i18n: applied translations for', lang);
   } catch(err){
     console.error('i18n: applySiteTranslations error', err);
@@ -118,16 +130,18 @@ function ensureLangSelector(){
 function updateLogos(){
   const lang = getSiteLang();
   const theme = (document.documentElement && (document.documentElement.getAttribute('data-theme') || window.__TSD_THEME)) || 'light';
-  const base = (lang === 'my') ? 'logo_mm' : 'logo_en';
-  // prefer theme-specific variant if available (e.g. logo_en_dark.svg), then fallback to base
-  const names = [base + '_' + theme + '.svg', base + '.svg'];
+  const logoFolder = 'assets/images/logo/';
+  const langBase = (lang === 'my') ? 'logo-dark' : 'logo-light';
+  // prefer theme-specific variants (e.g. logo-light_dark.svg), then fallback to base
+  const names = [langBase + (theme ? '_' + theme : '') + '.svg', langBase + '.svg'];
   const candidates = [];
   names.forEach(n => {
-    candidates.push('assets/images/' + n);
-    candidates.push('./assets/images/' + n);
-    candidates.push('../assets/images/' + n);
-    candidates.push('/assets/images/' + n);
+    candidates.push(logoFolder + n);
+    candidates.push('./' + logoFolder + n);
+    candidates.push('../' + logoFolder + n);
+    candidates.push('/' + logoFolder + n);
   });
+
   document.querySelectorAll('.brand-logo').forEach(img=>{
     try{
       img.setAttribute('alt','TSD Myanmar logo');
@@ -151,14 +165,15 @@ function updateLogos(){
 function updateFavicons(){
   const lang = getSiteLang();
   const theme = (document.documentElement && (document.documentElement.getAttribute('data-theme') || window.__TSD_THEME)) || 'light';
-  const base = (lang === 'my') ? 'logo_mm' : (lang === 'mara' ? 'logo_mara' : 'logo_en');
-  const names = [base + '_' + theme + '.svg', base + '.svg'];
+  const logoFolder = 'assets/images/logo/';
+  const favBase = (lang === 'my') ? 'logo-dark' : 'logo-light';
+  const names = [favBase + (theme ? '_' + theme : '') + '.svg', favBase + '.svg'];
   const candidates = [];
   names.forEach(n => {
-    candidates.push('assets/images/' + n);
-    candidates.push('./assets/images/' + n);
-    candidates.push('../assets/images/' + n);
-    candidates.push('/assets/images/' + n);
+    candidates.push(logoFolder + n);
+    candidates.push('./' + logoFolder + n);
+    candidates.push('../' + logoFolder + n);
+    candidates.push('/' + logoFolder + n);
   });
 
   // find or create link element
@@ -170,6 +185,14 @@ function updateFavicons(){
     document.head.appendChild(link);
   }
   link.type = 'image/svg+xml';
+
+  // set accessible title for the favicon (used by some browsers/tools)
+  try{
+    const siteTitle = (window.I18N && window.I18N.site_title && window.I18N.site_title[lang]) || 'TSD Myanmar';
+    link.title = siteTitle;
+    link.setAttribute('title', siteTitle);
+    link.setAttribute('aria-label', siteTitle);
+  }catch(e){ /* ignore */ }
 
   (function tryNext(i){
     if (i >= candidates.length) return;
@@ -219,7 +242,7 @@ window.tsdI18n = { getSiteLang, setSiteLang, applySiteTranslations };
 
 // Base site translations for common keys (mara / en / my)
 const BASE_I18N = {
-  site_title: { mara: 'TSD Myanmar', en: 'TSD Myanmar', my: 'TSD Myanmar' },
+  site_title: { mara: 'TSD Myanmar', en: 'TSD Myanmar', my: 'တီအက်(စ်)ဒီ မြန်မာ' },
   nav_home: { mara: 'Home', en: 'Home', my: 'ပင်မ' },
   nav_about: { mara: 'Eima Thatih', en: 'About', my: 'အကြောင်း' },
   nav_projects: { mara: 'Projects', en: 'Projects', my: 'ပရောဂျက်များ' },
