@@ -6,7 +6,7 @@
  * - Minimal, dependency-free, optimized for low-bandwidth
  */
 (function(){
-  const DATA_PATH = '/updates/data/updates.json';
+  const DATA_PATH = 'assets/documents/reports/updates.json';
   const CONTAINER_ID = 'updates-list';
   const FILTER_ID = 'updates-year-filter';
   const LOADING_MSG_ID = 'updates-loading';
@@ -162,3 +162,5 @@
     window.addEventListener('site:langchange', ()=>{ loadAndRender(); });
   });
 })();
+
+

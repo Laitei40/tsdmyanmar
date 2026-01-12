@@ -1,0 +1,41 @@
+{
+  "site_title": "တီအက်(စ်)ဒီ မြန်မာ",
+  "nav_home": "ပင်မ",
+  "nav_about": "အကြောင်း",
+  "nav_projects": "ပရောဂျက်များ",
+  "nav_impact": "သက်ရောက်မှု",
+  "nav_donate": "Donate",
+  "nav_get_involved": "ပါဝင်ဆောင်ရွက်ရန်",
+  "nav_contact": "ဆက်သွယ်ရန်",
+
+  "header_about_us": "အကြောင်း",
+  "header_our_work": "လုပ်ငန်းများ",
+  "header_news": "သတင်း",
+  "header_get_involved": "ပါဝင်ဆောင်ရွက်ရန်",
+
+  "nav_about_us": "အကြောင်း",
+  "nav_who_we_are": "ကျွန်ုပ်တို့ အကြောင်း",
+  "nav_contact_us": "ဆက်သွယ်ရန်",
+
+  "nav_where_we_work": "ကျွန်ုပ်တို့ လုပ်ငန်းနေရာများ",
+  "nav_what_we_do": "ကျွန်ုပ်တို့ လုပ်ဆောင်ချက်များ",
+  "nav_our_approach": "နည်းလမ်း",
+  "nav_education": "ပညာရေး",
+  "nav_food_security": "အစာလုံခြုံရေး",
+  "nav_inclusion": "ပါဝင်မှု",
+  "nav_relief_drr": "ကယ်ဆယ်ရေး / DRR",
+
+  "nav_updates": "အသစ်များ",
+  "nav_updates_reports": "အသစ်များနှင့် အစီရင်ခံစာ",
+  "nav_how_to_get_involved": "ပါဝင်နည်းများ",
+  "nav_partnership": "မိတ်ဖက်ဆက်ဆံရေး",
+  "nav_education_ambassadors": "ပညာရေး သံတမန်",
+  "nav_join_our_team": "အသင်းတွင် ပါဝင်ရန်",
+
+  "about_title": "TSD အကြောင်း",
+  "projects_title": "ပရောဂျက်များ",
+  "impact_title": "သက်ရောက်မှုနှင့် အစီရင်ခံစာ",
+  "donate_title": "ထောက်ခံမှု / ဒါနမှု",
+  "get_involved_title": "Volunteer များနှင့် မိတ်ဖက်များ",
+  "contact_title": "ဆက်သွယ်ရန်"
+}
