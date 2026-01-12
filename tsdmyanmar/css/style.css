@@ -294,6 +294,9 @@ footer{padding:18px;background:transparent;text-align:center;color:var(--muted);
 .theme-wrap .theme-select{min-width:90px}
 .lang-wrap.enhanced .lang-select,.theme-wrap.enhanced .theme-select{position:absolute;inset:0;opacity:0;pointer-events:none}
 
+/* DEBUG: outline enhanced toggles (temporary) */
+.lang-wrap.enhanced .select-toggle, .theme-wrap.enhanced .select-toggle { outline: 2px dashed rgba(255,0,0,0.9); box-shadow: 0 6px 18px rgba(255,0,0,0.06); }
+
 /* Icon-style Toggle button (compact, circular) */
 .select-toggle{display:inline-grid;place-items:center;width:40px;height:40px;border-radius:999px;border:1px solid transparent;background:transparent;color:var(--text);cursor:pointer;box-shadow:none;transition:transform 220ms var(--easing),box-shadow 220ms var(--easing),border-color 160ms var(--easing);position:relative;z-index:320;pointer-events:auto}
 .select-toggle .icon{width:40px;height:40px;display:inline-grid;place-items:center}.select-toggle .icon svg{width:22px;height:22px;display:block;fill:currentColor}
