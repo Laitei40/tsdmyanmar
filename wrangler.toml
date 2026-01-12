@@ -1,0 +1,19 @@
+# Wrangler configuration for the TSD site
+# Add your account details and project settings as needed.
+# This file includes an example D1 binding for the 'tsd_updates' database.
+
+name = "tsdmyanmar"
+compatibility_date = "2026-01-12"
+
+# Bind your Cloudflare D1 database to the environment variable UPDATES_DB
+[[d1_databases]]
+binding = "UPDATES_DB"
+database_name = "tsd_updates"
+
+# Optional: add other settings such as zone_id, account_id, or site configuration
+# Example:
+# account_id = "your-account-id"
+# route = "https://example.com/*"
+# [site]
+#   bucket = "public"
+#   entry-point = "./"
