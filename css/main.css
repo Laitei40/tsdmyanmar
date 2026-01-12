@@ -1,0 +1,5 @@
+/* css/main.css — wrapper that imports existing styles to avoid visual regressions
+   We will later split into base/layout/components/pages as needed.
+*/
+@import url('style.css');
+@import url('responsive.css');
