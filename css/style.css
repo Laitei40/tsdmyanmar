@@ -63,6 +63,54 @@ body{font-family:Inter, ui-sans-serif, system-ui, -apple-system, "Segoe UI", Rob
 img{max-width:100%;height:auto;display:block}
 a{color:var(--primary)}
 
+/* Stronger, consistent section headings and spacing */
+h1,h2,h3{color:var(--text);line-height:1.15;margin:0 0 .6rem}
+h1{font-size:1.6rem;font-weight:800}
+h2{font-size:1.25rem;font-weight:700}
+h3{font-size:1rem;font-weight:700}
+.page-section{padding:36px 0}
+main{padding-top:22px}
+
+/* Improve readability for updates and stats */
+.updates-hero h1{font-size:1.6rem;margin-bottom:6px}
+.updates-list .update-card, .update-item{padding:16px;border-radius:12px}
+.stats{gap:18px}
+.stat{padding:16px}
+
+/* Buttons: stronger focus + hover states and consistent brand color */
+.btn-primary{background:var(--primary);border-color:transparent}
+.btn-primary:hover{background:var(--color-primary);filter:brightness(1.02)}
+.btn-primary:focus{box-shadow:0 0 0 4px rgba(0,127,63,0.12)}
+.btn-link{color:var(--primary);text-decoration:underline}
+
+/* Skeleton loader for updates list */
+.skeleton-card{height:76px;border-radius:12px;background:linear-gradient(90deg,var(--surface),rgba(0,0,0,0.03),var(--surface));background-size:200% 100%;animation:skeleton-shimmer 1.2s linear infinite;margin-bottom:12px}
+@keyframes skeleton-shimmer{0%{background-position:200% 0}100%{background-position:-200% 0}}
+
+/* Improve mobile tap targets and spacing */
+@media(max-width:719px){
+  nav a{padding:14px 0;display:block}
+  .nav-toggle{width:44px;height:44px}
+  /* Keep Donate visible on mobile as a prominent, tappable CTA */
+  .header-actions .btn-primary{display:inline-flex;padding:12px 14px;font-size:0.95rem}
+}
+
+/* Hamburger open/close animation */
+.nav-toggle.open .hamburger{background:transparent}
+.nav-toggle.open .hamburger::before{transform:translateY(0) rotate(45deg)}
+.nav-toggle.open .hamburger::after{transform:translateY(0) rotate(-45deg)}
+.nav-toggle .hamburger::before, .nav-toggle .hamburger::after{transition:transform 180ms var(--easing), opacity 180ms var(--easing)}
+.nav-toggle .hamburger{transition:background 160ms var(--easing)}
+
+/* Visible affordance for active nav items */
+.primary-nav a.active{background:rgba(0,127,63,0.06);padding:8px 10px;border-radius:8px}
+.primary-nav a{transition:color 180ms ease,background 180ms ease,transform 180ms ease}
+.primary-nav a:hover{transform:translateY(-2px)}
+
+/* Sticky header compactness — ensure it doesn't overlap page content */
+.site-header{backdrop-filter: blur(6px)}
+
+
 /* Header */
 header{background:var(--surface);padding:14px 16px;border-bottom:1px solid var(--color-border);position:relative}
 .site-inner{max-width:var(--max-width);margin:0 auto;display:flex;align-items:center;gap:12px}
@@ -139,8 +187,13 @@ main{max-width:var(--max-width);margin:18px auto;padding:0 16px}
 footer{padding:18px;background:transparent;text-align:center;color:var(--muted);margin-top:26px}
 
 /* Subtle entrance animations */
-.reveal{opacity:0;transform:translateY(8px);transition:opacity 520ms var(--easing),transform 520ms var(--easing)}
+.reveal{opacity:0;transform:translateY(6px);transition:opacity 420ms var(--easing),transform 420ms var(--easing)}
 .reveal.visible{opacity:1;transform:none}
+
+/* Respect user's reduced motion preference */
+@media (prefers-reduced-motion: reduce){
+  *{transition: none !important; animation: none !important}
+}
 
 /* Responsive */
 @media(min-width:720px){

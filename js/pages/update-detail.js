@@ -1,5 +1,4 @@
 (function(){
-  const API_PATH = '/api/updates';
   const ROOT = document.getElementById('update-detail-root');
   const TITLE = document.getElementById('update-title');
   const DATE = document.getElementById('update-date');
@@ -72,66 +71,74 @@
     const lang = getSiteLang() || 'en';
     const loadingLabel = (window.I18N && window.I18N.loading) || 'Loading…';
     TITLE.textContent = loadingLabel; showSkeleton();
-
     try{
-      const params = new URLSearchParams(); params.set('id', String(id)); params.set('lang', lang);
-      const res = await fetch('/api/update' + '?' + params.toString(), {cache:'no-cache'});
-      if (!res.ok){
-        // Surface any JSON error message from the API
-        let msg = 'HTTP ' + res.status;
-        try{ const j = await res.json(); msg += ' - ' + (j && (j.error || j.message) ? (j.error || j.message) : JSON.stringify(j)); }catch(e){ try{ const t = await res.text(); if (t) msg += ' - ' + t; }catch(e){} }
-        console.error('update detail fetch non-ok', res.status, msg);
-        showMessage((window.I18N && window.I18N.no_updates_body) ? (window.I18N.no_updates_body + '\n' + msg) : ('Unable to load the article at this time. ' + msg));
-        return;
-      }
-      const data = await res.json();
-
-      // helper to render a found item from fallback
-      function renderFound(item){
-        const title = (typeof item.title === 'string') ? item.title : pickLangField(item.title, lang) || 'Untitled';
-        const body = (typeof item.body === 'string') ? item.body : pickLangField(item.body, lang) || '';
-        const date = item.date || '';
-        TITLE.textContent = title;
-        if (date) DATE.textContent = formatDate(date);
-        CRUMB.textContent = title;
-        BADGE.textContent = item.isLatest ? ((window.I18N && window.I18N.latest_badge) || 'Latest') : '';
-        // Inject content, then post-process media and downloads
-        updateBodyInnerHTML(body || ((window.I18N && window.I18N.no_updates_body) || '<p>No content available.</p>'));
-        wrapMediaAndSetup(BODY);
-        extractDownloads(BODY);
-        try{ document.title = title + ' — ' + ((window.I18N && window.I18N.site_title) || document.title); }catch(e){}
-        TITLE.setAttribute('tabindex','-1'); TITLE.focus();
+      // Prefer the static news pipeline helper which implements per-article fallback to English
+      let data = null;
+      if (window.tsdNews && window.tsdNews.fetchNewsJson){
+        data = await window.tsdNews.fetchNewsJson(id);
+      } else {
+        // Fallback: attempt direct fetch from /news/{lang}/{id}.json with English fallback
+        const tryFetch = async (l) => {
+          const url = '/news/' + encodeURIComponent(l) + '/' + encodeURIComponent(id) + '.json';
+          const r = await fetch(url, {cache:'no-cache'});
+          if (!r.ok) throw r;
+          return r.json();
+        };
+        try{
+          data = await tryFetch(lang);
+        }catch(e){
+          if (lang !== 'en') data = await tryFetch('en');
+          else throw e;
+        }
       }
 
-      // API may return {item: {...}} or {items:[...]} or the item object directly
-      let item = null;
-      if (data == null) item = null;
-      else if (Array.isArray(data)) item = data[0];
-      else if (data.item) item = data.item;
-      else if (data.items && data.items.length) item = data.items[0];
-      else if (data.id || data.title) item = data;
+      if (!data){ showMessage((window.I18N && window.I18N.no_updates) || 'Article not found'); return; }
 
-      if (!item){ showMessage((window.I18N && window.I18N.no_updates) || 'Article not found'); return; }
-
+      // data is expected to be the article object
+      const item = data;
       normalizeItemLangKeys(item);
 
-      const title = (typeof item.title === 'string') ? item.title : pickLangField(item.title, lang) || 'Untitled';
-      const body = (typeof item.body === 'string') ? item.body : pickLangField(item.body, lang) || '';
-      const date = item.date || '';
+      const titleStr = (typeof item.title === 'string') ? item.title : pickLangField(item.title, lang) || 'Untitled';
+      const bodyStr = (typeof item.body === 'string') ? item.body : pickLangField(item.body, lang) || '';
+      const dateStr = item.date || '';
 
-      TITLE.textContent = title;
-      if (date) DATE.textContent = formatDate(date);
-      CRUMB.textContent = title;
+      TITLE.textContent = titleStr;
+      if (dateStr) DATE.textContent = formatDate(dateStr);
+      CRUMB.textContent = titleStr;
       BADGE.textContent = item.isLatest ? ((window.I18N && window.I18N.latest_badge) || 'Latest') : '';
 
-      // Body may contain HTML; assume server provides safe HTML
-      updateBodyInnerHTML(body || ((window.I18N && window.I18N.no_updates_body) || '<p>No content available.</p>'));
-      // Post-process media and downloads
+      // If there's a top-level featured image, render it as a hero in the header
+      try{
+        const headerEl = document.querySelector('.update-header');
+        if (headerEl && Array.isArray(item.images) && item.images.length){
+          const heroImg = item.images[0];
+          const heroWrap = document.createElement('div'); heroWrap.className = 'article-hero';
+          const heroFigure = document.createElement('figure'); heroFigure.className = 'hero-figure';
+          const img = document.createElement('img'); img.src = heroImg.src; img.alt = heroImg.alt || '';
+          img.loading = 'lazy'; img.decoding = 'async'; img.className = 'hero-image';
+          heroFigure.appendChild(img);
+          if (heroImg.caption){ const c = document.createElement('figcaption'); c.className='hero-caption'; c.textContent = heroImg.caption; heroFigure.appendChild(c); }
+          heroWrap.appendChild(heroFigure);
+          // Insert hero after title within header
+          headerEl.appendChild(heroWrap);
+          // Remove the hero image from the images array so renderer doesn't duplicate it
+          item.images = item.images.slice(1);
+        }
+      }catch(e){ console.error('hero render error', e); }
+
+      // Render the article body and media using the news renderer (preserves backward compatibility)
+      if (window.tsdNews && window.tsdNews.renderArticle){
+        try{ window.tsdNews.renderArticle(item, BODY); }catch(e){ updateBodyInnerHTML(item.body_html || bodyStr || ((window.I18N && window.I18N.no_updates_body) || '<p>No content available.</p>')); }
+      } else {
+        const htmlContent = item.body_html || bodyStr || ((window.I18N && window.I18N.no_updates_body) || '<p>No content available.</p>');
+        updateBodyInnerHTML(htmlContent);
+      }
+      // Post-process media and downloads (ensure images/videos are wrapped and downloads extracted)
       wrapMediaAndSetup(BODY);
       extractDownloads(BODY);
 
       // Update document title
-      try{ document.title = title + ' — ' + ((window.I18N && window.I18N.site_title) || document.title); }catch(e){}
+      try{ document.title = titleStr + ' — ' + ((window.I18N && window.I18N.site_title) || document.title); }catch(e){}
 
       // Move focus to title for accessibility
       TITLE.setAttribute('tabindex','-1'); TITLE.focus();

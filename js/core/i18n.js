@@ -32,10 +32,16 @@ function setSiteLang(l){
 // Build list of candidate translation URLs for a given normalized lang
 function getTranslationUrlsFor(lang){
   lang = normalizeLang(lang);
-  if (lang === 'en') return ['/i18n/en/common.json'];
-  if (lang === 'mrh') return ['/mrh/i18n/mrh-MM/common.json','/i18n/mrh/common.json'];
-  if (lang === 'my') return ['/my/i18n/my-MM/common.json','/i18n/my/common.json'];
-  return ['/i18n/' + lang + '/common.json'];
+  // Preferred order:
+  // 1. /i18n/{lang}/common.json
+  // 2. /i18n/{baseLang}/common.json (if lang includes region variant)
+  // 3. fallback to English
+  const urls = [];
+  urls.push('/i18n/' + lang + '/common.json');
+  const base = (lang || '').split(/[-_]/)[0];
+  if (base && base !== lang){ urls.push('/i18n/' + base + '/common.json'); }
+  if (lang !== 'en') urls.push('/i18n/en/common.json');
+  return urls;
 }
 
 async function loadTranslations(lang){
@@ -165,8 +171,14 @@ function updateLogos(){
   const lang = getSiteLang();
   const theme = (document.documentElement && (document.documentElement.getAttribute('data-theme') || window.__TSD_THEME)) || 'light';
   const logoFolder = 'assets/images/logo/';
-  const langBase = (lang === 'mrh') ? 'logo-dark' : 'logo-light';
-  const names = [langBase + (theme ? '_' + theme : '') + '.svg', langBase + '.svg'];
+  const base = (lang === 'mrh') ? 'logo-dark' : 'logo-light';
+  // Build a robust candidate list covering possible filename conventions present in assets
+  const names = [
+    base + '_' + theme + '.svg',
+    base + '.svg',
+    'logo-' + theme + '.svg',
+    'logo-' + theme + '_' + theme + '.svg'
+  ];
   const candidates = [];
   names.forEach(n=>{ candidates.push(logoFolder + n); candidates.push('./' + logoFolder + n); candidates.push('../' + logoFolder + n); candidates.push('/' + logoFolder + n); });
 
@@ -183,8 +195,12 @@ function updateFavicons(){
   const lang = getSiteLang();
   const theme = (document.documentElement && (document.documentElement.getAttribute('data-theme') || window.__TSD_THEME)) || 'light';
   const logoFolder = 'assets/images/logo/';
-  const favBase = (lang === 'mrh') ? 'logo-dark' : 'logo-light';
-  const names = [favBase + (theme ? '_' + theme : '') + '.svg', favBase + '.svg'];
+  const base = (lang === 'mrh') ? 'logo-dark' : 'logo-light';
+  const names = [
+    base + '_' + theme + '.svg',
+    base + '.svg',
+    'logo-' + theme + '.svg'
+  ];
   const candidates = [];
   names.forEach(n=>{ candidates.push(logoFolder + n); candidates.push('./' + logoFolder + n); candidates.push('../' + logoFolder + n); candidates.push('/' + logoFolder + n); });
 

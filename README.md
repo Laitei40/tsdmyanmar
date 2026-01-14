@@ -78,3 +78,27 @@ Unless stated otherwise, the contents of this repository are intended for **non-
 For more information about Together for Sustainable Development (TSD Myanmar) and our work, please visit our official website or contact us through our recognized communication channels.
 
 > *Together, we build resilient, inclusive, and sustainable communities.*
+
+---
+
+**News localization (build-time)**
+
+- **Source news content:** `news-content/source/en/*.json` (one file per article)
+- **Translated files (produced by Crowdin):** `news-content/translations/{lang}/*.json`
+- **Build script:** run `npm run build` to generate localized static pages under the `news/` folder.
+
+Local build steps:
+
+```powershell
+cd C:\Users\laite\Documents\TSD
+npm run build
+# Preview generated site
+python -m http.server 8000 --directory news
+```
+
+Cloudflare Pages build settings (recommended):
+
+- Build command: `npm run build`
+- Build output directory: (leave blank) — the repo root contains the site; ensure Pages is configured to publish from the repo and that the `news/` folder is included in the published output.
+
+Crowdin configuration is updated to treat `news-content/source/en/*.json` as sources and to export translations into `news-content/translations/%locale%/` so Crowdin can commit translations back to GitHub automatically.

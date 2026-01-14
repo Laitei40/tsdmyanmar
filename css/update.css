@@ -6,7 +6,7 @@
   --accent: #0b6ef6; /* brand accent */
   --card: #f8fafc;
   --max-width: 900px;
-  --content-width: 640px;
+  --content-width: 680px;
   --radius: 10px;
 }
 @media (prefers-color-scheme:dark){
@@ -19,17 +19,21 @@
 .update-article{max-width:var(--max-width); margin:0 auto;}
 .breadcrumb{font-size:0.9rem; color:var(--muted); margin-bottom:0.5rem}
 .breadcrumb a{color:var(--muted); text-decoration:none}
-.breadcrumb a:hover{color:var(--accent)}
+.breadcrumb a{transition:color 180ms ease, text-decoration 180ms ease}
+.breadcrumb a:hover{color:var(--accent);text-decoration:underline}
 /* Title */
 .update-title{font-family: -apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,'Helvetica Neue',Arial,sans-serif; font-weight:700; font-size:2rem; line-height:1.15; color:var(--text); margin:0 0 0.35rem}
-@media(min-width:900px){ .update-title{font-size:2.5rem}} 
+.update-title{overflow-wrap:break-word;hyphens:auto}
+@media(min-width:900px){ .update-title{font-size:2.4rem;font-weight:700}} 
 .update-meta{color:var(--muted); font-size:0.95rem; margin-bottom:0.75rem}
 .update-divider{border:0; border-top:1px solid rgba(0,0,0,0.06); margin:1rem 0 1.5rem}
 @media (prefers-color-scheme:dark){ .update-divider{border-top-color:rgba(255,255,255,0.04)} }
 /* Two-column layout */
 .update-content-wrapper{display:block}
-.update-body{background:transparent; padding:0; font-size:1rem; color:var(--text); line-height:1.7;}
-.update-body p{margin:0 0 1.1rem}
+.update-header{background:var(--card);padding:16px;border-radius:10px;margin-bottom:1rem;box-shadow:0 6px 18px rgba(2,6,23,0.04)}
+.update-header .update-title{margin:0}
+.update-body{background:transparent; padding:0; font-size:1.03rem; color:var(--text); line-height:1.85; max-width:65ch}
+.update-body p{margin:0 0 1.25rem}
 .update-aside{margin-top:1.25rem}
 @media(min-width:900px){
   .update-content-wrapper{display:flex; gap:2rem; align-items:flex-start}
@@ -40,6 +44,45 @@
 .update-body img{max-width:100%; height:auto; display:block; margin:1rem auto; border-radius:var(--radius); box-shadow:0 6px 18px rgba(2,6,23,0.06)}
 .video-wrapper{position:relative;padding-bottom:56.25%;height:0;overflow:hidden;border-radius:var(--radius);margin:1rem 0}
 .video-wrapper iframe{position:absolute;top:0;left:0;width:100%;height:100%;border:0}
+/* Lazy video poster styling */
+.video-embed{margin:1rem 0}
+.video-poster{display:block;position:relative;border:0;padding:0;background:transparent;cursor:pointer;width:100%;}
+.video-thumb{width:100%;height:auto;display:block;border-radius:8px}
+.video-play{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);pointer-events:none}
+
+/* Media gallery: grid on wide screens, stacked on mobile */
+.media-gallery{display:grid;grid-template-columns:1fr;gap:12px}
+@media(min-width:900px){ .media-gallery{grid-template-columns:repeat(2,1fr);gap:16px} }
+.media-figure{margin:0}
+.media-caption{font-size:0.9rem;color:var(--muted);margin-top:8px}
+
+/* Article hero (featured image) */
+.article-hero{margin-top:12px;margin-bottom:16px;border-radius:12px;overflow:hidden}
+.hero-figure{position:relative;margin:0}
+.hero-image{display:block;width:100%;height:auto;object-fit:cover;max-height:520px}
+.hero-caption{position:relative;padding:12px 14px;background:linear-gradient(180deg,rgba(255,255,255,0.02),rgba(255,255,255,0.02));color:var(--muted);font-size:0.95rem}
+
+/* Alternate hero style: centered card under title on narrow screens */
+@media(max-width:899px){
+  .article-hero{box-shadow:none;border-radius:8px}
+  .hero-image{max-height:360px}
+}
+
+/* Media card styling: subtle surface to separate media from text */
+.media-figure, .video-embed{background:var(--card);padding:10px;border-radius:10px;box-shadow:0 8px 20px rgba(2,6,23,0.04)}
+.media-figure img{border-radius:8px;display:block}
+.media-figure:focus-within, .media-figure:hover{box-shadow:0 14px 36px rgba(2,6,23,0.06);transform:none}
+
+/* Ensure gallery images don't overflow on narrow screens */
+@media(max-width:480px){ .media-gallery{grid-template-columns:1fr} .hero-image{width:100%;height:auto;object-fit:cover} }
+
+/* Ensure iframes and videos maintain 16:9 and are centered */
+.video-wrapper{position:relative;padding-bottom:56.25%;height:0;overflow:hidden;border-radius:8px}
+.video-wrapper iframe{position:absolute;top:0;left:0;width:100%;height:100%;border:0}
+
+/* Focusable poster button style for accessibility */
+.video-poster{display:block;border:0;padding:0;background:transparent;cursor:pointer;width:100%;}
+.video-poster:focus{outline:3px solid rgba(11,110,246,0.18);outline-offset:4px}
 /* Image fallback */
 .img-fallback{display:flex;align-items:center;justify-content:center;background:var(--card);color:var(--muted);height:200px;border-radius:var(--radius);margin:1rem 0}
 /* Downloads & CTAs */
@@ -54,11 +97,51 @@
 @keyframes shimmer{0%{background-position:-200% 0}100%{background-position:200% 0}}
 /* Accessibility focus */
 a:focus{outline:3px solid rgba(11,110,246,0.18);outline-offset:2px}
+
+/* Soften focus for the article title (avoid large white ring on focus) */
+.update-title:focus{outline:none;box-shadow:0 0 0 6px rgba(11,110,246,0.06);border-radius:6px}
+
+/* Links in article: subtle hover + focus for readability */
+.update-body a{color:var(--accent);text-decoration:underline;transition:color 180ms ease,opacity 180ms ease}
+.update-body a:hover,.update-body a:focus{color:#064ab8}
 /* Small print */
 .small-muted{font-size:0.9rem;color:var(--muted)}
 /* Responsive tweaks */
 @media(max-width:480px){ .update-page{padding:1.25rem 1rem} .update-title{font-size:1.5rem} }
 
+/* Mobile readability tweaks */
+@media(max-width:480px){
+  .update-header{padding:14px}
+  .update-title{font-size:1.45rem;line-height:1.18}
+  .update-body{font-size:1rem;line-height:1.7}
+  .download-ctas .btn-download{padding:14px 12px;font-size:0.95rem}
+}
+
 /* Graceful utilities */
 .hidden{display:none !important}
 .center{display:flex;align-items:center;justify-content:center}
+
+/* Minimal header/footer and modern card layout for article pages */
+.site-header.minimal{background:transparent;padding:18px 0;border-bottom:0}
+.site-header.minimal .minimal-brand{font-weight:700;color:var(--text);text-decoration:none;font-size:1.05rem}
+.site-header.minimal .minimal-brand:hover{text-decoration:underline}
+
+.site-footer.minimal{padding:18px 0;border-top:1px solid rgba(0,0,0,0.04);background:transparent}
+.site-footer.minimal .footer-bar{font-size:0.95rem;color:var(--muted);text-align:center}
+.site-footer.minimal .footer-bar a{color:var(--muted);text-decoration:underline}
+
+/* Modern article card: center content and give subtle surface */
+.update-article{max-width:880px;margin:2.5rem auto;padding:1.25rem;border-radius:12px;background:var(--card);box-shadow:0 18px 40px rgba(2,6,23,0.06)}
+.update-header{background:transparent;padding:0;margin-bottom:0}
+.update-title{font-size:2.2rem}
+.update-body{background:transparent;padding:1rem 0 0}
+
+@media(min-width:900px){
+  .update-article{padding:2rem}
+  .update-title{font-size:2.8rem}
+}
+
+/* Breadcrumb in header */
+.header-breadcrumb{font-size:0.95rem;color:var(--muted);margin-left:1rem;display:inline-block;vertical-align:middle}
+.header-breadcrumb a{color:var(--muted);text-decoration:none}
+.header-breadcrumb a:hover{text-decoration:underline;color:var(--accent)}

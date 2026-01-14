@@ -1,0 +1,52 @@
+{
+  "site_title": "TSD Myanmar",
+  "nav_home": "Home",
+  "nav_about": "About",
+  "nav_projects": "Projects",
+  "nav_impact": "Impact",
+  "nav_donate": "Donate",
+  "nav_get_involved": "Get Involved",
+  "nav_contact": "Contact",
+
+  "header_about_us": "About Us",
+  "header_our_work": "Our Work",
+  "header_news": "News",
+  "header_get_involved": "Get Involved",
+
+  "nav_about_us": "About Us",
+  "nav_who_we_are": "Who We Are",
+  "nav_contact_us": "Contact Us",
+
+  "nav_where_we_work": "Where We Work",
+  "nav_what_we_do": "What We Do",
+  "nav_our_approach": "Our Approach",
+  "nav_education": "Education",
+  "nav_food_security": "Food Security",
+  "nav_inclusion": "Inclusion",
+  "nav_relief_drr": "Relief & DRR",
+
+  "nav_updates": "Updates",
+  "nav_updates_reports": "Updates & Reports",
+  "nav_how_to_get_involved": "How to Get Involved",
+  "nav_partnership": "Partnership",
+  "nav_education_ambassadors": "Education Ambassadors",
+  "nav_join_our_team": "Join our Team",
+
+  "about_title": "About TSD Myanmar",
+  "projects_title": "Projects",
+  "impact_title": "Impact & Reports",
+  "donate_title": "Support / Donate",
+  "get_involved_title": "Volunteers & Partners",
+  "contact_title": "Contact",
+
+  "updates_title": "News & Updates",
+  "updates_subtitle": "Latest news, reports, and announcements.",
+  "loading": "Loading updates…",
+  "load_more": "Load more",
+  "no_updates": "No updates yet",
+  "search_placeholder": "Search updates",
+  "all_years": "All years",
+  "latest_badge": "Latest",
+  "read_more": "Read more",
+  "no_updates_body": "We publish regular updates about our programs and finance reports. Check back soon or subscribe to our mailing list for alerts."
+}

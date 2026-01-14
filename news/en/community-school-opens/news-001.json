@@ -1,0 +1,26 @@
+{
+  "slug": "community-school-opens",
+  "title": "Community school opens in Lailenpi",
+  "summary": "TSD opened a new community school in Lailenpi to support local learners and teachers.",
+  "body": "TSD opened a new community school in Lailenpi to support local learners and teachers. The school will provide basic literacy and numeracy classes, early childhood support, and teacher training to strengthen local education capacity.",
+  "date": "2026-01-10",
+  "category": "news",
+  "images": [
+    {
+      "src": "https://cdn.tsdmyanmar.org/news-data/images/with_partners.png",
+      "alt": "Community meeting with local partners",
+      "caption": "Working together with local partners"
+    }
+  ],
+  "videos": [
+    {
+      "type": "youtube",
+      "url": "https://youtu.be/2YMN4UEyGPc?si=pZvqcAbceC_h6H_h",
+      "title": "Community school opening highlights"
+    }
+  ],
+  "body_blocks": [
+    { "type": "paragraph", "text": "TSD opened the new community school to expand access to primary education in remote areas. Read the project brief:", "url": "https://example.org/report" },
+    { "type": "paragraph", "text": "The school will serve around 120 students across several grades and will be staffed by locally recruited teachers." }
+  ]
+}

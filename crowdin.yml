@@ -17,16 +17,22 @@ source_language: en
 preserve_hierarchy: true
 
 files:
+  - source: "news/source/en/*.json"
+    translation: "news/%locale%/%original_file_name%"
+    # Crowdin will write translated article files back to the repo under `news/{lang}/`
+    export_patterns:
+      - "news/%locale%/%original_file_name%"
+
+  # Keep existing i18n common.json mapping alongside news content
   - source: "i18n/en/common.json"
     translation: "i18n/%locale%/common.json"
-    # Explicit target languages for this source file
     languages:
       - mrh
       - my
-    # Export pattern controls where translated files are written back to the repo
     export_patterns:
       - "i18n/%locale%/common.json"
 
 # Optional: add language mapping here if you need to map Crowdin locale codes to project codes
-# language_mapping:
-#   crowdin_locale_code: project_locale_code
+language_mapping:
+  mrh: mrh
+  my: my

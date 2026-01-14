@@ -27,6 +27,8 @@
     HEADER.classList.toggle('menu-open', isOpen);
     NAV.setAttribute('aria-hidden', String(!isOpen));
     TOGGLE.setAttribute('aria-expanded', String(isOpen));
+    // animate the hamburger to an X by toggling .open on the toggle button
+    TOGGLE.classList.toggle('open', isOpen);
     if (isOpen){
       // focus first link
       const first = NAV.querySelector('a');
@@ -401,7 +403,7 @@
     }
 
   // Expose for debugging/testing
-  window.tsdHeader = { toggleMenu }
+  window.tsdHeader = { toggleMenu };
   }catch(e){ try{ console.error('header: fatal error', e); }catch(_){} }
 })();
 

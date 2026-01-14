@@ -6,7 +6,6 @@
  * - Minimal, dependency-free, optimized for low-bandwidth
  */
 (function(){
-  const API_PATH = '/api/updates';
   const CONTAINER_ID = 'updates-list';
   const FILTER_ID = 'updates-year-filter';
   const LOADING_MSG_ID = 'updates-loading';
@@ -106,7 +105,9 @@
         const body = (typeof it.body === 'string') ? it.body : (pickLangField(it.body, lang) || '');
 
         const article = el('article',{class:'update-card reveal', attrs:{role:'article'}});
-        const meta = el('div',{class:'update-meta'}, el('time',{class:'update-date', attrs:{datetime:it.date}}, formatDate(it.date)), (it.isLatest? el('span',{class:'badge'},'Latest'): null));
+        const left = el('div',{class:'card-left'});
+        left.appendChild(el('time',{class:'update-date', attrs:{datetime:it.date}}, formatDate(it.date)));
+        if (it.isLatest) left.appendChild(el('span',{class:'badge'}, (window.I18N && window.I18N.latest_badge) || 'Latest'));
         const hdr = el('h3',{class:'update-title'}, title);
         const summ = el('p',{class:'update-summary'}, summary);
         const actions = el('div',{class:'update-cta'});
@@ -114,11 +115,13 @@
         const href = '/update.html?id=' + encodeURIComponent(it.id || '');
         const cta = el('a',{class:'btn-link', attrs:{href}}, ctaLabel);
         actions.appendChild(cta);
+        const main = el('div',{class:'card-main'});
+        main.appendChild(hdr);
+        if (summary) main.appendChild(summ);
+        main.appendChild(actions);
 
-        article.appendChild(meta);
-        article.appendChild(hdr);
-        if (summary) article.appendChild(summ);
-        article.appendChild(actions);
+        article.appendChild(left);
+        article.appendChild(main);
 
         const li = el('li',{}, article);
         list.appendChild(li);
@@ -141,6 +144,8 @@
   let total = 0;
   let query = '';
   let yearFilter = '';
+  let categoryFilter = '';
+  let sortOrder = 'newest';
   let isLoading = false;
 
   function showSkeleton(container, count){
@@ -170,47 +175,56 @@
       // show skeletons for perceived speed
       showSkeleton(container, 3);
 
-      // Build query params
-      const params = new URLSearchParams();
-      params.set('lang', lang);
-      params.set('limit', String(PAGE_SIZE));
-      params.set('offset', String(offset));
-      if (query) params.set('q', query);
-      if (yearFilter) params.set('year', String(yearFilter));
-
-      // Fetch updates from the API (no fallback to static JSON)
-      let res;
+      // Load static news index for current language, fallback to English per index
+      let data;
       try{
-        res = await fetch(API_PATH + '?' + params.toString(), {cache:'no-cache'});
-      }catch(apiErr){
-        console.error('Updates API network error', apiErr);
-        throw apiErr;
+        data = await (window.tsdNews && window.tsdNews.fetchNewsIndex ? window.tsdNews.fetchNewsIndex() : Promise.reject(new Error('news helper missing')));
+      }catch(e){
+        console.error('Failed to load news index', e);
+        throw e;
       }
-      if (!res.ok){
-        const text = await res.text().catch(()=>null);
-        throw new Error('API error: ' + res.status + (text ? ' - ' + text : ''));
-      }
-      const data = await res.json();
-      // API returns { items: [...], total: N } when paged; fallback may return array
-      const items = Array.isArray(data) ? data : (data.items || []);
-      total = (typeof data.total === 'number') ? data.total : (items.length + offset);
 
+      // data expected to be an array of items
+      let items = Array.isArray(data) ? data : (data.items || []);
       items.forEach(normalizeItemLangKeys);
 
-      // optionally mark latest update (only on first page)
-      if (offset === 0 && items.length) items[0].isLatest = true;
+      // Client-side filtering (year + category + query)
+      if (yearFilter) items = items.filter(it => (new Date(it.date)).getFullYear() === Number(yearFilter));
+      if (categoryFilter){
+        items = items.filter(it => {
+          if (!it) return false;
+          if (it.category && String(it.category).toLowerCase() === categoryFilter) return true;
+          if (Array.isArray(it.categories) && it.categories.map(c=>String(c).toLowerCase()).includes(categoryFilter)) return true;
+          return false;
+        });
+      }
+      if (query){
+        const q = query.toLowerCase();
+        items = items.filter(it => {
+          const title = (typeof it.title === 'string') ? it.title : (pickLangField(it.title, lang) || '');
+          const summary = (typeof it.summary === 'string') ? it.summary : (pickLangField(it.summary, lang) || '');
+          const body = (typeof it.body === 'string') ? it.body : (pickLangField(it.body, lang) || '');
+          return (title+summary+body).toLowerCase().indexOf(q) !== -1;
+        });
+      }
 
-      // render: append or replace
-      if (reset){ container.innerHTML = ''; renderItems(container, items, lang); }
-      else { renderItems(container, items, lang); }
+      // Sorting
+      if (sortOrder === 'oldest') items.sort((a,b)=> new Date(a.date) - new Date(b.date)); else items.sort((a,b)=> new Date(b.date) - new Date(a.date));
+
+      total = items.length;
+
+      // paginate
+      const paged = items.slice(offset, offset + PAGE_SIZE);
+
+      if (reset){ container.innerHTML = ''; renderItems(container, paged, lang); }
+      else { renderItems(container, paged, lang); }
 
       // update offset
-      offset += items.length;
+      offset += paged.length;
 
-      // build year filter using total results from server (we still calculate from loaded items as fallback)
-      const years = Array.from(new Set(items.map(i=> new Date(i.date).getFullYear()))).sort((a,b)=>b-a);
+      // build year filter when resetting
+      const years = Array.from(new Set((Array.isArray(data)?data:[]).map(i=> new Date(i.date).getFullYear()))).sort((a,b)=>b-a);
       if (filter && reset){
-        // clear existing options, add 'All' + year options
         filter.innerHTML = '';
         const optAll = el('option',{value:''}, 'All years');
         filter.appendChild(optAll);
@@ -221,7 +235,7 @@
       if (loadMoreBtn){
         const loadMoreLabel = (window.I18N && window.I18N.load_more) || 'Load more';
         loadMoreBtn.textContent = loadMoreLabel;
-        if (offset >= total){ loadMoreBtn.setAttribute('disabled','disabled'); loadMoreBtn.setAttribute('aria-disabled','true'); } else { loadMoreBtn.removeAttribute('disabled'); loadMoreBtn.setAttribute('aria-disabled','false'); }
+        if (offset >= total){ loadMoreBtn.setAttribute('disabled','disabled'); loadMoreBtn.setAttribute('aria-disabled','true'); loadMoreBtn.classList.remove('btn-loading'); } else { loadMoreBtn.removeAttribute('disabled'); loadMoreBtn.setAttribute('aria-disabled','false'); loadMoreBtn.classList.remove('btn-loading'); }
       }
 
       loading && (loading.textContent = '');
@@ -239,6 +253,8 @@
     const filter = document.getElementById(FILTER_ID);
     const search = document.getElementById('updates-search');
     const loadMoreBtn = document.getElementById('updates-load-more');
+    const categoryEl = document.getElementById('updates-category-filter');
+    const sortEl = document.getElementById('updates-sort');
 
     // Initial load
     loadAndRender(true);
@@ -249,6 +265,16 @@
     // Year filter
     if (filter){
       filter.addEventListener('change', ()=>{ yearFilter = filter.value; loadAndRender(true); });
+    }
+
+    // Category filter
+    if (categoryEl){
+      categoryEl.addEventListener('change', ()=>{ categoryFilter = (categoryEl.value || '').toString().toLowerCase(); loadAndRender(true); });
+    }
+
+    // Sort
+    if (sortEl){
+      sortEl.addEventListener('change', ()=>{ sortOrder = sortEl.value || 'newest'; loadAndRender(true); });
     }
 
     // Debounced search
@@ -262,7 +288,7 @@
 
     // Load more
     if (loadMoreBtn){
-      loadMoreBtn.addEventListener('click', ()=>{ loadAndRender(false); });
+      loadMoreBtn.addEventListener('click', ()=>{ loadMoreBtn.classList.add('btn-loading'); loadAndRender(false); });
     }
   });
 })();

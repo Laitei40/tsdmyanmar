@@ -401,7 +401,7 @@
     }
 
   // Expose for debugging/testing
-  window.tsdHeader = { toggleMenu }
+  window.tsdHeader = { toggleMenu };
   }catch(e){ try{ console.error('header: fatal error', e); }catch(_){} }
 })();
 

@@ -9,84 +9,14 @@
   <link rel="stylesheet" href="/css/update.css">
 </head>
 <body>
-  <header class="site-header" role="banner">
+  <header class="site-header minimal" role="banner">
     <div class="site-inner">
-      <a class="brand" href="/" data-i18n="site_title">
-        <img class="brand-logo" src="/assets/images/logo/logo-light.svg" alt="TSD Myanmar logo">
-        <span class="brand-text">TSD Myanmar</span>
-      </a>
-      <button class="nav-toggle" aria-controls="primary-nav" aria-expanded="false" aria-label="Toggle navigation">
-        <span class="hamburger" aria-hidden="true"></span>
-      </button>
-
-      <nav id="primary-nav" class="primary-nav" role="navigation" aria-label="Primary">
-        <ul>
-          <li class="has-dropdown">
-            <button class="drop-toggle" aria-haspopup="true" aria-expanded="false" data-i18n="header_about_us">About Us <span aria-hidden="true">+</span></button>
-            <ul class="dropdown" aria-label="About Us submenu">
-              <li><a href="/about.html" data-i18n="nav_about_us">About Us</a></li>
-              <li><a href="/who-we-are.html" data-i18n="nav_who_we_are">Who We Are</a></li>
-              <li><a href="/contact.html" data-i18n="nav_contact_us">Contact Us</a></li>
-            </ul>
-          </li>
-
-          <li class="has-dropdown">
-            <button class="drop-toggle" aria-haspopup="true" aria-expanded="false" data-i18n="header_our_work">Our Work <span aria-hidden="true">+</span></button>
-            <ul class="dropdown" aria-label="Our Work submenu">
-              <li><a href="/where-we-work.html" data-i18n="nav_where_we_work">Where We Work</a></li>
-              <li><a href="/what-we-do.html" data-i18n="nav_what_we_do">What We Do</a></li>
-              <li><a href="/our-approach.html" data-i18n="nav_our_approach">Our Approach</a></li>
-              <li><a href="/education.html" data-i18n="nav_education">Education</a></li>
-              <li><a href="/food-security.html" data-i18n="nav_food_security">Food Security</a></li>
-              <li><a href="/inclusion.html" data-i18n="nav_inclusion">Inclusion</a></li>
-              <li><a href="/relief-drr.html" data-i18n="nav_relief_drr">Relief &amp; DRR</a></li>
-            </ul>
-          </li>
-
-          <li class="has-dropdown">
-            <button class="drop-toggle" aria-haspopup="true" aria-expanded="false" data-i18n="header_news">News <span aria-hidden="true">+</span></button>
-            <ul class="dropdown" aria-label="News submenu">
-              <li><a href="/updates.html" data-i18n="nav_updates_reports">Updates &amp; Reports</a></li>
-            </ul>
-          </li>
-
-          <li class="has-dropdown">
-            <button class="drop-toggle" aria-haspopup="true" aria-expanded="false" data-i18n="header_get_involved">Get Involved <span aria-hidden="true">+</span></button>
-            <ul class="dropdown" aria-label="Get Involved submenu">
-              <li><a href="/get-involved.html" data-i18n="nav_how_to_get_involved">How to Get Involved</a></li>
-              <li><a href="/partners.html" data-i18n="nav_partnership">Partnership</a></li>
-              <li><a href="/education-ambassadors.html" data-i18n="nav_education_ambassadors">Education Ambassadors</a></li>
-              <li><a href="/join-our-team.html" data-i18n="nav_join_our_team">Join our Team</a></li>
-              <li><a href="/donate.html" data-i18n="nav_donate">Donate</a></li>
-            </ul>
-          </li>
-        </ul>
-      </nav>
-
-      <div class="header-actions">
-        <div class="lang-wrap">
-          <label for="site-lang-select" class="visually-hidden">Language</label>
-          <select id="site-lang-select" class="lang-select" aria-label="Language">
-            <option value="en">English</option>
-            <option value="mrh">Mara</option>
-            <option value="my">Burmese</option>
-          </select>
-        </div>
-        <div class="theme-wrap">
-          <label for="site-theme-select" class="visually-hidden">Theme</label>
-          <select id="site-theme-select" class="theme-select" aria-label="Theme (System, Light, Dark)">
-            <option value="system">System</option>
-            <option value="light">Light</option>
-            <option value="dark">Dark</option>
-          </select>
-        </div>
-        <a class="btn btn-primary" href="/donate.html">Donate</a>
-      </div>
+      <a class="brand minimal-brand" href="/">Home</a>
+      <nav class="breadcrumb header-breadcrumb" aria-label="Breadcrumb"><a href="/updates.html">Updates</a> › <span id="crumb-title">...</span></nav>
     </div>
   </header>
 
   <main class="site-inner update-page" id="update-detail-root">
-    <nav class="breadcrumb" aria-label="Breadcrumb"><a href="/updates.html">Updates</a> › <span id="crumb-title">...</span></nav>
 
     <article id="update-article" class="update-article" role="article">
       <header class="update-header">
@@ -113,36 +43,16 @@
     </article>
   </main>
 
-  <footer class="site-footer" role="contentinfo">
-    <div class="footer-grid site-inner">
-      <div class="col about">
-        <h3>About TSD</h3>
-        <p>Together for Sustainable Development partners with remote communities in Chin State to co-design resilient livelihoods, education, and health services.</p>
-      </div>
-      <div class="col links">
-        <h4>Quick Links</h4>
-        <ul class="footer-links">
-          <li><a href="index.html">Home</a></li>
-          <li><a href="projects.html">Projects</a></li>
-          <li><a href="updates.html">Updates</a></li>
-          <li><a href="donate.html">Donate</a></li>
-        </ul>
-      </div>
-      <div class="col contact">
-        <h4>Contact</h4>
-        <address>Phone: +95 9 1234 5678<br>Email: info@tsdmyanmar.org<br>Hakha, Chin State, Myanmar</address>
-      </div>
-      <div class="col legal">
-        <h4>Community</h4>
-        <p>Local leadership and long-term partnerships guide our work; we publish reports for transparency.</p>
-      </div>
+  <footer class="site-footer minimal" role="contentinfo">
+    <div class="site-inner">
+      <div class="footer-bar">© 2026 Together for Sustainable Development — <a href="/privacy.html">Privacy policy</a></div>
     </div>
-    <div class="footer-bar">© 2026 Together for Sustainable Development — Built with care for communities</div>
   </footer>
 
   <script src="/js/core/theme.js"></script>
   <script src="/js/core/header.js"></script>
   <script src="/js/core/i18n.js"></script>
+  <script src="/js/core/news.js"></script>
   <script src="/js/pages/update-detail.js"></script>
 </body>
 </html>

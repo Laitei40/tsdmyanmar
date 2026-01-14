@@ -6,7 +6,8 @@
  * - Minimal, dependency-free, optimized for low-bandwidth
  */
 (function(){
-  const DATA_PATH = '/api/updates?lang=mrh&limit=1000';
+  // Use static news index (build-time content) rather than runtime API
+  const DATA_PATH = '/news/mrh/index.json';
   const CONTAINER_ID = 'updates-list';
   const FILTER_ID = 'updates-year-filter';
   const LOADING_MSG_ID = 'updates-loading';
