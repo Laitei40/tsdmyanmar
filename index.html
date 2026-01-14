@@ -101,8 +101,8 @@
   <main>
     <section class="hero" aria-labelledby="hero-heading">
       <div class="hero-inner reveal" id="hero-content">
-        <h1 id="hero-heading">Together for Sustainable Development — supporting resilient communities in Chin State</h1>
-        <p class="lead">We partner with remote villages to co-design durable livelihoods, education, and healthcare solutions centered on local knowledge and long-term resilience.</p>
+        <h1 id="hero-heading" data-i18n="home_hero">Together for Sustainable Development — supporting resilient communities in Chin State</h1>
+        <p class="lead" data-i18n="home_lead">We support community-led solutions in Chin State that strengthen education, livelihoods, and primary health through local partnerships, practical training, and long-term capacity building.</p>
         <div class="hero-ctas">
           <a class="btn btn-primary" href="donate.html" aria-label="Donate to TSD">Donate</a>
           <a class="btn btn-ghost" href="get-involved.html" aria-label="Get involved with TSD">Get Involved</a>
@@ -110,77 +110,97 @@
 
         <div class="stats" aria-hidden="false">
           <div class="stat">
-            <div class="num" data-count="128">0</div>
-            <div class="label">Community leaders trained</div>
+            <div class="num" data-count="2870">0</div>
+            <div class="label" data-i18n="stats_students">Students benefiting from improved education</div>
           </div>
           <div class="stat">
-            <div class="num" data-count="42">0</div>
-            <div class="label">Active community projects</div>
+            <div class="num" data-count="253">0</div>
+            <div class="label" data-i18n="stats_farmers">Farmers pioneering sustainable farming methods</div>
           </div>
           <div class="stat">
-            <div class="num" data-count="5600">0</div>
-            <div class="label">People reached</div>
+            <div class="num" data-count="3000">0</div>
+            <div class="label" data-i18n="stats_people_relief">People provided with relief items during disasters</div>
           </div>
         </div>
       </div>
 
       <div class="hero-media reveal" aria-hidden="true">
         <div style="border-radius:12px;overflow:hidden;box-shadow:0 6px 18px rgba(0,0,0,0.06)">
-          <img src="assets/images/hero.jpeg" alt="Community members participating in a meeting" loading="lazy">
+          <div id="hero-slider"
+               data-urls-light='["https://picsum.photos/id/1018/1600/900","https://picsum.photos/id/1015/1600/900","https://picsum.photos/id/1005/1600/900","https://picsum.photos/id/1003/1600/900","https://picsum.photos/id/1020/1600/900","https://picsum.photos/id/1021/1600/900","https://picsum.photos/id/1033/1600/900","https://picsum.photos/id/1043/1600/900"]'
+               data-urls-dark='["https://picsum.photos/id/1024/1600/900","https://picsum.photos/id/1025/1600/900","https://picsum.photos/id/1027/1600/900","https://picsum.photos/id/1028/1600/900","https://picsum.photos/id/1031/1600/900","https://picsum.photos/id/1035/1600/900","https://picsum.photos/id/1036/1600/900","https://picsum.photos/id/1044/1600/900"]'
+               data-alt="Community members participating in a meeting"></div>
         </div>
       </div>
     </section>
 
     <section class="projects" aria-labelledby="projects-heading">
-      <h2 id="projects-heading">Featured projects</h2>
+      <h2 id="projects-heading" data-i18n="programmes_heading">Our Programmes</h2>
       <div class="projects-grid">
         <article class="project reveal" tabindex="0">
-          <div class="thumb">IMG</div>
+          <div class="thumb"><img src="assets/icons/education_dark.svg" class="prog-icon" data-icon="education" alt="" aria-hidden="true"></div>
           <div>
-            <h3>Community Water & Sanitation</h3>
-            <p>Locally managed water systems and hygiene training reduce water-borne illness and free time for learning and livelihoods.</p>
+            <h3 data-i18n="programme_education_title">Education</h3>
+            <p data-i18n="programme_education_body">Supporting life-long and life-sustaining education from early years through adult learning, including school support and community education activities.</p>
           </div>
         </article>
 
         <article class="project reveal" tabindex="0">
-          <div class="thumb">IMG</div>
+          <div class="thumb"><img src="assets/icons/food_dark.svg" class="prog-icon" data-icon="food" alt="" aria-hidden="true"></div>
           <div>
-            <h3>Sustainable Agroforestry</h3>
-            <p>Agroforestry demonstrations increase soil fertility and provide diversified income for smallholder farmers.</p>
+            <h3 data-i18n="programme_food_title">Food Security</h3>
+            <p data-i18n="programme_food_body">Practical farming support, agroforestry, and diversified livelihoods to improve nutrition and household income.</p>
           </div>
         </article>
 
         <article class="project reveal" tabindex="0">
-          <div class="thumb">IMG</div>
+          <div class="thumb"><img src="assets/icons/inclusion_dark.svg" class="prog-icon" data-icon="inclusion" alt="" aria-hidden="true"></div>
           <div>
-            <h3>Community Health Workers Program</h3>
-            <p>Training local health workers for primary care and referrals strengthens rural health access.</p>
+            <h3 data-i18n="programme_inclusion_title">Inclusion</h3>
+            <p data-i18n="programme_inclusion_body">Promoting equitable participation and supporting women's self-help groups, cooperatives, and community leadership.</p>
+          </div>
+        </article>
+
+        <article class="project reveal" tabindex="0">
+          <div class="thumb"><img src="assets/icons/relief_dark.svg" class="prog-icon" data-icon="relief" alt="" aria-hidden="true"></div>
+          <div>
+            <h3 data-i18n="programme_relief_title">Relief &amp; DRR</h3>
+            <p data-i18n="programme_relief_body">Preparedness, response, and distribution of relief items during emergencies together with community disaster committees.</p>
           </div>
         </article>
       </div>
     </section>
 
     <section class="updates-preview" aria-labelledby="updates-heading">
-      <h2 id="updates-heading">Latest updates</h2>
+      <h2 id="updates-heading" data-i18n="latest_updates_h2">Latest updates</h2>
       <div id="updates-preview-list">
-        <p>Loading updates…</p>
+        <p data-i18n="loading">Loading updates…</p>
       </div>
-      <p><a href="updates.html">See all updates</a></p>
+      <p><a href="updates.html" data-i18n="see_all_updates">See all updates</a></p>
+
+      <blockquote class="testimonial reveal" aria-label="Participant testimony">
+        <p data-i18n="testimonial_quote">“Participating in this programme has been a turning point for me. It has given me new skills and hope for the future.”</p>
+        <cite data-i18n="testimonial_author">— Hraki, Food Security programme participant</cite>
+      </blockquote>
     </section>
 
     <section class="trust" aria-label="Trust and transparency">
       <div class="badge reveal">
-        <h4>Community-led</h4>
-        <p>Programs are co-created with local leaders and reflect local priorities.</p>
+        <h4 data-i18n="trust_1_title">Community-led</h4>
+        <p data-i18n="trust_1_body">Programs are co-created with local leaders and reflect community priorities and traditional knowledge.</p>
       </div>
       <div class="badge reveal">
-        <h4>Transparent reporting</h4>
-        <p>Annual reports and financial summaries shared publicly for accountability.</p>
+        <h4 data-i18n="trust_2_title">Transparent reporting</h4>
+        <p data-i18n="trust_2_body">Annual reports, activity summaries, and financial statements are published for accountability.</p>
       </div>
       <div class="badge reveal">
-        <h4>Ethical partnerships</h4>
-        <p>We work with local and international partners with long-term commitments.</p>
+        <h4 data-i18n="trust_3_title">Ethical partnerships</h4>
+        <p data-i18n="trust_3_body">We collaborate with local organisations and donors committed to sustainable, long-term partnerships.</p>
       </div>
+    </section>
+    <section class="testimonials" aria-labelledby="testimonials-heading">
+      <h2 id="testimonials-heading">Testimonies</h2>
+      <div id="testimonials-slider" data-items='[]' aria-live="polite"></div>
     </section>
   </main>
   <footer class="site-footer" role="contentinfo">
@@ -199,8 +219,12 @@
         </ul>
       </div>
       <div class="col contact">
-        <h4>Contact</h4>
-        <address>Phone: +95 9 1234 5678<br>Email: info@tsdmyanmar.org<br>Hakha, Chin State, Myanmar</address>
+        <h4 data-i18n="footer_contact_title">Contact</h4>
+        <address>
+          <span data-i18n="contact_main_office">Main Office: Lailenpi Town, Chin State, Myanmar</span><br>
+          <span data-i18n="contact_main_phone">Phone: (+95) 976 800 9343</span><br>
+          <span data-i18n="contact_email">Email: tsd.info@togethergrowing.org</span>
+        </address>
       </div>
       <div class="col legal">
         <h4>Community</h4>
@@ -210,8 +234,11 @@
     <div class="footer-bar">© 2026 Together for Sustainable Development — Built with care for communities</div>
   </footer>
   <script src="js/core/theme.js"></script>
+  <script src="js/core/icon-theme.js"></script>
   <script src="js/core/header.js"></script>
   <script src="js/core/i18n.js"></script>
+  <script src="js/components/hero-slider.js" defer></script>
+  <script src="js/components/testimonials.js" defer></script>
   <script src="js/main.js"></script>
 </body>
 </html>

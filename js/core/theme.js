@@ -27,6 +27,8 @@
     document.documentElement.setAttribute(ATTR, val);
     // expose for debugging
     window.__TSD_THEME = val;
+    // Broadcast a theme change event so other modules can react
+    try{ window.dispatchEvent(new CustomEvent('tsd:theme-changed',{ detail: val })); }catch(e){}
     return val;
   }
 
