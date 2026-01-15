@@ -199,22 +199,35 @@ function ensureLangSelector(){
 function updateLogos(){
   const lang = getSiteLang();
   const theme = (document.documentElement && (document.documentElement.getAttribute('data-theme') || window.__TSD_THEME)) || 'light';
-  const logoFolder = 'assets/images/logo/';
-  const base = (lang === 'mrh') ? 'logo-dark' : 'logo-light';
-  // Build a robust candidate list covering possible filename conventions present in assets
-  const names = [
-    base + '_' + theme + '.svg',
-    base + '.svg',
-    'logo-' + theme + '.svg',
-    'logo-' + theme + '_' + theme + '.svg'
-  ];
-  const candidates = [];
-  names.forEach(n=>{ candidates.push(logoFolder + n); candidates.push('./' + logoFolder + n); candidates.push('../' + logoFolder + n); candidates.push('/' + logoFolder + n); });
+  const logoFolder = '/assets/images/logo/';
+  // Prefer theme-specific filename, then language-preferred base, then fallbacks.
+  // Known files: logo-dark.svg, logo-light.svg, logo-light_dark.svg, logo-light_light.svg
+  var candidates = [];
+  if (lang === 'mrh'){
+    // Mara: prefer the dark base
+    candidates = [
+      logoFolder + 'logo-' + theme + '.svg',
+      logoFolder + 'logo-dark.svg',
+      logoFolder + 'logo-light_' + theme + '.svg',
+      logoFolder + 'logo-light.svg'
+    ];
+  } else {
+    candidates = [
+      logoFolder + 'logo-light_' + theme + '.svg',
+      logoFolder + 'logo-' + theme + '.svg',
+      logoFolder + 'logo-light.svg',
+      logoFolder + 'logo-dark.svg'
+    ];
+  }
 
-  document.querySelectorAll('.brand-logo').forEach(img=>{
+  // Also include relative variants for environments that serve from subpaths
+  var allCandidates = [];
+  candidates.forEach(function(p){ allCandidates.push(p); allCandidates.push('.' + p); allCandidates.push('..' + p); });
+
+  document.querySelectorAll('.brand-logo').forEach(function(img){
     try{
       img.setAttribute('alt', (window.I18N && window.I18N.site_title) || 'TSD Myanmar');
-      (function tryNext(i){ if (i>=candidates.length) return; const src = candidates[i]; const t = new Image(); t.onload = function(){ img.src = src; }; t.onerror = function(){ tryNext(i+1); }; t.src = src; })(0);
+      (function tryNext(i){ if (i>=allCandidates.length) return; var src = allCandidates[i]; var t = new Image(); t.onload = function(){ img.src = src; }; t.onerror = function(){ tryNext(i+1); }; t.src = src; })(0);
     }catch(e){ console.error('i18n updateLogos err', e); }
   });
   try{ updateFavicons(); }catch(e){}
