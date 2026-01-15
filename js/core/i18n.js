@@ -52,6 +52,10 @@ async function loadTranslations(lang){
     try{
       const res = await fetch(url, {cache: 'no-cache'});
       if (!res.ok) throw new Error('Fetch failed');
+      // Ensure the response is JSON — some hosting configurations return HTML
+      // fallback pages with 200 which would break `res.json()` with Unexpected token '<'
+      const ct = (res.headers.get('content-type') || '').toLowerCase();
+      if (ct.indexOf('application/json') === -1 && ct.indexOf('text/json') === -1) throw new Error('Not JSON');
       const data = await res.json();
       // window.I18N should be a simple key->string map
       window.I18N = Object.assign({}, data);
