@@ -204,10 +204,10 @@ function updateLogos(){
   // Known files: logo-dark.svg, logo-light.svg, logo-light_dark.svg, logo-light_light.svg
   var candidates = [];
   if (lang === 'mrh'){
-    // Mara: prefer the dark base
+    // Mara: prefer the dark base regardless of theme
     candidates = [
-      logoFolder + 'logo-' + theme + '.svg',
       logoFolder + 'logo-dark.svg',
+      logoFolder + 'logo-' + theme + '.svg',
       logoFolder + 'logo-light_' + theme + '.svg',
       logoFolder + 'logo-light.svg'
     ];
