@@ -42,9 +42,22 @@ async function loadUpdatesPreview(){
   const container = document.getElementById('updates-preview-list');
   if (!container) return;
   try{
-    const res = await fetch('updates/data/updates.json');
-    const items = await res.json();
-    const list = items.slice(0,3).map(it=>{
+    // Prefer the central news helper if available (language-aware, fallback to English)
+    let items = [];
+    if (window.tsdNews && window.tsdNews.fetchNewsIndex) {
+      try {
+        items = await window.tsdNews.fetchNewsIndex();
+      } catch(e) {
+        // If the helper fails, fall back to a static index path
+        const res = await fetch('/news/en/index.json');
+        items = await res.json();
+      }
+    } else {
+      // Legacy fallback: try the static index path
+      const res = await fetch('/news/en/index.json');
+      items = await res.json();
+    }
+    const list = (Array.isArray(items) ? items : []).slice(0,3).map(it=>{
       const title = (it.title && it.title.en) || it.title || '';
       const date = it.date || '';
       const summary = (it.summary && it.summary.en) || it.summary || '';
