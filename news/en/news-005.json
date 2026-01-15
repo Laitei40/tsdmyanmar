@@ -1,0 +1,17 @@
+{
+  "slug": "renewable-energy-school-power",
+  "title": "Renewable energy project powers school",
+  "summary": "Solar panels and battery storage now power the school's classrooms and lighting.",
+  "body": "A small-scale renewable energy system was installed to provide reliable lighting for evening classes and power for basic equipment. The project reduces fuel costs and supports longer study hours for students.",
+  "date": "2025-11-30",
+  "category": "infrastructure",
+  "images": [
+    { "src": "https://picsum.photos/id/1043/1200/800", "alt": "Solar panels installed on a school roof", "caption": "Solar installation at the community school" }
+  ],
+  "videos": [
+    { "type": "youtube", "url": "https://youtu.be/eRsGyueVLvQ", "title": "Renewables demo (CC)" }
+  ],
+  "body_blocks": [
+    { "type": "paragraph", "text": "Local technicians were trained to maintain the system, ensuring the school can operate the installation independently." }
+  ]
+}

@@ -1,0 +1,18 @@
+{
+  "slug": "farmer-training-boosts-yields",
+  "title": "Farmer training program boosts yields",
+  "summary": "Practical training in sustainable farming helped local farmers increase crop yields and incomes.",
+  "body": "TSD delivered a series of farmer field schools teaching soil health, crop diversification and post-harvest handling. Participating households reported improved yields and greater food security.",
+  "date": "2026-01-12",
+  "category": "news",
+  "images": [
+    { "src": "https://picsum.photos/id/1025/1200/800", "alt": "Farmers in a training session", "caption": "Farmers learning sustainable practices" }
+  ],
+  "videos": [
+    { "type": "youtube", "url": "https://youtu.be/aqz-KE-bpKQ", "title": "Field training highlights (CC)" }
+  ],
+  "body_blocks": [
+    { "type": "paragraph", "text": "TSD's extension staff worked with local lead farmers to demonstrate low-cost soil improvements and pest management techniques." },
+    { "type": "paragraph", "text": "Participants will continue peer-learning circles to spread practices across neighbouring villages." }
+  ]
+}

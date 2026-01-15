@@ -1,4 +1,11 @@
-[
+[  {
+    "id": "news-002",
+    "slug": "farmer-training-boosts-yields",
+    "title": "Farmer training program boosts yields",
+    "summary": "Practical training in sustainable farming helped local farmers increase crop yields and incomes.",
+    "date": "2026-01-12",
+    "category": "news"
+  },
   {
     "id": "news-001",
     "slug": "community-school-opens",
@@ -6,5 +13,29 @@
     "summary": "TSD opened a new community school in Lailenpi to support local learners and teachers.",
     "date": "2026-01-10",
     "category": "news"
+  },
+  {
+    "id": "news-003",
+    "slug": "community-health-outreach",
+    "title": "Community health outreach reaches 500 people",
+    "summary": "Mobile clinics and health education reached hundreds with vaccinations and preventive care.",
+    "date": "2026-01-08",
+    "category": "health"
+  },
+  {
+    "id": "news-004",
+    "slug": "womens-cooperative-sewing-enterprise",
+    "title": "Women's cooperative launches sewing enterprise",
+    "summary": "A women's cooperative started a community sewing enterprise to generate income and skills.",
+    "date": "2025-12-20",
+    "category": "livelihoods"
+  },
+  {
+    "id": "news-005",
+    "slug": "renewable-energy-school-power",
+    "title": "Renewable energy project powers school",
+    "summary": "Solar panels and battery storage now power the school's classrooms and lighting.",
+    "date": "2025-11-30",
+    "category": "infrastructure"
   }
 ]

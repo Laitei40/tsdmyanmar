@@ -1,0 +1,17 @@
+{
+  "slug": "womens-cooperative-sewing-enterprise",
+  "title": "Women's cooperative launches sewing enterprise",
+  "summary": "A women's cooperative started a community sewing enterprise to generate income and skills.",
+  "body": "Members of a newly formed women's cooperative completed training in garment production and basic business skills. The cooperative will supply school uniforms and local markets, reinvesting profits into community services.",
+  "date": "2025-12-20",
+  "category": "livelihoods",
+  "images": [
+    { "src": "https://picsum.photos/id/1035/1200/800", "alt": "Women sewing in a workshop", "caption": "Cooperative members at the sewing workshop" }
+  ],
+  "videos": [
+    { "type": "youtube", "url": "https://youtu.be/aqz-KE-bpKQ", "title": "Training highlights (CC)" }
+  ],
+  "body_blocks": [
+    { "type": "paragraph", "text": "The enterprise will prioritise local materials and employ cooperative members, creating a sustainable income stream for participating families." }
+  ]
+}

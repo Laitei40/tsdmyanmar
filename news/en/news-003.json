@@ -1,0 +1,18 @@
+{
+  "slug": "community-health-outreach",
+  "title": "Community health outreach reaches 500 people",
+  "summary": "Mobile clinics and health education reached hundreds with vaccinations and preventive care.",
+  "body": "In partnership with local health volunteers, TSD organised mobile outreach visits providing basic health checks, maternal care advice and vaccinations. The outreach strengthened referral links to nearby clinics.",
+  "date": "2026-01-08",
+  "category": "health",
+  "images": [
+    { "src": "https://picsum.photos/id/1027/1200/800", "alt": "Mobile health clinic", "caption": "Health volunteers conducting outreach" }
+  ],
+  "videos": [
+    { "type": "youtube", "url": "https://youtu.be/eRsGyueVLvQ", "title": "Health outreach summary (CC)" }
+  ],
+  "body_blocks": [
+    { "type": "paragraph", "text": "Volunteers were trained in basic screening and referral procedures to ensure continuity of care for those needing follow-up." },
+    { "type": "paragraph", "text": "Community awareness sessions covered hygiene, nutrition and maternal-child health topics." }
+  ]
+}
