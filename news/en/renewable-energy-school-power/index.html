@@ -1,0 +1,70 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Renewable energy project powers school — TSD Myanmar</title>
+  <meta name="description" content="Solar panels and battery storage now power the school&#x27;s classrooms and lighting.">
+  <meta property="og:title" content="Renewable energy project powers school" />
+  <meta property="og:description" content="Solar panels and battery storage now power the school&#x27;s classrooms and lighting." />
+  <meta property="og:type" content="article" />
+  <meta property="og:url" content="/news/en/renewable-energy-school-power/" />
+  <meta property="og:site_name" content="TSD Myanmar" />
+  <link rel="alternate" hreflang="en" href="/news/en/renewable-energy-school-power/" />
+    <link rel="alternate" hreflang="mrh" href="/news/mrh/renewable-energy-school-power/" />
+    <link rel="alternate" hreflang="my" href="/news/my/renewable-energy-school-power/" />
+  <link rel="canonical" href="/news/en/renewable-energy-school-power/" />
+  <script type="application/ld+json">{"@context": "https://schema.org", "@type": "Article", "headline": "Renewable energy project powers school", "datePublished": "2025-11-30", "description": "Solar panels and battery storage now power the school's classrooms and lighting.", "mainEntityOfPage": {"@type": "WebPage", "@id": "/news/en/renewable-energy-school-power/"}}</script>
+  <link rel="stylesheet" href="/css/main.css">
+</head>
+<body class="article-page">
+  <main class="page">
+    <article id="article-shell" class="article" role="article">
+      <header class="article-header">
+        <div class="article-header-inner">
+          <h1 id="article-title" class="article-title">Renewable energy project powers school</h1>
+          <div class="article-meta">
+            <time id="article-date" class="article-date" datetime="2025-11-30">2025-11-30</time>
+          </div>
+          <p id="article-summary" class="article-summary">Solar panels and battery storage now power the school&#x27;s classrooms and lighting.</p>
+        </div>
+      </header>
+
+      {HERO_HTML}
+
+      <section id="article-body" class="article-content" aria-live="polite">Loading article…</section>
+    </article>
+  </main>
+
+  <script src="/js/core/i18n.js"></script>
+  <script src="/js/core/news.js"></script>
+  <script>
+    (function(){
+      try{
+        var articleId = 'news-005';
+        if (window.tsdNews && window.tsdNews.fetchNewsJson){
+          window.tsdNews.fetchNewsJson(articleId).then(function(data){
+            if (!data) return;
+            var body = document.getElementById('article-body');
+            var title = document.getElementById('article-title');
+            var dateEl = document.getElementById('article-date');
+            var summaryEl = document.getElementById('article-summary');
+            if (data.title) title.textContent = data.title;
+            if (data.date) dateEl.textContent = data.date;
+            if (data.summary && !summaryEl.textContent) summaryEl.textContent = data.summary;
+            // Prefer structured renderer if available
+            if (window.tsdNews && window.tsdNews.renderArticle){
+              try{ window.tsdNews.renderArticle(data, body); }
+              catch(e){ if (data.body_html) body.innerHTML = data.body_html; else if (data.body) body.textContent = data.body; }
+            } else {
+              if (data.body_html) body.innerHTML = data.body_html;
+              else if (data.body) body.textContent = data.body;
+            }
+            try{ document.title = (data.title ? data.title + ' — ' : '') + 'TSD Myanmar'; }catch(e){}
+          }).catch(function(){/* ignore */});
+        }
+      }catch(e){/* ignore */}
+    })();
+  </script>
+</body>
+</html>

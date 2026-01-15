@@ -1,0 +1,70 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Farmer training program boosts yields — TSD Myanmar</title>
+  <meta name="description" content="Practical training in sustainable farming helped local farmers increase crop yields and incomes.">
+  <meta property="og:title" content="Farmer training program boosts yields" />
+  <meta property="og:description" content="Practical training in sustainable farming helped local farmers increase crop yields and incomes." />
+  <meta property="og:type" content="article" />
+  <meta property="og:url" content="/news/en/farmer-training-boosts-yields/" />
+  <meta property="og:site_name" content="TSD Myanmar" />
+  <link rel="alternate" hreflang="en" href="/news/en/farmer-training-boosts-yields/" />
+    <link rel="alternate" hreflang="mrh" href="/news/mrh/farmer-training-boosts-yields/" />
+    <link rel="alternate" hreflang="my" href="/news/my/farmer-training-boosts-yields/" />
+  <link rel="canonical" href="/news/en/farmer-training-boosts-yields/" />
+  <script type="application/ld+json">{"@context": "https://schema.org", "@type": "Article", "headline": "Farmer training program boosts yields", "datePublished": "2026-01-12", "description": "Practical training in sustainable farming helped local farmers increase crop yields and incomes.", "mainEntityOfPage": {"@type": "WebPage", "@id": "/news/en/farmer-training-boosts-yields/"}}</script>
+  <link rel="stylesheet" href="/css/main.css">
+</head>
+<body class="article-page">
+  <main class="page">
+    <article id="article-shell" class="article" role="article">
+      <header class="article-header">
+        <div class="article-header-inner">
+          <h1 id="article-title" class="article-title">Farmer training program boosts yields</h1>
+          <div class="article-meta">
+            <time id="article-date" class="article-date" datetime="2026-01-12">2026-01-12</time>
+          </div>
+          <p id="article-summary" class="article-summary">Practical training in sustainable farming helped local farmers increase crop yields and incomes.</p>
+        </div>
+      </header>
+
+      {HERO_HTML}
+
+      <section id="article-body" class="article-content" aria-live="polite">Loading article…</section>
+    </article>
+  </main>
+
+  <script src="/js/core/i18n.js"></script>
+  <script src="/js/core/news.js"></script>
+  <script>
+    (function(){
+      try{
+        var articleId = 'news-002';
+        if (window.tsdNews && window.tsdNews.fetchNewsJson){
+          window.tsdNews.fetchNewsJson(articleId).then(function(data){
+            if (!data) return;
+            var body = document.getElementById('article-body');
+            var title = document.getElementById('article-title');
+            var dateEl = document.getElementById('article-date');
+            var summaryEl = document.getElementById('article-summary');
+            if (data.title) title.textContent = data.title;
+            if (data.date) dateEl.textContent = data.date;
+            if (data.summary && !summaryEl.textContent) summaryEl.textContent = data.summary;
+            // Prefer structured renderer if available
+            if (window.tsdNews && window.tsdNews.renderArticle){
+              try{ window.tsdNews.renderArticle(data, body); }
+              catch(e){ if (data.body_html) body.innerHTML = data.body_html; else if (data.body) body.textContent = data.body; }
+            } else {
+              if (data.body_html) body.innerHTML = data.body_html;
+              else if (data.body) body.textContent = data.body;
+            }
+            try{ document.title = (data.title ? data.title + ' — ' : '') + 'TSD Myanmar'; }catch(e){}
+          }).catch(function(){/* ignore */});
+        }
+      }catch(e){/* ignore */}
+    })();
+  </script>
+</body>
+</html>
