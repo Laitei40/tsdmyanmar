@@ -26,6 +26,8 @@ function setSiteLang(l){
   loadTranslations(lang).then(()=>{
     applySiteTranslations();
     window.dispatchEvent(new CustomEvent('site:langchange',{detail:{lang}}));
+    // Ensure full page content (server-rendered or non-data-i18n) updates — reload.
+    try{ setTimeout(function(){ location.reload(); }, 120); }catch(e){}
   }).catch(()=>{});
 }
 
