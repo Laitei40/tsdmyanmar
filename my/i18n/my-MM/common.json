@@ -33,15 +33,14 @@
   "donate_title": "ထောက်ပံ့/လှူဒါန်း",
   "get_involved_title": "စေတနာ့ဝန်ထမ်းများနှင့် မိတ်ဖက်များ",
   "contact_title": "ဆက်သွယ်ရန်",
-
-  "updates_title": "သတင်းနှင့် အပ်ဒိတ်များ",
-  "updates_subtitle": "နောက်ဆုံးရ သတင်းများ၊ အစီရင်ခံစာများနှင့် ကြေညာချက်များ",
-  "loading": "အသစ်များကို ဖတ်နေသည်…",
-  "load_more": "နောက်ထပ် ဖတ်ရန်",
-  "no_updates": "အသစ်များ မရှိသေးပါ",
-  "search_placeholder": "အသစ်များ ရှာရန်",
-  "all_years": "အားလုံးနှစ်များ",
-  "latest_badge": "နောက်ဆုံး",
-  "read_more": "ဖတ်ရှုရန်",
-  "no_updates_body": "ကျွန်ုပ်တို့၏အစီအစဉ်များနှင့် ငွေကြေးအစီရင်ခံစာများအပေါ် နောက်ဆုံးရ အပ်ဒိတ်များကို ထုတ်ပြန်ပါသည်။ မကြာမီပြန်လည်စစ်ဆေးပါ။"}
+  "updates_title": "News & Updates",
+  "updates_subtitle": "Latest news, reports, and announcements.",
+  "loading": "Loading updates…",
+  "load_more": "Load more",
+  "no_updates": "No updates yet",
+  "search_placeholder": "Search updates",
+  "all_years": "All years",
+  "latest_badge": "Latest",
+  "read_more": "Read more",
+  "no_updates_body": "We publish regular updates about our programs and finance reports. Check back soon or subscribe to our mailing list for alerts."
 }
