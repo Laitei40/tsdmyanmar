@@ -1,86 +1,88 @@
 // Main UI interactions: entrance reveal, count-up, updates preview fetch
-// Lightweight, accessible, no external libs
+// ES5-friendly implementation (avoid arrow functions and template literals)
 
 function revealOnScroll() {
-  const observer = new IntersectionObserver((entries)=>{
-    entries.forEach(e=>{
+  var observer = new IntersectionObserver(function(entries){
+    entries.forEach(function(e){
       if (e.isIntersecting) {
         e.target.classList.add('visible');
         observer.unobserve(e.target);
       }
     });
-  },{threshold:0.12});
+  }, { threshold: 0.12 });
 
-  document.querySelectorAll('.reveal').forEach(el=>observer.observe(el));
+  var reveals = document.querySelectorAll('.reveal');
+  for (var i = 0; i < reveals.length; i++) { observer.observe(reveals[i]); }
 }
 
 function animateCountUps(){
-  const elems = document.querySelectorAll('.num[data-count]');
-  elems.forEach(el=>{
-    const target = Number(el.getAttribute('data-count')) || 0;
-    const duration = 1400;
-    let start = null;
-    const step = (ts)=>{
-      if (!start) start = ts;
-      const progress = Math.min((ts-start)/duration,1);
-      el.textContent = Math.floor(progress*target).toLocaleString();
-      if (progress<1) requestAnimationFrame(step);
-      else el.textContent = target.toLocaleString();
-    };
-    // Only start when visible
-    const io = new IntersectionObserver((entries)=>{
-      if (entries[0].isIntersecting){
-        requestAnimationFrame(step);
-        io.disconnect();
+  var elems = document.querySelectorAll('.num[data-count]');
+  for (var i = 0; i < elems.length; i++){
+    (function(el){
+      var target = Number(el.getAttribute('data-count')) || 0;
+      var duration = 1400;
+      var start = null;
+      function step(ts){
+        if (!start) start = ts;
+        var progress = Math.min((ts - start) / duration, 1);
+        el.textContent = Math.floor(progress * target).toLocaleString();
+        if (progress < 1) requestAnimationFrame(step); else el.textContent = target.toLocaleString();
       }
-    },{threshold:0.4});
-    io.observe(el);
-  });
+      var io = new IntersectionObserver(function(entries){
+        if (entries[0].isIntersecting){ requestAnimationFrame(step); io.disconnect(); }
+      }, { threshold: 0.4 });
+      io.observe(el);
+    })(elems[i]);
+  }
 }
 
-async function loadUpdatesPreview(){
-  const container = document.getElementById('updates-preview-list');
+function loadUpdatesPreview(){
+  var container = document.getElementById('updates-preview-list');
   if (!container) return;
-  try{
-    // Prefer the central news helper if available (language-aware, fallback to English)
-    let items = [];
-    if (window.tsdNews && window.tsdNews.fetchNewsIndex) {
-      try {
-        items = await window.tsdNews.fetchNewsIndex();
-      } catch(e) {
-        // If the helper fails, fall back to a static index path
-        const res = await fetch('/news/en/index.json');
-        items = await res.json();
-      }
-    } else {
-      // Legacy fallback: try the static index path
-      const res = await fetch('/news/en/index.json');
-      items = await res.json();
+
+  // Use promise flow to stay ES5-friendly
+  var fetchIndex = function(){
+    if (window.tsdNews && window.tsdNews.fetchNewsIndex){
+      return window.tsdNews.fetchNewsIndex().catch(function(){
+        return fetch('/news/en/index.json').then(function(r){ return r.json(); });
+      });
     }
-    const list = (Array.isArray(items) ? items : []).slice(0,3).map(it=>{
-      const title = (it.title && it.title.en) || it.title || '';
-      const date = it.date || '';
-      const summary = (it.summary && it.summary.en) || it.summary || '';
-      return `<article class="update-item"><h4>${escapeHtml(title)}</h4><time>${escapeHtml(date)}</time><p>${escapeHtml(summary)}</p></article>`;
-    }).join('');
-    container.innerHTML = list || '<p>No updates yet.</p>';
-  }catch(err){
-    container.innerHTML = `<p>Failed to load updates: ${escapeHtml(err.message)}</p>`;
-  }
+    return fetch('/news/en/index.json').then(function(r){ return r.json(); });
+  };
+
+  fetchIndex().then(function(items){
+    items = Array.isArray(items) ? items : [];
+    var slice = items.slice(0,3);
+    var parts = [];
+    for (var i = 0; i < slice.length; i++){
+      var it = slice[i];
+      var title = (it && it.title && it.title.en) || (it && it.title) || '';
+      var date = (it && it.date) || '';
+      var summary = (it && it.summary && it.summary.en) || (it && it.summary) || '';
+      parts.push('<article class="update-item"><h4>' + escapeHtml(title) + '</h4><time>' + escapeHtml(date) + '</time><p>' + escapeHtml(summary) + '</p></article>');
+    }
+    container.innerHTML = parts.join('') || '<p>No updates yet.</p>';
+  }).catch(function(err){
+    try{ container.innerHTML = '<p>Failed to load updates: ' + escapeHtml((err && err.message) || String(err)) + '</p>'; }catch(e){ container.innerHTML = '<p>Failed to load updates</p>'; }
+  });
 }
 
 function escapeHtml(str){
   if (typeof str !== 'string') return '';
-  return str.replace(/[&<>"']/g, (c)=>({ '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":"&#39;" }[c]));
+  return str.replace(/[&<>"']/g, function(c){
+    var m = { '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":"&#39;" };
+    return m[c] || '';
+  });
 }
 
-document.addEventListener('DOMContentLoaded', ()=>{
+document.addEventListener('DOMContentLoaded', function(){
   revealOnScroll();
   animateCountUps();
   loadUpdatesPreview();
 });
+
 // Main JS logic (placeholder)
-document.addEventListener('DOMContentLoaded', ()=>{
+document.addEventListener('DOMContentLoaded', function(){
   console.log('TSD Myanmar site loaded');
 });
 
