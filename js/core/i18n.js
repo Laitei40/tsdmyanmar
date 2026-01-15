@@ -40,17 +40,20 @@ function getTranslationUrlsFor(lang){
   // 3. fallback to English
   const urls = [];
   const base = (lang || '').split(/[-_]/)[0];
-  // Primary candidates (root i18n folder)
+  // First try language-specific variant folders (some generated content stores
+  // translations under e.g. /my/i18n/my-MM/common.json or /mrh/i18n/mrh-MM/common.json)
+  try{
+    urls.push('/' + lang + '/i18n/' + lang + '-MM/common.json');
+    urls.push('/' + lang + '/i18n/' + lang + '/common.json');
+    urls.push('/' + base + '/i18n/' + lang + '/common.json');
+  }catch(e){}
+
+  // Then try the standard root i18n location
   urls.push('/i18n/' + lang + '/common.json');
   if (base && base !== lang) urls.push('/i18n/' + base + '/common.json');
 
-  // Some generated pages place translations under a language-specific folder
-  // e.g. /my/i18n/my-MM/common.json or /mrh/i18n/mrh-MM/common.json
-  try{
-    urls.push('/' + base + '/i18n/' + lang + '/common.json');
-    urls.push('/' + lang + '/i18n/' + lang + '/common.json');
-    urls.push('/' + lang + '/common.json');
-  }catch(e){}
+  // Also try shortcuts like /{lang}/common.json
+  urls.push('/' + lang + '/common.json');
 
   // Always fall back to root English index last
   if (lang !== 'en') urls.push('/i18n/en/common.json');
