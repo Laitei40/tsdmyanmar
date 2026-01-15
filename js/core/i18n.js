@@ -71,8 +71,12 @@ async function loadTranslations(lang){
       if (ct.indexOf('application/json') === -1 && ct.indexOf('text/json') === -1 && first !== '{' && first !== '[' ){
         throw new Error('Not JSON');
       }
-      let data;
-      try{ data = JSON.parse(bodyText); }catch(e){ throw new Error('Invalid JSON'); }
+      var data;
+      try{
+        // strip BOM if present
+        var clean = (bodyText || '').replace(/^\uFEFF/, '');
+        data = JSON.parse(clean);
+      }catch(e){ throw new Error('Invalid JSON'); }
       // window.I18N should be a simple key->string map
       window.I18N = Object.assign({}, data);
       return window.I18N;
