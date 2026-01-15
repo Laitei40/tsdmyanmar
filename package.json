@@ -1,1 +1,4 @@
-{}
+{
+  "removed": true,
+  "note": "Removed Node.js test artifacts by request."
+}

@@ -3,7 +3,9 @@ const TSD_LANG_KEY = 'tsd_site_lang';
 const DEFAULT_LANG = 'en';
 
 function getSiteLang(){
-  return localStorage.getItem(TSD_LANG_KEY) || DEFAULT_LANG;
+  const raw = localStorage.getItem(TSD_LANG_KEY) || DEFAULT_LANG;
+  if (raw === 'mara') return 'mrh';
+  return raw;
 }
 
 function setSiteLang(l){
@@ -117,17 +119,23 @@ function ensureLangSelector(){
 
 function updateLogos(){
   const lang = getSiteLang();
-  const theme = (document.documentElement && (document.documentElement.getAttribute('data-theme') || window.__TSD_THEME)) || 'light';
-  const base = (lang === 'my') ? 'logo_mm' : 'logo_en';
-  // prefer theme-specific variant if available (e.g. logo_en_dark.svg), then fallback to base
-  const names = [base + '_' + theme + '.svg', base + '.svg'];
-  const candidates = [];
-  names.forEach(n => {
-    candidates.push('assets/images/' + n);
-    candidates.push('./assets/images/' + n);
-    candidates.push('../assets/images/' + n);
-    candidates.push('/assets/images/' + n);
-  });
+  const logoFolder = '/assets/images/logo/';
+    const candidates = [];
+    if (lang === 'mrh'){
+      candidates.push(logoFolder + 'logo_mrh.svg');
+      candidates.push(logoFolder + 'logo_mara.svg');
+    } else if (lang === 'my'){
+      candidates.push(logoFolder + 'logo_my.svg');
+      candidates.push(logoFolder + 'logo_mm.svg');
+    } else {
+      candidates.push(logoFolder + 'logo_en.svg');
+    }
+    candidates.push(logoFolder + 'logo.svg');
+    // include relative variants
+    const expanded = [];
+    candidates.forEach(n => { expanded.push(n); expanded.push('.' + n); expanded.push('..' + n); });
+    // replace candidates variable with expanded list
+    candidates.length = 0; Array.prototype.push.apply(candidates, expanded);
   document.querySelectorAll('.brand-logo').forEach(img=>{
     try{
       img.setAttribute('alt','TSD Myanmar logo');
@@ -150,16 +158,20 @@ function updateLogos(){
 
 function updateFavicons(){
   const lang = getSiteLang();
-  const theme = (document.documentElement && (document.documentElement.getAttribute('data-theme') || window.__TSD_THEME)) || 'light';
-  const base = (lang === 'my') ? 'logo_mm' : (lang === 'mara' ? 'logo_mara' : 'logo_en');
-  const names = [base + '_' + theme + '.svg', base + '.svg'];
+  const logoFolder = '/assets/images/logo/';
+  const baseCandidates = [];
+  if (lang === 'mrh'){
+    baseCandidates.push(logoFolder + 'logo_mrh.svg');
+    baseCandidates.push(logoFolder + 'logo_mara.svg');
+  } else if (lang === 'my'){
+    baseCandidates.push(logoFolder + 'logo_my.svg');
+    baseCandidates.push(logoFolder + 'logo_mm.svg');
+  } else {
+    baseCandidates.push(logoFolder + 'logo_en.svg');
+  }
+  baseCandidates.push(logoFolder + 'favicon.svg');
   const candidates = [];
-  names.forEach(n => {
-    candidates.push('assets/images/' + n);
-    candidates.push('./assets/images/' + n);
-    candidates.push('../assets/images/' + n);
-    candidates.push('/assets/images/' + n);
-  });
+  baseCandidates.forEach(n => { candidates.push(n); candidates.push('.' + n); candidates.push('..' + n); });
 
   // find or create link element
   let link = document.getElementById('site-favicon') || document.querySelector("link[rel~='icon']");

@@ -12,6 +12,38 @@ function normalizeLang(l){
   return l;
 }
 
+// Logo helpers — single source of truth for filename tokens
+function getLogoToken(lang){
+  lang = normalizeLang(lang);
+  // Map site language codes to actual filename tokens present in /assets/images/logo/
+  // Note: the repo contains `logo_mara.svg` for Mara (legacy name), so map `mrh` -> `mara`.
+  const map = { 'en': 'en', 'mrh': 'mara', 'my': 'my' };
+  return map[lang] || 'en';
+}
+
+// Build ordered logo filename candidates for a language.
+// Prefer canonical names (logo_mrh/logo_my) then fall back to legacy filenames
+// present in the repo (logo_mara/logo_mm).
+function getLogoCandidates(lang){
+  lang = normalizeLang(lang);
+  const folder = '/assets/images/logo/';
+  const list = [];
+  if (lang === 'mrh'){
+    // prefer canonical `logo_mrh.svg`, fallback to legacy `logo_mara.svg`
+    list.push(folder + 'logo_mrh.svg');
+    list.push(folder + 'logo_mara.svg');
+  } else if (lang === 'my'){
+    // prefer canonical `logo_my.svg`, fallback to legacy `logo_mm.svg`
+    list.push(folder + 'logo_my.svg');
+    list.push(folder + 'logo_mm.svg');
+  } else {
+    list.push(folder + 'logo_en.svg');
+  }
+  // generic fallback
+  list.push(folder + 'logo.svg');
+  return list;
+}
+
 function getSiteLang(){
   const raw = localStorage.getItem(TSD_LANG_KEY);
   return normalizeLang(raw || DEFAULT_LANG);
@@ -198,30 +230,15 @@ function ensureLangSelector(){
 
 function updateLogos(){
   const lang = getSiteLang();
-  const theme = (document.documentElement && (document.documentElement.getAttribute('data-theme') || window.__TSD_THEME)) || 'light';
   const logoFolder = '/assets/images/logo/';
-  // Prefer theme-specific filename, then language-preferred base, then fallbacks.
-  // Known files: logo-dark.svg, logo-light.svg, logo-light_dark.svg, logo-light_light.svg
-  var candidates = [];
-  if (lang === 'mrh'){
-    // Mara: prefer the dark base regardless of theme
-    candidates = [
-      logoFolder + 'logo-dark.svg',
-      logoFolder + 'logo-' + theme + '.svg',
-      logoFolder + 'logo-light_' + theme + '.svg',
-      logoFolder + 'logo-light.svg'
-    ];
-  } else {
-    candidates = [
-      logoFolder + 'logo-light_' + theme + '.svg',
-      logoFolder + 'logo-' + theme + '.svg',
-      logoFolder + 'logo-light.svg',
-      logoFolder + 'logo-dark.svg'
-    ];
-  }
+  // Map language codes to filename tokens. Keep language-to-logo simple:
+  // en -> logo_en.svg, mrh -> logo_mrh.svg, my -> logo_my.svg
+  const token = getLogoToken(lang);
 
+  // Build candidates (prefer canonical names, include legacy fallbacks)
+  const candidates = getLogoCandidates(lang);
   // Also include relative variants for environments that serve from subpaths
-  var allCandidates = [];
+  const allCandidates = [];
   candidates.forEach(function(p){ allCandidates.push(p); allCandidates.push('.' + p); allCandidates.push('..' + p); });
 
   document.querySelectorAll('.brand-logo').forEach(function(img){
@@ -235,16 +252,14 @@ function updateLogos(){
 
 function updateFavicons(){
   const lang = getSiteLang();
-  const theme = (document.documentElement && (document.documentElement.getAttribute('data-theme') || window.__TSD_THEME)) || 'light';
-  const logoFolder = 'assets/images/logo/';
-  const base = (lang === 'mrh') ? 'logo-dark' : 'logo-light';
-  const names = [
-    base + '_' + theme + '.svg',
-    base + '.svg',
-    'logo-' + theme + '.svg'
-  ];
+  const logoFolder = '/assets/images/logo/';
+  // Build favicon candidates aligned with logo candidates (canonical then legacy)
+  const baseFavs = getLogoCandidates(lang).slice();
+  // replace 'logo_*.svg' entries with favicon variants where appropriate
+  // ensure favicon.svg is included as a final fallback
+  baseFavs.push(logoFolder + 'favicon.svg');
   const candidates = [];
-  names.forEach(n=>{ candidates.push(logoFolder + n); candidates.push('./' + logoFolder + n); candidates.push('../' + logoFolder + n); candidates.push('/' + logoFolder + n); });
+  baseFavs.forEach(n=>{ candidates.push(n); candidates.push('.' + n); candidates.push('..' + n); });
 
   let link = document.getElementById('site-favicon') || document.querySelector("link[rel~='icon']");
   if (!link){ link = document.createElement('link'); link.id = 'site-favicon'; link.rel = 'icon'; document.head.appendChild(link); }
