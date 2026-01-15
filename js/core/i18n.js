@@ -37,9 +37,20 @@ function getTranslationUrlsFor(lang){
   // 2. /i18n/{baseLang}/common.json (if lang includes region variant)
   // 3. fallback to English
   const urls = [];
-  urls.push('/i18n/' + lang + '/common.json');
   const base = (lang || '').split(/[-_]/)[0];
-  if (base && base !== lang){ urls.push('/i18n/' + base + '/common.json'); }
+  // Primary candidates (root i18n folder)
+  urls.push('/i18n/' + lang + '/common.json');
+  if (base && base !== lang) urls.push('/i18n/' + base + '/common.json');
+
+  // Some generated pages place translations under a language-specific folder
+  // e.g. /my/i18n/my-MM/common.json or /mrh/i18n/mrh-MM/common.json
+  try{
+    urls.push('/' + base + '/i18n/' + lang + '/common.json');
+    urls.push('/' + lang + '/i18n/' + lang + '/common.json');
+    urls.push('/' + lang + '/common.json');
+  }catch(e){}
+
+  // Always fall back to root English index last
   if (lang !== 'en') urls.push('/i18n/en/common.json');
   return urls;
 }
@@ -50,13 +61,18 @@ async function loadTranslations(lang){
   for (let i = 0; i < candidates.length; i++){
     const url = candidates[i];
     try{
+      console.debug('i18n: trying', url);
       const res = await fetch(url, {cache: 'no-cache'});
-      if (!res.ok) throw new Error('Fetch failed');
-      // Ensure the response is JSON — some hosting configurations return HTML
-      // fallback pages with 200 which would break `res.json()` with Unexpected token '<'
+      if (!res.ok) throw new Error('Fetch failed: ' + res.status);
+      // Try to detect JSON even when content-type is missing or incorrect.
       const ct = (res.headers.get('content-type') || '').toLowerCase();
-      if (ct.indexOf('application/json') === -1 && ct.indexOf('text/json') === -1) throw new Error('Not JSON');
-      const data = await res.json();
+      const bodyText = await res.text();
+      const first = (bodyText || '').trim().slice(0,2);
+      if (ct.indexOf('application/json') === -1 && ct.indexOf('text/json') === -1 && first !== '{' && first !== '[' ){
+        throw new Error('Not JSON');
+      }
+      let data;
+      try{ data = JSON.parse(bodyText); }catch(e){ throw new Error('Invalid JSON'); }
       // window.I18N should be a simple key->string map
       window.I18N = Object.assign({}, data);
       return window.I18N;
