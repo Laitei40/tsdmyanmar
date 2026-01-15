@@ -12,30 +12,21 @@ function normalizeLang(l){
   return l;
 }
 
-// Logo helpers — single source of truth for filename tokens
-function getLogoToken(lang){
-  lang = normalizeLang(lang);
-  // Map site language codes to actual filename tokens present in /assets/images/logo/
-  // Note: the repo contains `logo_mara.svg` for Mara (legacy name), so map `mrh` -> `mara`.
-  const map = { 'en': 'en', 'mrh': 'mara', 'my': 'my' };
-  return map[lang] || 'en';
-}
+// Logo helpers: language-driven filenames are handled by `getLogoCandidates` below.
 
 // Build ordered logo filename candidates for a language.
-// Prefer canonical names (logo_mrh/logo_my) then fall back to legacy filenames
-// present in the repo (logo_mara/logo_mm).
+// Use language-specific canonical filenames only (logo_en/logo_my/logo_mrh),
+// with a final generic fallback `logo.svg`.
 function getLogoCandidates(lang){
   lang = normalizeLang(lang);
   const folder = '/assets/images/logo/';
   const list = [];
+  // Use only language-specific canonical filenames. Do not reintroduce
+  // theme-based logic or legacy fallbacks here; keep it minimal and explicit.
   if (lang === 'mrh'){
-    // prefer canonical `logo_mrh.svg`, fallback to legacy `logo_mara.svg`
     list.push(folder + 'logo_mrh.svg');
-    list.push(folder + 'logo_mara.svg');
   } else if (lang === 'my'){
-    // prefer canonical `logo_my.svg`, fallback to legacy `logo_mm.svg`
     list.push(folder + 'logo_my.svg');
-    list.push(folder + 'logo_mm.svg');
   } else {
     list.push(folder + 'logo_en.svg');
   }
@@ -54,12 +45,11 @@ function setSiteLang(l){
   localStorage.setItem(TSD_LANG_KEY, lang);
   // set html lang attribute (best-effort)
   try{ document.documentElement.lang = lang; }catch(e){}
-  // load translations and apply immediately
+  // load translations and apply immediately; do NOT force a page reload.
+  // Emit an event so other scripts can react to the language change.
   loadTranslations(lang).then(()=>{
     applySiteTranslations();
     window.dispatchEvent(new CustomEvent('site:langchange',{detail:{lang}}));
-    // Ensure full page content (server-rendered or non-data-i18n) updates — reload.
-    try{ setTimeout(function(){ location.reload(); }, 120); }catch(e){}
   }).catch(()=>{});
 }
 
@@ -231,10 +221,6 @@ function ensureLangSelector(){
 function updateLogos(){
   const lang = getSiteLang();
   const logoFolder = '/assets/images/logo/';
-  // Map language codes to filename tokens. Keep language-to-logo simple:
-  // en -> logo_en.svg, mrh -> logo_mrh.svg, my -> logo_my.svg
-  const token = getLogoToken(lang);
-
   // Build candidates (prefer canonical names, include legacy fallbacks)
   const candidates = getLogoCandidates(lang);
   // Also include relative variants for environments that serve from subpaths
@@ -244,7 +230,39 @@ function updateLogos(){
   document.querySelectorAll('.brand-logo').forEach(function(img){
     try{
       img.setAttribute('alt', (window.I18N && window.I18N.site_title) || 'TSD Myanmar');
-      (function tryNext(i){ if (i>=allCandidates.length) return; var src = allCandidates[i]; var t = new Image(); t.onload = function(){ img.src = src; }; t.onerror = function(){ tryNext(i+1); }; t.src = src; })(0);
+      // Always ensure a visible fallback immediately (absolute path) so we never show
+      // a broken image. Then probe language-specific candidates and replace the
+      // fallback if one of them loads successfully.
+      const absoluteFallback = '/assets/images/logo/logo.svg';
+      // Apply fallback first to avoid empty/broken image flashes
+      try{ if (!img.dataset.logoFallbackApplied) img.src = absoluteFallback; }catch(_){}
+
+      // Attach a one-time error handler on the displayed <img> so that if the
+      // ultimately selected src fails later, we restore the absolute fallback.
+      if (!img.dataset.logoErrorAttached){
+        img.addEventListener('error', function onLogoError(){
+          if (img.dataset.logoFallbackApplied) return; // already applied
+          img.dataset.logoFallbackApplied = '1';
+          try{ img.src = absoluteFallback; }catch(e){}
+        });
+        img.dataset.logoErrorAttached = '1';
+      }
+
+      (function tryNext(i){
+        if (i>=allCandidates.length){
+          // No candidate loaded; ensure final fallback is applied.
+          try{ img.src = absoluteFallback; }catch(e){}
+          return;
+        }
+        var src = allCandidates[i];
+        var t = new Image();
+        t.onload = function(){
+          // If the candidate is valid, use it (this overrides the fallback)
+          try{ img.src = src; }catch(e){}
+        };
+        t.onerror = function(){ tryNext(i+1); };
+        t.src = src;
+      })(0);
     }catch(e){ console.error('i18n updateLogos err', e); }
   });
   try{ updateFavicons(); }catch(e){}
@@ -282,6 +300,17 @@ document.addEventListener('DOMContentLoaded', ()=>{
 
     // reapply briefly for dynamic keys
     setTimeout(()=>{ try{ applySiteTranslations(); }catch(e){} }, 150);
+
+    // Ensure the logo animation class is applied so brand logos become visible.
+    // Some pages include only this core i18n module (not the legacy `js/i18n.js`),
+    // so apply the same lightweight animation trigger here as a single source of truth.
+    try{
+      requestAnimationFrame(()=>{
+        document.querySelectorAll('.brand-logo').forEach(function(img){
+          try{ img.classList.add('logo-animate'); }catch(e){}
+        });
+      });
+    }catch(e){}
 
     const observer = new MutationObserver(()=>{ if (document.querySelector('#site-lang-select')) ensureLangSelector(); });
     observer.observe(document.body, { childList:true, subtree:true });

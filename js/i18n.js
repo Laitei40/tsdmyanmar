@@ -123,10 +123,8 @@ function updateLogos(){
     const candidates = [];
     if (lang === 'mrh'){
       candidates.push(logoFolder + 'logo_mrh.svg');
-      candidates.push(logoFolder + 'logo_mara.svg');
     } else if (lang === 'my'){
       candidates.push(logoFolder + 'logo_my.svg');
-      candidates.push(logoFolder + 'logo_mm.svg');
     } else {
       candidates.push(logoFolder + 'logo_en.svg');
     }
@@ -139,9 +137,27 @@ function updateLogos(){
   document.querySelectorAll('.brand-logo').forEach(img=>{
     try{
       img.setAttribute('alt','TSD Myanmar logo');
-      // try candidates in order; set first that loads successfully
+      const absoluteFallback = '/assets/images/logo/logo.svg';
+      // Apply fallback immediately to avoid broken image state
+      try{ if (!img.dataset.logoFallbackApplied) img.src = absoluteFallback; }catch(_){}
+
+      // Attach an error handler that will restore the fallback if needed
+      if (!img.dataset.logoErrorAttached){
+        img.addEventListener('error', ()=>{
+          if (img.dataset.logoFallbackApplied) return;
+          img.dataset.logoFallbackApplied = '1';
+          try{ img.src = absoluteFallback; }catch(e){}
+        });
+        img.dataset.logoErrorAttached = '1';
+      }
+
+      // try candidates in order; replace the fallback if a candidate loads
       (function tryNext(i){
-        if (i >= candidates.length) return; // nothing worked
+        if (i >= candidates.length){
+          // none worked — ensure fallback is visible
+          try{ img.src = absoluteFallback; }catch(e){}
+          return; // nothing worked
+        }
         const src = candidates[i];
         const tester = new Image();
         tester.onload = function(){ img.src = src; };
@@ -162,10 +178,8 @@ function updateFavicons(){
   const baseCandidates = [];
   if (lang === 'mrh'){
     baseCandidates.push(logoFolder + 'logo_mrh.svg');
-    baseCandidates.push(logoFolder + 'logo_mara.svg');
   } else if (lang === 'my'){
     baseCandidates.push(logoFolder + 'logo_my.svg');
-    baseCandidates.push(logoFolder + 'logo_mm.svg');
   } else {
     baseCandidates.push(logoFolder + 'logo_en.svg');
   }
