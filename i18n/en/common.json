@@ -67,10 +67,17 @@
   "about_us_title": "About Us",
   "404_title": "404 — Page not found"
   ,
-  "home_lead": "We support community-led solutions in Chin State that strengthen education, livelihoods, and primary health through local partnerships, practical training, and long-term capacity building.",
+  "home_lead": "Together for Sustainable Development (TSD) aims to promote sustainable development in remote communities in southern Chin State. We have a particular focus on sustainable education – and by this we mean life-long and life-sustaining education: from children in school, to farmers trying new methods in the field, to women’s groups learning to run cooperatives, and more! Addressing the interconnected problems faced in these communities, we also aim to improve food security, promote inclusion, and meet urgent needs in times of crisis. Learn more about who we are.",
+  "home_motto": [
+    "Together we can do more",
+    "Together we can do better",
+    "Together we can build a sustainable future"
+  ],
   "stats_comm_leaders": "Community leaders trained",
   "stats_active_projects": "Active community projects",
   "stats_people_reached": "People reached",
+  "stats_women_shg": "Women participating in Self-Help Groups",
+  "stats_communities_disaster": "Communities with disaster committees & better prepared for crises",
 
   "projects_heading": "Featured projects",
   "project_water_title": "Community Water & Sanitation",
@@ -108,6 +115,10 @@
   "testimonial_author": "— Hraki, Food Security programme participant",
 
   "footer_contact_title": "Contact",
+  "footer_about_title": "About TSD Myanmar",
+  "footer_our_work_title": "Our Work",
+  "footer_get_involved_title": "Get Involved",
+  "footer_resources_title": "Resources & Media",
   "contact_main_office": "Main Office: Lailenpi Town, Chin State, Myanmar",
   "contact_main_phone": "Phone: (+95) 976 800 9343",
   "contact_email": "Email: tsd.info@togethergrowing.org"
