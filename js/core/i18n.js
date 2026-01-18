@@ -287,8 +287,8 @@ function updateFavicons(){
   (function tryNext(i){ if (i>=candidates.length) return; const src = candidates[i]; const t = new Image(); t.onload = function(){ try{ link.href = src; }catch(e){} }; t.onerror = function(){ tryNext(i+1); }; t.src = src; })(0);
 }
 
-// Initialize
-document.addEventListener('DOMContentLoaded', ()=>{
+// Initialize i18n system - can be called after dynamic content load
+function initI18n(){
   try{
     // migrate any legacy key value
     const raw = localStorage.getItem(TSD_LANG_KEY);
@@ -302,8 +302,6 @@ document.addEventListener('DOMContentLoaded', ()=>{
     setTimeout(()=>{ try{ applySiteTranslations(); }catch(e){} }, 150);
 
     // Ensure the logo animation class is applied so brand logos become visible.
-    // Some pages include only this core i18n module (not the legacy `js/i18n.js`),
-    // so apply the same lightweight animation trigger here as a single source of truth.
     try{
       requestAnimationFrame(()=>{
         document.querySelectorAll('.brand-logo').forEach(function(img){
@@ -312,15 +310,22 @@ document.addEventListener('DOMContentLoaded', ()=>{
       });
     }catch(e){}
 
-    const observer = new MutationObserver(()=>{ if (document.querySelector('#site-lang-select')) ensureLangSelector(); });
-    observer.observe(document.body, { childList:true, subtree:true });
-
-    window.addEventListener('site:i18nready', ()=>{ loadTranslations(getSiteLang()).then(()=>applySiteTranslations()); });
-
   }catch(e){ console.error('i18n init', e); }
+}
+
+// Initialize on DOMContentLoaded (for static pages)
+document.addEventListener('DOMContentLoaded', ()=>{
+  initI18n();
+
+  // Set up observer for dynamic content
+  const observer = new MutationObserver(()=>{ if (document.querySelector('#site-lang-select')) ensureLangSelector(); });
+  observer.observe(document.body, { childList:true, subtree:true });
+
+  window.addEventListener('site:i18nready', ()=>{ loadTranslations(getSiteLang()).then(()=>applySiteTranslations()); });
 });
 
 // public API
 window.tsdI18n = { getSiteLang, setSiteLang, loadTranslations, applySiteTranslations };
+window.initI18n = initI18n;
 
 

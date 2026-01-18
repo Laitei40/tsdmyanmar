@@ -1,5 +1,11 @@
 {
   "site_title": "TSD Myanmar",
+  "drawer_menu": "မီနူး",
+  "label_language": "ဘာသာစကား",
+  "label_theme": "အပြင်အဆင်",
+  "theme_system": "စနစ်",
+  "theme_light": "အလင်း",
+  "theme_dark": "အမှောင်",
   "nav_home": "Home",
   "nav_about": "About",
   "nav_projects": "Projects",

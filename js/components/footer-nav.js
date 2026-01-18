@@ -41,5 +41,16 @@
     window.addEventListener('site:langchange', function(){ applyMobileState(); });
   }
 
-  document.addEventListener('DOMContentLoaded', init);
+  // Auto-initialize on DOMContentLoaded (for static footer)
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', init);
+  } else {
+    // If footer already exists, initialize now
+    if (document.querySelector('.footer-col')) {
+      init();
+    }
+  }
+
+  // Expose globally for dynamic loading via layout.js
+  window.initFooterNav = init;
 })();

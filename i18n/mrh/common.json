@@ -1,5 +1,11 @@
 {
   "site_title": "TSD Myanmar",
+  "drawer_menu": "Menu",
+  "label_language": "Chaw",
+  "label_theme": "Theme",
+  "theme_system": "System",
+  "theme_light": "A'âng",
+  "theme_dark": "Mih",
   "nav_home": "Home",
   "nav_about": "About",
   "nav_projects": "Projects",

@@ -94,6 +94,141 @@
       </div>
     </div>
   </header>
+
+  <!-- Mobile Drawer Navigation -->
+  <div class="drawer-backdrop" aria-hidden="true"></div>
+  <aside id="mobile-drawer" class="mobile-drawer" role="dialog" aria-modal="true" aria-label="Navigation menu" aria-hidden="true">
+    <div class="drawer-header">
+      <span class="drawer-title" data-i18n="drawer_menu">Menu</span>
+      <button class="drawer-close" aria-label="Close menu">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <line x1="18" y1="6" x2="6" y2="18"></line>
+          <line x1="6" y1="6" x2="18" y2="18"></line>
+        </svg>
+      </button>
+    </div>
+    
+    <div class="drawer-content">
+      <!-- Settings Section -->
+      <div class="drawer-section drawer-settings">
+        <div class="drawer-setting">
+          <label for="drawer-lang-select" class="drawer-setting-label">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <circle cx="12" cy="12" r="10"></circle>
+              <line x1="2" y1="12" x2="22" y2="12"></line>
+              <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path>
+            </svg>
+            <span data-i18n="label_language">Language</span>
+          </label>
+          <select id="drawer-lang-select" class="drawer-select" aria-label="Language">
+            <option value="en">English</option>
+            <option value="mrh">Mara</option>
+            <option value="my">Burmese</option>
+          </select>
+        </div>
+        <div class="drawer-setting">
+          <label for="drawer-theme-select" class="drawer-setting-label">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <circle cx="12" cy="12" r="5"></circle>
+              <line x1="12" y1="1" x2="12" y2="3"></line>
+              <line x1="12" y1="21" x2="12" y2="23"></line>
+              <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+              <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+              <line x1="1" y1="12" x2="3" y2="12"></line>
+              <line x1="21" y1="12" x2="23" y2="12"></line>
+              <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+              <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+            </svg>
+            <span data-i18n="label_theme">Theme</span>
+          </label>
+          <select id="drawer-theme-select" class="drawer-select" aria-label="Theme">
+            <option value="system" data-i18n="theme_system">System</option>
+            <option value="light" data-i18n="theme_light">Light</option>
+            <option value="dark" data-i18n="theme_dark">Dark</option>
+          </select>
+        </div>
+      </div>
+      
+      <!-- Navigation Section with Accordions -->
+      <nav class="drawer-nav" aria-label="Mobile navigation">
+        <ul class="drawer-nav-list">
+          <!-- About Us -->
+          <li class="drawer-nav-item drawer-accordion">
+            <button class="drawer-accordion-toggle" aria-expanded="false" data-i18n="header_about_us">
+              <span>About Us</span>
+              <svg class="accordion-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <polyline points="6 9 12 15 18 9"></polyline>
+              </svg>
+            </button>
+            <ul class="drawer-submenu">
+              <li><a href="about.html" class="drawer-submenu-link" data-i18n="nav_about_us">About Us</a></li>
+              <li><a href="who-we-are.html" class="drawer-submenu-link" data-i18n="nav_who_we_are">Who We Are</a></li>
+              <li><a href="contact.html" class="drawer-submenu-link" data-i18n="nav_contact_us">Contact Us</a></li>
+            </ul>
+          </li>
+
+          <!-- Our Work -->
+          <li class="drawer-nav-item drawer-accordion">
+            <button class="drawer-accordion-toggle" aria-expanded="false" data-i18n="header_our_work">
+              <span>Our Work</span>
+              <svg class="accordion-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <polyline points="6 9 12 15 18 9"></polyline>
+              </svg>
+            </button>
+            <ul class="drawer-submenu">
+              <li><a href="where-we-work.html" class="drawer-submenu-link" data-i18n="nav_where_we_work">Where We Work</a></li>
+              <li><a href="what-we-do.html" class="drawer-submenu-link" data-i18n="nav_what_we_do">What We Do</a></li>
+              <li><a href="our-approach.html" class="drawer-submenu-link" data-i18n="nav_our_approach">Our Approach</a></li>
+              <li><a href="education.html" class="drawer-submenu-link" data-i18n="nav_education">Education</a></li>
+              <li><a href="food-security.html" class="drawer-submenu-link" data-i18n="nav_food_security">Food Security</a></li>
+              <li><a href="inclusion.html" class="drawer-submenu-link" data-i18n="nav_inclusion">Inclusion</a></li>
+              <li><a href="relief-drr.html" class="drawer-submenu-link" data-i18n="nav_relief_drr">Relief &amp; DRR</a></li>
+            </ul>
+          </li>
+
+          <!-- News -->
+          <li class="drawer-nav-item drawer-accordion">
+            <button class="drawer-accordion-toggle" aria-expanded="false" data-i18n="header_news">
+              <span>News</span>
+              <svg class="accordion-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <polyline points="6 9 12 15 18 9"></polyline>
+              </svg>
+            </button>
+            <ul class="drawer-submenu">
+              <li><a href="updates.html" class="drawer-submenu-link" data-i18n="nav_updates_reports">Updates &amp; Reports</a></li>
+            </ul>
+          </li>
+
+          <!-- Get Involved -->
+          <li class="drawer-nav-item drawer-accordion">
+            <button class="drawer-accordion-toggle" aria-expanded="false" data-i18n="header_get_involved">
+              <span>Get Involved</span>
+              <svg class="accordion-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <polyline points="6 9 12 15 18 9"></polyline>
+              </svg>
+            </button>
+            <ul class="drawer-submenu">
+              <li><a href="get-involved.html" class="drawer-submenu-link" data-i18n="nav_how_to_get_involved">How to Get Involved</a></li>
+              <li><a href="partners.html" class="drawer-submenu-link" data-i18n="nav_partnership">Partnership</a></li>
+              <li><a href="education-ambassadors.html" class="drawer-submenu-link" data-i18n="nav_education_ambassadors">Education Ambassadors</a></li>
+              <li><a href="join-our-team.html" class="drawer-submenu-link" data-i18n="nav_join_our_team">Join our Team</a></li>
+            </ul>
+          </li>
+        </ul>
+      </nav>
+    </div>
+    
+    <!-- Donate CTA at bottom -->
+    <div class="drawer-footer">
+      <a href="donate.html" class="drawer-cta" data-i18n="nav_donate">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path>
+        </svg>
+        <span>Donate</span>
+      </a>
+    </div>
+  </aside>
+
   <main>
     <section id="about-overview" class="page-section">
       <h1>About Us</h1>
