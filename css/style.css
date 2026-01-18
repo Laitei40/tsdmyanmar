@@ -569,8 +569,7 @@ footer{padding:18px;background:transparent;text-align:center;color:var(--muted);
 .drawer-nav{
   padding:8px 20px 16px;
 }
-.drawer-nav::before{
-  content:'Navigation';
+.drawer-nav-label{
   display:block;
   font-size:0.6875rem;
   font-weight:700;
@@ -580,7 +579,7 @@ footer{padding:18px;background:transparent;text-align:center;color:var(--muted);
   padding:0 8px 12px;
   margin-bottom:4px;
 }
-[data-theme="dark"] .drawer-nav::before{
+[data-theme="dark"] .drawer-nav-label{
   color:rgba(255,255,255,0.4);
 }
 .drawer-nav-list{

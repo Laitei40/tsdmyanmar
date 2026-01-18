@@ -55,22 +55,22 @@
 
     <div class="header-actions">
       <div class="lang-wrap">
-        <label for="site-lang-select" class="visually-hidden">Language</label>
+        <label for="site-lang-select" class="visually-hidden" data-i18n="label_language">Language</label>
         <select id="site-lang-select" class="lang-select" aria-label="Language">
-          <option value="en">English</option>
-          <option value="mrh">Mara</option>
-          <option value="my">Burmese</option>
+          <option value="en" data-i18n="lang_english">English</option>
+          <option value="mrh" data-i18n="lang_mara">Mara</option>
+          <option value="my" data-i18n="lang_burmese">Burmese</option>
         </select>
       </div>
       <div class="theme-wrap">
-        <label for="site-theme-select" class="visually-hidden">Theme</label>
+        <label for="site-theme-select" class="visually-hidden" data-i18n="label_theme">Theme</label>
         <select id="site-theme-select" class="theme-select" aria-label="Theme (System, Light, Dark)">
-          <option value="system">System</option>
-          <option value="light">Light</option>
-          <option value="dark">Dark</option>
+          <option value="system" data-i18n="theme_system">System</option>
+          <option value="light" data-i18n="theme_light">Light</option>
+          <option value="dark" data-i18n="theme_dark">Dark</option>
         </select>
       </div>
-      <a class="btn btn-primary" href="donate.html">Donate</a>
+      <a class="btn btn-primary" href="donate.html" data-i18n="nav_donate">Donate</a>
     </div>
   </div>
 </header>
@@ -101,9 +101,9 @@
           <span data-i18n="label_language">Language</span>
         </label>
         <select id="drawer-lang-select" class="drawer-select" aria-label="Language">
-          <option value="en">English</option>
-          <option value="mrh">Mara</option>
-          <option value="my">Burmese</option>
+          <option value="en" data-i18n="lang_english">English</option>
+          <option value="mrh" data-i18n="lang_mara">Mara</option>
+          <option value="my" data-i18n="lang_burmese">Burmese</option>
         </select>
       </div>
       <div class="drawer-setting">
@@ -131,6 +131,7 @@
     
     <!-- Navigation Section with Accordions -->
     <nav class="drawer-nav" aria-label="Mobile navigation">
+      <div class="drawer-nav-label" data-i18n="drawer_navigation">Navigation</div>
       <ul class="drawer-nav-list">
         <!-- About Us -->
         <li class="drawer-nav-item drawer-accordion">
@@ -200,11 +201,11 @@
   
   <!-- Donate CTA at bottom -->
   <div class="drawer-footer">
-    <a href="donate.html" class="drawer-cta" data-i18n="nav_donate">
+    <a href="donate.html" class="drawer-cta">
       <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
         <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path>
       </svg>
-      <span>Donate</span>
+      <span data-i18n="nav_donate">Donate</span>
     </a>
   </div>
 </aside>
