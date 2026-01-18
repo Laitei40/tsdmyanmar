@@ -1,0 +1,90 @@
+(function(){ try{ if (window && window.console && window.console.debug) console.debug('header: script loaded'); window.addEventListener('error', (e)=>{ try{ console.error('header: window.error', e.error || e.message || e); }catch(_){} }); window.addEventListener('unhandledrejection', (e)=>{ try{ console.error('header: unhandledrejection', e.reason || e); }catch(_){} });
+  const HEADER = document.querySelector('.site-header');
+  const TOGGLE = document.querySelector('.nav-toggle');
+  const NAV = document.getElementById('primary-nav');
+  const SCROLL_THRESHOLD = 56;
+
+  function onScroll(){
+    const y = window.scrollY || window.pageYOffset;
+    if (!HEADER) return;
+    if (y > SCROLL_THRESHOLD){
+      HEADER.classList.add('scrolled');
+      HEADER.classList.add('shrink');
+    } else {
+      HEADER.classList.remove('scrolled');
+      HEADER.classList.remove('shrink');
+    }
+  }
+
+  function toggleMenu(open){
+    if (!HEADER || !NAV || !TOGGLE) return;
+    const isOpen = typeof open === 'boolean' ? open : !HEADER.classList.contains('menu-open');
+    HEADER.classList.toggle('menu-open', isOpen);
+    TOGGLE.classList.toggle('open', isOpen);
+    NAV.setAttribute('aria-hidden', String(!isOpen));
+    TOGGLE.setAttribute('aria-expanded', String(isOpen));
+    if (isOpen){
+      // focus first link
+      const first = NAV.querySelector('a');
+      if (first) first.focus();
+    }
+  }
+
+  function onKey(e){
+    if (!HEADER) return;
+    // close menu with Escape
+    if (e.key === 'Escape' && HEADER.classList.contains('menu-open')){
+      toggleMenu(false);
+      TOGGLE.focus();
+    }
+  }
+
+  function highlightActive(){
+    if (!NAV) return;
+    const links = Array.from(NAV.querySelectorAll('a'));
+    const path = location.pathname.split('/').pop() || 'index.html';
+    // Helper to ignore query/hash and normalize file names
+    const normalize = s => (s || '').split('#')[0].split('?')[0];
+    links.forEach(a => {
+      const href = a.getAttribute('href') || '';
+      const name = normalize(href.split('/').pop());
+      if (name === path){
+        a.classList.add('active','is-current');
+        a.setAttribute('aria-current','page');
+        a.setAttribute('aria-disabled','true');
+        a.setAttribute('tabindex','-1');
+      } else {
+        a.classList.remove('is-current');
+        a.removeAttribute('aria-current');
+        a.removeAttribute('aria-disabled');
+        a.removeAttribute('tabindex');
+      }
+    });
+  }
+
+  document.addEventListener('DOMContentLoaded', ()=>{
+    if (!HEADER) return;
+    highlightActive();
+
+    // Prevent navigation for menu links that point to the current page
+    document.addEventListener('click', (e)=>{
+      const a = e.target.closest('#primary-nav a.is-current');
+      if (a) e.preventDefault();
+    });
+    document.addEventListener('keydown', (e)=>{
+      if ((e.key === 'Enter' || e.key === ' ') && document.activeElement && document.activeElement.classList && document.activeElement.classList.contains('is-current')){
+        e.preventDefault();
+      }
+    });
+
+    onScroll();
+    window.addEventListener('scroll', onScroll, {passive:true});
+    document.addEventListener('keydown', onKey);
+
+    // (Original file continued ...) 
+  });
+
+  // Expose for debugging/testing
+  window.tsdHeader = { toggleMenu };
+  }catch(e){ try{ console.error('header: fatal error', e); }catch(_){} }
+})();

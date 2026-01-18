@@ -1,0 +1,12 @@
+const fs = require('fs');
+const s = fs.readFileSync('js/core/header.js');
+const needle = "console.error('header: fatal error', e);";
+const idx = s.indexOf(Buffer.from(needle));
+console.log('idx', idx);
+const start = Math.max(0, idx - 40);
+const end = Math.min(s.length, idx + 120);
+const buf = s.slice(start, end);
+console.log('--- text ---');
+console.log(buf.toString('utf8'));
+console.log('--- hex ---');
+console.log(Array.from(buf).map(b => b.toString(16).padStart(2, '0')).join(' '));

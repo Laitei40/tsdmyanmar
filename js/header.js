@@ -25,6 +25,7 @@
     if (!HEADER || !NAV || !TOGGLE) return;
     const isOpen = typeof open === 'boolean' ? open : !HEADER.classList.contains('menu-open');
     HEADER.classList.toggle('menu-open', isOpen);
+    TOGGLE.classList.toggle('open', isOpen);
     NAV.setAttribute('aria-hidden', String(!isOpen));
     TOGGLE.setAttribute('aria-expanded', String(isOpen));
     if (isOpen){

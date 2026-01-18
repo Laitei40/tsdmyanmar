@@ -98,6 +98,110 @@
       </div>
     </div>
   </header>
+
+  <!-- Mobile Drawer Navigation -->
+  <div class="drawer-backdrop" aria-hidden="true"></div>
+  <aside id="mobile-drawer" class="mobile-drawer" role="dialog" aria-modal="true" aria-label="Navigation menu" aria-hidden="true">
+    <div class="drawer-header">
+      <span class="drawer-title">Menu</span>
+      <button class="drawer-close" aria-label="Close menu">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <line x1="18" y1="6" x2="6" y2="18"></line>
+          <line x1="6" y1="6" x2="18" y2="18"></line>
+        </svg>
+      </button>
+    </div>
+    
+    <div class="drawer-content">
+      <!-- Settings Section -->
+      <div class="drawer-section drawer-settings">
+        <div class="drawer-setting">
+          <label for="drawer-lang-select" class="drawer-setting-label">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <circle cx="12" cy="12" r="10"></circle>
+              <line x1="2" y1="12" x2="22" y2="12"></line>
+              <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path>
+            </svg>
+            <span data-i18n="label_language">Language</span>
+          </label>
+          <select id="drawer-lang-select" class="drawer-select" aria-label="Language">
+            <option value="en">English</option>
+            <option value="mrh">Mara</option>
+            <option value="my">Burmese</option>
+          </select>
+        </div>
+        <div class="drawer-setting">
+          <label for="drawer-theme-select" class="drawer-setting-label">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <circle cx="12" cy="12" r="5"></circle>
+              <line x1="12" y1="1" x2="12" y2="3"></line>
+              <line x1="12" y1="21" x2="12" y2="23"></line>
+              <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+              <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+              <line x1="1" y1="12" x2="3" y2="12"></line>
+              <line x1="21" y1="12" x2="23" y2="12"></line>
+              <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+              <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+            </svg>
+            <span data-i18n="label_theme">Theme</span>
+          </label>
+          <select id="drawer-theme-select" class="drawer-select" aria-label="Theme">
+            <option value="system">System</option>
+            <option value="light">Light</option>
+            <option value="dark">Dark</option>
+          </select>
+        </div>
+      </div>
+      
+      <!-- Navigation Section -->
+      <nav class="drawer-nav" aria-label="Mobile navigation">
+        <ul class="drawer-nav-list">
+          <li class="drawer-nav-item">
+            <a href="about.html" class="drawer-nav-link" data-i18n="nav_about_us">
+              <span>About Us</span>
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <polyline points="9 18 15 12 9 6"></polyline>
+              </svg>
+            </a>
+          </li>
+          <li class="drawer-nav-item">
+            <a href="what-we-do.html" class="drawer-nav-link" data-i18n="nav_our_work">
+              <span>Our Work</span>
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <polyline points="9 18 15 12 9 6"></polyline>
+              </svg>
+            </a>
+          </li>
+          <li class="drawer-nav-item">
+            <a href="updates.html" class="drawer-nav-link" data-i18n="nav_news">
+              <span>News</span>
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <polyline points="9 18 15 12 9 6"></polyline>
+              </svg>
+            </a>
+          </li>
+          <li class="drawer-nav-item">
+            <a href="get-involved.html" class="drawer-nav-link" data-i18n="nav_get_involved">
+              <span>Get Involved</span>
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <polyline points="9 18 15 12 9 6"></polyline>
+              </svg>
+            </a>
+          </li>
+        </ul>
+      </nav>
+    </div>
+    
+    <!-- Donate CTA at bottom -->
+    <div class="drawer-footer">
+      <a href="donate.html" class="drawer-cta" data-i18n="nav_donate">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path>
+        </svg>
+        <span>Donate</span>
+      </a>
+    </div>
+  </aside>
   <main>
     <section class="hero" aria-labelledby="hero-heading">
       <div class="hero-inner reveal" id="hero-content">

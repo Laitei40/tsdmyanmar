@@ -1,5 +1,5 @@
 /**
- * Header interactions: sticky behavior, shrink on scroll, mobile menu toggle,
+ * Header interactions: sticky behavior, shrink on scroll, mobile drawer toggle,
  * active link highlighting, and basic keyboard accessibility.
  * Lightweight, no dependencies.
  */
@@ -23,15 +23,31 @@
 
   function toggleMenu(open){
     if (!HEADER || !NAV || !TOGGLE) return;
+    const drawer = document.getElementById('mobile-drawer');
+    const backdrop = document.querySelector('.drawer-backdrop');
     const isOpen = typeof open === 'boolean' ? open : !HEADER.classList.contains('menu-open');
+    
     HEADER.classList.toggle('menu-open', isOpen);
+    TOGGLE.classList.toggle('open', isOpen);
     NAV.setAttribute('aria-hidden', String(!isOpen));
     TOGGLE.setAttribute('aria-expanded', String(isOpen));
-    // animate the hamburger to an X by toggling .open on the toggle button
-    TOGGLE.classList.toggle('open', isOpen);
+    
+    // Also toggle the mobile drawer
+    if (drawer) {
+      drawer.classList.toggle('open', isOpen);
+      drawer.setAttribute('aria-hidden', String(!isOpen));
+    }
+    if (backdrop) {
+      backdrop.classList.toggle('active', isOpen);
+    }
+    // Lock/unlock body scroll
+    document.body.classList.toggle('drawer-open', isOpen);
+    
     if (isOpen){
-      // focus first link
-      const first = NAV.querySelector('a');
+      // focus first link in drawer or nav
+      const drawerFirstLink = drawer && drawer.querySelector('a');
+      const navFirstLink = NAV.querySelector('a');
+      const first = drawerFirstLink || navFirstLink;
       if (first) first.focus();
     }
   }
@@ -382,10 +398,27 @@
         });
       }
 
-      // close menu and dropdowns when clicking outside
+      // Drawer close button
+      const drawerClose = document.querySelector('.drawer-close');
+      if (drawerClose){
+        drawerClose.addEventListener('click', ()=> toggleMenu(false));
+      }
+
+      // Backdrop click closes drawer
+      const backdrop = document.querySelector('.drawer-backdrop');
+      if (backdrop){
+        backdrop.addEventListener('click', ()=> toggleMenu(false));
+      }
+
+      // close menu and dropdowns when clicking outside (but NOT when clicking nav links)
       document.addEventListener('click', (e)=>{
         if (HEADER.classList.contains('menu-open')){
-          if (!HEADER.contains(e.target)) toggleMenu(false);
+          const drawer = document.getElementById('mobile-drawer');
+          const isInsideHeader = HEADER.contains(e.target);
+          const isInsideDrawer = drawer && drawer.contains(e.target);
+          const isBackdrop = e.target.classList.contains('drawer-backdrop');
+          // Only close if clicking truly outside (not inside header, drawer, or on backdrop which has its own handler)
+          if (!isInsideHeader && !isInsideDrawer && !isBackdrop) toggleMenu(false);
         }
         if (!e.target.closest('.has-dropdown')) closeAllDropdowns();
       });
@@ -401,10 +434,9 @@
     } else {
       runInit();
     }
+  });
 
   // Expose for debugging/testing
   window.tsdHeader = { toggleMenu };
   }catch(e){ try{ console.error('header: fatal error', e); }catch(_){} }
 })();
-
-
