@@ -1,0 +1,27 @@
+{
+  "name": "tsd-admin",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "dev:wrangler": "wrangler pages dev --port 8788 --compatibility-date=2026-01-07 --d1=UPDATES_DB",
+    "dev:full": "concurrently \"npm run dev:wrangler\" \"npm run dev\"",
+    "build": "vite build",
+    "preview": "vite preview",
+    "cf:dev": "wrangler pages dev . --d1=UPDATES_DB"
+  },
+  "dependencies": {
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "uuid": "^13.0.0"
+  },
+  "devDependencies": {
+    "@cloudflare/workers-types": "^4.20240129.0",
+    "@types/react": "^18.2.21",
+    "@types/react-dom": "^18.2.7",
+    "@vitejs/plugin-react": "^4.1.0",
+    "typescript": "^5.3.3",
+    "vite": "^5.0.0"
+  }
+}
