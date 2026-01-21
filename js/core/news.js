@@ -1,4 +1,4 @@
-// Helper to fetch news JSON files per active language with per-article fallback to English
+// Helper to fetch updates from D1 API with static JSON fallback
 // Uses existing window.tsdI18n.getSiteLang() to resolve current language
 (function(){
   async function tryFetchJson(url){
@@ -7,22 +7,71 @@
     return res.json();
   }
 
+  function getLang(){
+    try{ return (window.tsdI18n && window.tsdI18n.getSiteLang && window.tsdI18n.getSiteLang()) || 'en'; }
+    catch(e){ return 'en'; }
+  }
+
+  async function fetchFromApi(articleId, lang){
+    const apiUrl = '/api/update?id=' + encodeURIComponent(articleId) + '&lang=' + encodeURIComponent(lang);
+    const res = await fetch(apiUrl, {cache:'no-cache'});
+    if (!res.ok) throw new Error('API fetch failed: ' + res.status);
+    return res.json();
+  }
+
   async function fetchNewsJson(articleId){
-    const lang = (window.tsdI18n && window.tsdI18n.getSiteLang && window.tsdI18n.getSiteLang()) || 'en';
+    const lang = getLang();
+    // 1) Try D1-backed API
+    try{
+      return await fetchFromApi(articleId, lang);
+    }catch(e){
+      console.warn('API fetch failed, falling back to static JSON', e);
+    }
+
+    // 2) Fallback to static JSON per language, then English
     const tryFor = async (l) => {
       const url = '/news/' + encodeURIComponent(l) + '/' + encodeURIComponent(articleId) + '.json';
       return tryFetchJson(url);
     };
-    try {
-      return await tryFor(lang);
-    } catch (e) {
+    try { return await tryFor(lang); }
+    catch (e) {
       if (lang !== 'en') return tryFor('en');
       throw e;
     }
   }
 
+  async function fetchAllFromApi(lang){
+    const pageSize = 40;
+    let offset = 0;
+    let items = [];
+    let total = null;
+    let pages = 0;
+    const maxPages = 15; // guardrail
+    while (pages < maxPages){
+      pages++;
+      const url = '/api/updates?limit=' + pageSize + '&offset=' + offset + '&lang=' + encodeURIComponent(lang);
+      const res = await fetch(url, {cache:'no-cache'});
+      if (!res.ok) throw new Error('API index fetch failed: ' + res.status);
+      const data = await res.json();
+      const batch = Array.isArray(data.items) ? data.items : [];
+      items = items.concat(batch);
+      total = (data && typeof data.total === 'number') ? data.total : items.length;
+      offset += batch.length;
+      if (offset >= total || batch.length === 0) break;
+    }
+    return items;
+  }
+
   async function fetchNewsIndex(){
-    const lang = (window.tsdI18n && window.tsdI18n.getSiteLang && window.tsdI18n.getSiteLang()) || 'en';
+    const lang = getLang();
+    // 1) Try D1 API (paged)
+    try{
+      return await fetchAllFromApi(lang);
+    }catch(e){
+      console.warn('API index fetch failed, falling back to static JSON', e);
+    }
+
+    // 2) Fallback to static news index
     const tryFor = async (l) => {
       const url = '/news/' + encodeURIComponent(l) + '/index.json';
       return tryFetchJson(url);

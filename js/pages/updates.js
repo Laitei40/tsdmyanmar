@@ -26,6 +26,7 @@
     try{ const d=new Date(iso); return d.toLocaleDateString(undefined,{year:'numeric',month:'short',day:'numeric'}); }catch(e){ return iso }
   }
 
+  // Basic grouping helper kept for potential future use (currently unused)
   function groupByYear(items){
     const map = {};
     items.forEach(it=>{
@@ -88,48 +89,83 @@
     });
   }
 
-  function renderItems(container, items, lang){
-    // Render a grouped list (year headers) using list items for accessibility
-    container.innerHTML = '';
-    if (!items.length) return renderEmpty(container);
+  function buildCategory(it){
+    if (it.category) return String(it.category);
+    if (Array.isArray(it.categories) && it.categories.length) return String(it.categories[0]);
+    return '';
+  }
 
-    const grouped = groupByYear(items);
-    const years = Object.keys(grouped).sort((a,b)=>b-a);
-    years.forEach(year=>{
-      const yearHeader = el('h3',{class:'year'},year);
-      container.appendChild(yearHeader);
-      const list = el('ul',{class:'updates-list-inner', attrs:{role:'list'}});
-      grouped[year].sort((a,b)=> new Date(b.date)-new Date(a.date)).forEach(it=>{
-        const title = (typeof it.title === 'string') ? it.title : (pickLangField(it.title, lang) || 'Untitled');
-        const summary = (typeof it.summary === 'string') ? it.summary : (pickLangField(it.summary, lang) || '');
-        const body = (typeof it.body === 'string') ? it.body : (pickLangField(it.body, lang) || '');
+  function buildCard(it, lang){
+    const title = (typeof it.title === 'string') ? it.title : (pickLangField(it.title, lang) || 'Untitled');
+    const summaryRaw = (typeof it.summary === 'string') ? it.summary : (pickLangField(it.summary, lang) || '');
+    const bodyRaw = (typeof it.body === 'string') ? it.body : (pickLangField(it.body, lang) || '');
+    const summary = summaryRaw || bodyRaw;
+    const ctaLabel = (window.I18N && window.I18N.read_more) || 'Read more';
+    const href = '/update.html?id=' + encodeURIComponent(it.id || '');
+    const category = buildCategory(it);
 
-        const article = el('article',{class:'update-card reveal', attrs:{role:'article'}});
-        const left = el('div',{class:'card-left'});
-        left.appendChild(el('time',{class:'update-date', attrs:{datetime:it.date}}, formatDate(it.date)));
-        if (it.isLatest) left.appendChild(el('span',{class:'badge'}, (window.I18N && window.I18N.latest_badge) || 'Latest'));
-        const hdr = el('h3',{class:'update-title'}, title);
-        const summ = el('p',{class:'update-summary'}, summary);
-        const actions = el('div',{class:'update-cta'});
-        const ctaLabel = (window.I18N && window.I18N.read_more) || 'Read more';
-        const href = '/update.html?id=' + encodeURIComponent(it.id || '');
-        const cta = el('a',{class:'btn-link', attrs:{href}}, ctaLabel);
-        actions.appendChild(cta);
-        const main = el('div',{class:'card-main'});
-        main.appendChild(hdr);
-        if (summary) main.appendChild(summ);
-        main.appendChild(actions);
+    const article = el('article',{class:'update-card reveal', attrs:{role:'article'}});
+    const left = el('div',{class:'card-left'});
+    left.appendChild(el('time',{class:'update-date', attrs:{datetime:it.date}}, formatDate(it.date)));
+    if (category){
+      left.appendChild(el('span',{class:'badge'}, category));
+    }
+    const hdr = el('h3',{class:'update-title'}, title);
+    const summ = summary ? el('p',{class:'update-summary'}, summary) : null;
+    const actions = el('div',{class:'update-cta'});
+    const cta = el('a',{class:'btn-link', attrs:{href}}, ctaLabel);
+    actions.appendChild(cta);
+    const main = el('div',{class:'card-main'});
+    main.appendChild(hdr);
+    if (summ) main.appendChild(summ);
+    main.appendChild(actions);
 
-        article.appendChild(left);
-        article.appendChild(main);
+    article.appendChild(left);
+    article.appendChild(main);
+    return article;
+  }
 
-        const li = el('li',{}, article);
-        list.appendChild(li);
-      });
-      container.appendChild(list);
+  function buildFeatured(it, lang){
+    const title = (typeof it.title === 'string') ? it.title : (pickLangField(it.title, lang) || 'Untitled');
+    const summary = (typeof it.summary === 'string') ? it.summary : (pickLangField(it.summary, lang) || '');
+    const ctaLabel = (window.I18N && window.I18N.read_more) || 'Read more';
+    const href = '/update.html?id=' + encodeURIComponent(it.id || '');
+    const category = buildCategory(it) || ((window.I18N && window.I18N.latest_badge) || 'Latest');
+
+    const wrapper = el('article',{class:'featured-card reveal', attrs:{role:'article'}});
+    const metaRow = el('div',{class:'featured-meta'},
+      el('span',{class:'featured-chip'}, category),
+      el('time',{class:'featured-date', attrs:{datetime:it.date}}, formatDate(it.date))
+    );
+    const titleEl = el('h2',{class:'featured-title'}, title);
+    const lead = summary ? el('p',{class:'featured-lead'}, summary) : null;
+    const actions = el('div',{class:'featured-actions'},
+      el('a',{class:'btn-primary', attrs:{href}}, ctaLabel)
+    );
+    wrapper.appendChild(metaRow);
+    wrapper.appendChild(titleEl);
+    if (lead) wrapper.appendChild(lead);
+    wrapper.appendChild(actions);
+    return wrapper;
+  }
+
+  function renderItems(container, items, lang, append){
+    const shouldClear = !append;
+    if (shouldClear) container.innerHTML = '';
+    if (!items.length && shouldClear) return renderEmpty(container);
+
+    let remaining = items.slice();
+    // Only show featured when starting a fresh render
+    if (shouldClear && remaining.length){
+      const featured = remaining.shift();
+      container.appendChild(buildFeatured(featured, lang));
+    }
+
+    remaining.forEach(it=>{
+      container.appendChild(buildCard(it, lang));
     });
 
-    // Simple reveal animation using IntersectionObserver
+    // Reveal animation
     requestAnimationFrame(()=>{
       const obs = new IntersectionObserver((entries, o)=>{
         entries.forEach(en=>{ if (en.isIntersecting){ en.target.classList.add('visible'); o.unobserve(en.target); } });
@@ -216,8 +252,7 @@
       // paginate
       const paged = items.slice(offset, offset + PAGE_SIZE);
 
-      if (reset){ container.innerHTML = ''; renderItems(container, paged, lang); }
-      else { renderItems(container, paged, lang); }
+      renderItems(container, paged, lang, !reset);
 
       // update offset
       offset += paged.length;

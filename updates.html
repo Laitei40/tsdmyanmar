@@ -22,64 +22,69 @@
     </script>
 </head>
 <body>
-  <header class="site-header minimal" role="banner">
-    <div class="site-inner">
-      <a class="brand minimal-brand" href="/">Home</a>
-      <nav class="breadcrumb header-breadcrumb" aria-label="Breadcrumb">Updates</nav>
-    </div>
-  </header>
-  <main>
-    <section class="updates-hero">
-      <h1 data-i18n="updates_title">Updates & News</h1>
-      <p class="lead" data-i18n="updates_subtitle">Recent activity, program progress, and transparency notes from Together for Sustainable Development. We publish concise, factual updates that explain what we did, why, and what comes next.</p>
-      <div class="hero-controls">
-        <div class="search" aria-label="Search updates">
-          <label for="updates-search" class="visually-hidden" data-i18n="search_placeholder">Search updates</label>
-          <input id="updates-search" type="search" placeholder="" aria-controls="updates-list" data-i18n-placeholder="search_placeholder" data-i18n-aria="search_placeholder">
+  <div class="updates-page-shell">
+    <div class="updates-aurora" aria-hidden="true"></div>
+
+    <div id="header"></div>
+
+    <main class="updates-page">
+      <section class="updates-hero updates-layout">
+        <p class="eyebrow" data-i18n="updates_eyebrow">Transparency & Impact</p>
+        <h1 data-i18n="updates_title">Updates & News</h1>
+        <p class="lead" data-i18n="updates_subtitle">Recent activity, program progress, and transparency notes from Together for Sustainable Development. We publish concise, factual updates that explain what we did, why, and what comes next.</p>
+        <div class="hero-controls">
+          <div class="search" aria-label="Search updates">
+            <label for="updates-search" class="visually-hidden" data-i18n="search_placeholder">Search updates</label>
+            <input id="updates-search" type="search" placeholder="" aria-controls="updates-list" data-i18n-placeholder="search_placeholder" data-i18n-aria="search_placeholder">
+          </div>
+          <div class="hero-meta">
+            <span class="pill" data-i18n="updates_freq">Updated regularly</span>
+            <span class="pill" data-i18n="updates_team">Program & finance teams</span>
+          </div>
         </div>
+      </section>
+
+      <section class="updates-controls filter-bar updates-layout" aria-hidden="false">
+        <div class="filter-group">
+          <label for="updates-year-filter" class="visually-hidden">Filter by year</label>
+          <select id="updates-year-filter" aria-controls="updates-list">
+            <option value="">All years</option>
+          </select>
+          <label for="updates-category-filter" class="visually-hidden">Filter by category</label>
+          <select id="updates-category-filter" aria-controls="updates-list">
+            <option value="">All categories</option>
+            <option value="news">News</option>
+            <option value="report">Report</option>
+            <option value="announcement">Announcement</option>
+          </select>
+          <label for="updates-sort" class="visually-hidden">Sort</label>
+          <select id="updates-sort" aria-controls="updates-list">
+            <option value="newest">Newest</option>
+            <option value="oldest">Oldest</option>
+          </select>
+        </div>
+        <div class="status" aria-live="polite" aria-atomic="true"><span id="updates-loading">Loading updates…</span></div>
+      </section>
+
+      <section class="updates-layout">
+        <section id="updates-list" class="updates-list" role="list" aria-label="Updates and news">
+          <p class="visually-hidden" data-i18n="loading">Loading updates…</p>
+        </section>
+      </section>
+
+      <div class="updates-actions updates-layout" style="text-align:center; margin-bottom:2rem;">
+        <button id="updates-load-more" class="btn" data-i18n="load_more" aria-label="Load more updates">Load more</button>
+        <p style="margin-top:.5rem;"><a href="updates-archive.html">See archive</a></p>
       </div>
-    </section>
+    </main>
 
-    <section class="updates-controls filter-bar" aria-hidden="false">
-      <div class="filter-group">
-        <label for="updates-year-filter" class="visually-hidden">Filter by year</label>
-        <select id="updates-year-filter" aria-controls="updates-list">
-          <option value="">All years</option>
-        </select>
-        <label for="updates-category-filter" class="visually-hidden">Filter by category</label>
-        <select id="updates-category-filter" aria-controls="updates-list">
-          <option value="">All categories</option>
-          <option value="news">News</option>
-          <option value="report">Report</option>
-          <option value="announcement">Announcement</option>
-        </select>
-        <label for="updates-sort" class="visually-hidden">Sort</label>
-        <select id="updates-sort" aria-controls="updates-list">
-          <option value="newest">Newest</option>
-          <option value="oldest">Oldest</option>
-        </select>
-      </div>
-      <div class="status" aria-live="polite" aria-atomic="true"><span id="updates-loading">Loading updates…</span></div>
-    </section>
-
-    <section id="updates-list" class="updates-list" role="list" aria-label="Updates and news">
-      <p class="visually-hidden" data-i18n="loading">Loading updates…</p>
-    </section>
-
-    <div class="updates-actions" style="text-align:center; margin-bottom:2rem;">
-      <button id="updates-load-more" class="btn" data-i18n="load_more" aria-label="Load more updates">Load more</button>
-      <p style="margin-top:.5rem;"><a href="updates-archive.html">See archive</a></p>
-    </div>
-  </main>
-
-  <footer class="site-footer minimal" role="contentinfo">
-    <div class="site-inner">
-      <div class="footer-bar">© 2026 Together for Sustainable Development — <a href="/privacy.html">Privacy policy</a></div>
-    </div>
-  </footer>
+    <div id="footer"></div>
+  </div>
 
   <script src="js/core/theme.js"></script>
+  <script src="js/core/icon-theme.js"></script>
   <script src="js/core/header.js"></script>
+  <script src="js/layout.js"></script>
   <script src="js/core/i18n.js"></script>
   <script src="js/core/news.js"></script>
   <script src="js/pages/updates.js"></script>

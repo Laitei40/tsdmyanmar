@@ -5,6 +5,7 @@
   const BODY = document.getElementById('update-body');
   const CRUMB = document.getElementById('crumb-title');
   const BADGE = document.getElementById('update-badge');
+  const LEAD = document.getElementById('update-summary');
 
   function formatDate(iso){ try{ const d=new Date(iso); return d.toLocaleDateString(undefined,{year:'numeric',month:'short',day:'numeric'}); }catch(e){ return iso } }
 
@@ -28,11 +29,11 @@
 
   function getSiteLang(){ try{ if (window.tsdI18n && window.tsdI18n.getSiteLang) return window.tsdI18n.getSiteLang(); }catch(e){} return (navigator.language||'en').split('-')[0]; }
 
-  function showMessage(msg){ TITLE.textContent = ''; DATE.textContent=''; BODY.innerHTML = '<p class="small-muted">'+msg+'</p>'; CRUMB.textContent = ''; BADGE.textContent = ''; }
+  function showMessage(msg){ TITLE.textContent = ''; DATE.textContent=''; BODY.innerHTML = '<p class="small-muted">'+msg+'</p>'; CRUMB.textContent = ''; BADGE.textContent = ''; if (LEAD) LEAD.textContent=''; }
 
   function showSkeleton(){
-    // ensure skeletons are visible while loading
     updateBodyInnerHTML('<div class="skeleton skel-title"></div><div class="skeleton skel-meta"></div><div class="skeleton skel-para"></div><div class="skeleton skel-para"></div><div class="skeleton skel-para" style="width:80%"></div>');
+    if (LEAD) LEAD.textContent = '';
   }
 
   function updateBodyInnerHTML(html){ BODY.innerHTML = html; }
@@ -100,9 +101,11 @@
 
       const titleStr = (typeof item.title === 'string') ? item.title : pickLangField(item.title, lang) || 'Untitled';
       const bodyStr = (typeof item.body === 'string') ? item.body : pickLangField(item.body, lang) || '';
+      const summaryStr = (typeof item.summary === 'string') ? item.summary : pickLangField(item.summary, lang) || '';
       const dateStr = item.date || '';
 
       TITLE.textContent = titleStr;
+      if (LEAD) LEAD.textContent = summaryStr;
       if (dateStr) DATE.textContent = formatDate(dateStr);
       CRUMB.textContent = titleStr;
       BADGE.textContent = item.isLatest ? ((window.I18N && window.I18N.latest_badge) || 'Latest') : '';
