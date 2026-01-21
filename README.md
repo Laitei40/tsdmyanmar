@@ -87,18 +87,20 @@ For more information about Together for Sustainable Development (TSD Myanmar) an
 - **Translated files (produced by Crowdin):** `news-content/translations/{lang}/*.json`
 - **Build script:** run `npm run build` to generate localized static pages under the `news/` folder.
 
-Local build steps:
+Local preview (Cloudflare Pages emulator):
 
 ```powershell
 cd C:\Users\laite\Documents\TSD
-npm run build
-# Preview generated site
-python -m http.server 8000 --directory news
+npm install
+npm run dev
+# Optional: pick a port
+npm run dev -- --port 8788
 ```
 
-Cloudflare Pages build settings (recommended):
+Cloudflare Pages (recommended):
 
-- Build command: `npm run build`
-- Build output directory: (leave blank) — the repo root contains the site; ensure Pages is configured to publish from the repo and that the `news/` folder is included in the published output.
+- Run locally with `npm run dev`, which wraps `wrangler pages dev .`.
+- Configure Pages to publish from the repo root (static assets live in this directory; `news/` must be included).
+- Add your `account_id` or other settings in `wrangler.toml` when deploying.
 
 Crowdin configuration is updated to treat `news-content/source/en/*.json` as sources and to export translations into `news-content/translations/%locale%/` so Crowdin can commit translations back to GitHub automatically.

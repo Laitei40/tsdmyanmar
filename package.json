@@ -1,4 +1,10 @@
 {
-  "removed": true,
-  "note": "Removed Node.js test artifacts by request."
+  "name": "tsd-site",
+  "private": true,
+  "scripts": {
+    "dev": "wrangler pages dev ."
+  },
+  "devDependencies": {
+    "wrangler": "^3.86.0"
+  }
 }
