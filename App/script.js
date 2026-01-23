@@ -6,7 +6,7 @@ const apps = [
     tags: ['desktop', 'pdf', 'tools'],
     version: '1.0.0',
     icon: 'assets/PDFChhiana.svg',
-    downloadUrl: 'PDFChhiana.Installer_1.0.25.0_x64.msixbundle'
+    downloadUrl: 'https://cdn.tsdmyanmar.org/Apps/PDFChhiana.Installer_1.0.25.0_x64.msixbundle'
   }
 ];
 
