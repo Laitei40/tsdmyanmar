@@ -1,0 +1,8 @@
+Place a Windows `.ico` file named `PDFChhiana.ico` in this folder to use a native icon.
+
+Path you provided:
+C:\Users\laite\Documents\TSD\App\Assets\PDFChhiana.ico
+
+Notes:
+- The showcase uses `assets/PDFChhiana.svg` as a placeholder SVG. If you prefer the `.ico`, update the `icon` field in `App/script.js` for the `pdfchhiana` entry to `assets/PDFChhiana.ico`.
+- You can replace the SVG directly if you want a different design.

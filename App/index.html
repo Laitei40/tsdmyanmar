@@ -1,0 +1,174 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>TSD App Collection</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <header class="site-header">
+    <div class="shell">
+      <a href="#top" class="brand">
+        <span class="brand-mark">TSD</span>
+        <span class="brand-text">App Collection</span>
+      </a>
+      <nav class="nav">
+        <a href="#apps" class="nav-link">Apps</a>
+        <a href="#featured" class="nav-link">Featured</a>
+        <a href="#why" class="nav-link">Why TSD</a>
+        <a href="#about" class="nav-link">About</a>
+      </nav>
+    </div>
+  </header>
+
+  <main id="top">
+    <div class="shell">
+      <section class="hero" aria-labelledby="hero-title">
+        <div class="hero-copy">
+          <p class="eyebrow">Windows desktop • Offline-first • Open-source</p>
+          <h1 id="hero-title">TSD App Collection</h1>
+          <p class="lead">Modern, offline-first Windows applications for productivity and creativity.</p>
+          <div class="hero-actions">
+            <button id="heroBrowse" class="btn primary">Browse apps</button>
+            <button id="heroDownload" class="btn ghost">Download PDFChhiana</button>
+          </div>
+        </div>
+        <div class="hero-panel" aria-hidden="true">
+          <div class="hero-metric">
+            <span class="metric-label">Apps</span>
+            <span class="metric-value" id="metricApps">5+</span>
+          </div>
+          <div class="hero-metric">
+            <span class="metric-label">Offline ready</span>
+            <span class="metric-value">100%</span>
+          </div>
+          <div class="hero-metric">
+            <span class="metric-label">Open-source</span>
+            <span class="metric-value">Yes</span>
+          </div>
+        </div>
+      </section>
+
+      <section class="toolbar" aria-label="Filter apps">
+        <div class="toolbar-inner">
+          <div class="field">
+            <label for="search">Search apps</label>
+            <input id="search" type="search" placeholder="Search by name, feature, or tag" aria-label="Search apps" />
+          </div>
+          <div class="field">
+            <label for="filter">Category</label>
+            <select id="filter">
+              <option value="all">All categories</option>
+            </select>
+          </div>
+        </div>
+      </section>
+
+      <section id="apps" class="apps-section" aria-label="TSD apps">
+        <header class="section-head">
+          <h2>Apps showcase</h2>
+          <p>Discover productivity and creativity tools built to run fast, locally, and without trackers.</p>
+        </header>
+        <div class="apps-grid" aria-live="polite"></div>
+      </section>
+
+      <section id="featured" class="featured">
+        <div class="featured-layout">
+          <div class="featured-copy">
+            <p class="eyebrow">Featured app</p>
+            <h2>PDFChhiana</h2>
+            <p>
+              PDFChhiana (where Chhiana means “Forge” in the Mara language) is a free and open-source
+              Windows desktop application designed to forge PDFs into clean, consistent, and professional documents.
+            </p>
+            <p>
+              It allows you to merge PDFs, edit pages, and normalize page sizes for printing or sharing — all while
+              working fully offline on your own machine.
+            </p>
+            <ul class="feature-list">
+              <li>Merge multiple PDF files into a single, organized document</li>
+              <li>Edit pages — remove, duplicate, or reorder without touching the cloud</li>
+              <li>Normalize page sizes for predictable printing and clean exports</li>
+              <li>Runs fully offline for privacy-friendly, local-only workflows</li>
+            </ul>
+            <div class="featured-actions">
+              <button id="featuredDownload" class="btn primary">Download for Windows</button>
+              <button id="featuredLearn" class="btn ghost">View details</button>
+            </div>
+          </div>
+          <div class="featured-visual" aria-label="PDFChhiana screenshots" role="group">
+            <div class="window-chrome">
+              <span></span><span></span><span></span>
+            </div>
+            <div class="screenshots">
+              <img src="Assets/image0.png" alt="PDFChhiana main window" loading="lazy" />
+              <img src="Assets/image1.png" alt="PDFChhiana page management view" loading="lazy" />
+              <img src="Assets/image2.png" alt="PDFChhiana merge configuration" loading="lazy" />
+              <img src="Assets/image3.png" alt="PDFChhiana final PDF preview" loading="lazy" />
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section id="why" class="why">
+        <header class="section-head">
+          <h2>Why TSD Apps</h2>
+          <p>Software that respects your time, your device, and your privacy.</p>
+        </header>
+        <div class="why-grid">
+          <article class="why-card">
+            <h3>Fully offline</h3>
+            <p>Work without an internet connection. TSD apps are designed to run locally so you stay productive anywhere.</p>
+          </article>
+          <article class="why-card">
+            <h3>Open-source</h3>
+            <p>Built in the open, with source code available for review, contribution, and long-term maintainability.</p>
+          </article>
+          <article class="why-card">
+            <h3>Privacy-friendly</h3>
+            <p>No trackers, invasive telemetry, or adware. Your documents and activity stay on your machine.</p>
+          </article>
+          <article class="why-card">
+            <h3>Lightweight & fast</h3>
+            <p>Optimized for performance with small installers and responsive UIs that feel native on Windows.</p>
+          </article>
+        </div>
+      </section>
+
+      <section id="about" class="about">
+        <header class="section-head">
+          <h2>About TSD Apps</h2>
+        </header>
+        <p>
+          TSD builds tools that make it easier for people and organizations to work effectively in low-connectivity environments.
+          We focus on practical, offline-first software that is simple to deploy, transparent by design, and sustainable over the long term.
+        </p>
+      </section>
+    </div>
+  </main>
+
+  <!-- Modal -->
+  <div id="modal" class="modal" aria-hidden="true" role="dialog" aria-modal="true">
+    <div class="modal-dialog">
+      <button id="modalClose" class="modal-close" aria-label="Close">×</button>
+      <div id="modalContent"></div>
+    </div>
+  </div>
+
+  <footer class="site-footer">
+    <div class="shell footer-shell">
+      <div class="footer-links">
+        <a id="linkGithub" href="https://github.com/Laitei40" rel="noreferrer">GitHub</a>
+        <a id="linkWebsite" href="https://tsdmyanmar.org" rel="noreferrer">Website</a>
+        <a id="linkPrivacy" href="https://tsdmyanmar.org/privacy" rel="noreferrer">Privacy Policy</a>
+        <a id="linkContact" href="mailto:info@tsdmyanmar.org" rel="noreferrer">Contact</a>
+      </div>
+      <small>© TSD Myanmar</small>
+    </div>
+  </footer>
+
+  <script src="script.js"></script>
+</body>
+</html>
