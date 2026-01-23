@@ -5,7 +5,7 @@ const apps = [
     desc: 'PDFChhiana (where Chhiana means "Forge" in the Mara language) is a free and open-source Windows desktop application designed to forge PDFs into clean, consistent, and professional documents. It allows users to merge PDFs, edit pages, and normalize page sizes for printing or sharing — all while working fully offline.',
     tags: ['desktop', 'pdf', 'tools'],
     version: '1.0.0',
-    icon: 'assets/PDFChhiana.svg',
+    icon: 'Assets/PDFChhiana.svg',
     downloadUrl: 'https://cdn.tsdmyanmar.org/Apps/PDFChhiana.Installer_1.0.25.0_x64.msixbundle'
   }
 ];
