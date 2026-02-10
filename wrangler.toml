@@ -5,6 +5,9 @@
 name = "tsdmyanmar"
 compatibility_date = "2026-01-12"
 
+# Pages: serve static assets from the project root
+pages_build_output_dir = "."
+
 # Bind your Cloudflare D1 database to the environment variable UPDATES_DB
 [[d1_databases]]
 binding = "UPDATES_DB"
