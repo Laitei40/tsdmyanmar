@@ -1,13 +1,15 @@
 /**
- * updates.js — Load and render the Updates & News feed
+ * updates.js — TSD Myanmar · News & Updates feed
  *
  * Features:
- *  - Fetches news index from tsdNews helper (or static JSON fallback)
- *  - Renders a featured card for the latest item + a card grid for the rest
+ *  - Fetches from /api/news via tsdNews helper
+ *  - Language selector (EN / မြန်မာ / Mara) — filters news content language only (does not change site UI)
+ *  - Featured hero card + card grid
  *  - Client-side year/category filter, search, sort
  *  - Pagination via "Load more"
- *  - Intersection-observer reveal animation
- *  - Fully i18n and theme-aware
+ *  - IntersectionObserver reveal animations
+ *  - Category color-coded badges
+ *  - Theme-aware, fully accessible
  */
 (function () {
   'use strict';
@@ -17,7 +19,7 @@
   var LOADING_MSG_ID   = 'updates-loading';
   var PAGE_SIZE        = 6;
 
-  // ---- State ----
+  // ── State ──
   var offset         = 0;
   var total          = 0;
   var query          = '';
@@ -25,13 +27,15 @@
   var categoryFilter = '';
   var sortOrder      = 'newest';
   var isLoading      = false;
+  var contentLang    = 'en'; // language for filtering news content only (not site UI)
 
-  // ---- Helpers ----
+  // ── DOM helpers ──
   function el(tag, props) {
     var d = document.createElement(tag);
     if (props) {
       Object.keys(props).forEach(function (k) {
         if (k === 'class') d.className = props[k];
+        else if (k === 'html') d.innerHTML = props[k];
         else if (k === 'attrs') Object.keys(props.attrs).forEach(function (a) { d.setAttribute(a, props.attrs[a]); });
         else d[k] = props[k];
       });
@@ -44,16 +48,38 @@
     return d;
   }
 
+  // ── Formatting ──
   function formatDate(iso) {
+    if (!iso) return '';
     try { return new Date(iso).toLocaleDateString(undefined, { year: 'numeric', month: 'short', day: 'numeric' }); }
     catch (e) { return iso; }
   }
 
+  function stripHtml(html) {
+    if (!html) return '';
+    var tmp = document.createElement('div');
+    tmp.innerHTML = html;
+    return (tmp.textContent || tmp.innerText || '').trim();
+  }
+
+  // ── i18n helpers ──
+  /** Returns the content language chosen via the on-page lang switcher (not the site UI language). */
+  function getLang() {
+    return contentLang;
+  }
+
+  function i18n(key, fallback) {
+    return (window.I18N && window.I18N[key]) || fallback;
+  }
+
   function pickLangField(obj, lang) {
     if (!obj) return '';
+    if (typeof obj === 'string') return obj;
     var candidates = (lang === 'mrh') ? ['mrh', 'mara', 'en'] : [lang, 'en'];
     for (var i = 0; i < candidates.length; i++) { if (obj[candidates[i]]) return obj[candidates[i]]; }
-    return '';
+    // fallback to any available value
+    var keys = Object.keys(obj);
+    return keys.length ? obj[keys[0]] : '';
   }
 
   function normalizeItemLangKeys(item) {
@@ -77,16 +103,7 @@
     return '';
   }
 
-  function getLang() {
-    return (window.tsdI18n && window.tsdI18n.getSiteLang && window.tsdI18n.getSiteLang()) || 'en';
-  }
-
-  function i18n(key, fallback) {
-    return (window.I18N && window.I18N[key]) || fallback;
-  }
-
   function getItemImage(it) {
-    // Try to extract a thumbnail URL from the item
     if (it.image) return it.image;
     if (it.thumbnail) return it.thumbnail;
     if (Array.isArray(it.images) && it.images.length) {
@@ -96,17 +113,65 @@
     return '';
   }
 
-  // ---- Card builders ----
+  /** Check if an item has non-empty content in a specific language (no fallback). */
+  function hasLangContent(item, lang) {
+    var title = item.title;
+    if (!title) return false;
+    if (typeof title === 'string') return true; // plain string = available
+    return !!(title[lang] && title[lang].trim());
+  }
 
-  /**
-   * Build the featured (hero) card for the top / latest item.
-   */
+  // Category display label map
+  var CAT_LABELS = { news: 'News', report: 'Report', announcement: 'Announcement', story: 'Story' };
+
+  // ═══════════════════════════════════════
+  // LANGUAGE SELECTOR
+  // ═══════════════════════════════════════
+  function initLangSwitcher() {
+    var btns = document.querySelectorAll('.lang-btn');
+    if (!btns.length) return;
+
+    // Set initial active state (default: EN)
+    btns.forEach(function (btn) {
+      var lang = btn.getAttribute('data-lang');
+      var isActive = lang === contentLang;
+      btn.classList.toggle('active', isActive);
+      btn.setAttribute('aria-pressed', isActive ? 'true' : 'false');
+    });
+
+    // Click handler — only filters news content language, does NOT change site UI language
+    btns.forEach(function (btn) {
+      btn.addEventListener('click', function () {
+        var lang = btn.getAttribute('data-lang');
+        if (!lang || lang === contentLang) return;
+
+        // Update visual state immediately
+        btns.forEach(function (b) {
+          b.classList.remove('active');
+          b.setAttribute('aria-pressed', 'false');
+        });
+        btn.classList.add('active');
+        btn.setAttribute('aria-pressed', 'true');
+
+        // Update local content language and re-render
+        contentLang = lang;
+        loadAndRender(true);
+      });
+    });
+  }
+
+  // ═══════════════════════════════════════
+  // CARD BUILDERS
+  // ═══════════════════════════════════════
+
+  /** Featured (hero) card */
   function buildFeatured(it, lang) {
-    var title    = (typeof it.title === 'string') ? it.title : (pickLangField(it.title, lang) || 'Untitled');
-    var summary  = (typeof it.summary === 'string') ? it.summary : (pickLangField(it.summary, lang) || '');
+    var title    = pickLangField(it.title, lang) || 'Untitled';
+    var summary  = stripHtml(pickLangField(it.summary, lang) || '');
     var ctaLabel = i18n('read_more', 'Read more');
     var href     = '/update.html?id=' + encodeURIComponent(it.id || '');
     var category = buildCategory(it) || i18n('latest_badge', 'Latest');
+    var catLabel = CAT_LABELS[category.toLowerCase()] || category;
     var imgUrl   = getItemImage(it);
 
     var card = el('article', { class: 'featured-card reveal', attrs: { role: 'listitem' } });
@@ -123,8 +188,9 @@
     // Body
     var body = el('div', { class: 'featured-body' });
 
+    var chip = el('span', { class: 'featured-chip', attrs: { 'data-cat': category.toLowerCase() } }, catLabel);
     var metaRow = el('div', { class: 'featured-meta' },
-      el('span', { class: 'featured-chip' }, category),
+      chip,
       el('time', { class: 'featured-date', attrs: { datetime: it.date || '' } }, formatDate(it.date))
     );
     body.appendChild(metaRow);
@@ -138,34 +204,38 @@
     return card;
   }
 
-  /**
-   * Build a standard grid card.
-   */
+  /** Standard grid card */
   function buildCard(it, lang) {
-    var title      = (typeof it.title === 'string') ? it.title : (pickLangField(it.title, lang) || 'Untitled');
-    var summaryRaw = (typeof it.summary === 'string') ? it.summary : (pickLangField(it.summary, lang) || '');
-    var bodyRaw    = (typeof it.body === 'string') ? it.body : (pickLangField(it.body, lang) || '');
-    var summary    = summaryRaw || bodyRaw;
+    var title      = pickLangField(it.title, lang) || 'Untitled';
+    var summaryRaw = stripHtml(pickLangField(it.summary, lang) || '');
+    var bodyRaw    = stripHtml(pickLangField(it.body, lang) || '');
+    var summary    = summaryRaw || (bodyRaw.length > 200 ? bodyRaw.substring(0, 200) + '…' : bodyRaw);
     var ctaLabel   = i18n('read_more', 'Read more');
     var href       = '/update.html?id=' + encodeURIComponent(it.id || '');
     var category   = buildCategory(it);
+    var catLabel   = CAT_LABELS[category.toLowerCase()] || category;
     var imgUrl     = getItemImage(it);
 
     var article = el('article', { class: 'update-card reveal', attrs: { role: 'listitem' } });
 
     // Thumbnail
     if (imgUrl) {
+      var thumbWrap = el('div', { class: 'card-thumb-wrap' });
       var thumb = el('img', { class: 'card-thumb', attrs: { src: imgUrl, alt: '', loading: 'lazy', decoding: 'async' } });
-      thumb.onerror = function () { thumb.style.display = 'none'; };
-      article.appendChild(thumb);
+      thumb.onerror = function () { thumbWrap.style.display = 'none'; };
+      thumbWrap.appendChild(thumb);
+      article.appendChild(thumbWrap);
     }
 
-    // Content wrapper
+    // Content
     var content = el('div', { class: 'card-content' });
 
     // Header row (badge + date)
     var header = el('div', { class: 'card-header' });
-    if (category) header.appendChild(el('span', { class: 'badge' }, category));
+    if (catLabel) {
+      var badge = el('span', { class: 'badge', attrs: { 'data-cat': category.toLowerCase() } }, catLabel);
+      header.appendChild(badge);
+    }
     header.appendChild(el('time', { class: 'update-date', attrs: { datetime: it.date || '' } }, formatDate(it.date)));
     content.appendChild(header);
 
@@ -176,16 +246,17 @@
     if (summary) content.appendChild(el('p', { class: 'update-summary' }, summary));
 
     // CTA
-    var cta = el('div', { class: 'update-cta' },
+    content.appendChild(el('div', { class: 'update-cta' },
       el('a', { class: 'btn-link', attrs: { href: href } }, ctaLabel)
-    );
-    content.appendChild(cta);
+    ));
 
     article.appendChild(content);
     return article;
   }
 
-  // ---- Render helpers ----
+  // ═══════════════════════════════════════
+  // RENDER HELPERS
+  // ═══════════════════════════════════════
 
   function renderEmpty(container) {
     container.innerHTML = '';
@@ -214,7 +285,7 @@
       container.appendChild(buildCard(it, lang));
     });
 
-    // Reveal animation via IntersectionObserver
+    // Reveal animation
     requestAnimationFrame(function () {
       if (!('IntersectionObserver' in window)) {
         container.querySelectorAll('.reveal').forEach(function (n) { n.classList.add('visible'); });
@@ -236,7 +307,9 @@
     }
   }
 
-  // ---- Main load ----
+  // ═══════════════════════════════════════
+  // MAIN LOAD
+  // ═══════════════════════════════════════
 
   async function loadAndRender(reset) {
     var container  = document.getElementById(CONTAINER_ID);
@@ -252,7 +325,7 @@
       if (loading) loading.textContent = i18n('loading', 'Loading…');
 
       var lang = getLang();
-      if (reset) { offset = 0; total = 0; showSkeleton(container, 3); }
+      if (reset) { offset = 0; total = 0; showSkeleton(container, 4); }
 
       // Fetch data
       var data;
@@ -268,7 +341,10 @@
       var items = Array.isArray(data) ? data : (data.items || []);
       items.forEach(normalizeItemLangKeys);
 
-      // ---- Filters ----
+      // ── Filters ──
+      // Language filter: only show articles that have content in the selected language
+      items = items.filter(function (it) { return hasLangContent(it, lang); });
+
       if (yearFilter) items = items.filter(function (it) { return (new Date(it.date)).getFullYear() === Number(yearFilter); });
       if (categoryFilter) {
         items = items.filter(function (it) {
@@ -280,32 +356,34 @@
       if (query) {
         var q = query.toLowerCase();
         items = items.filter(function (it) {
-          var t = (typeof it.title === 'string') ? it.title : (pickLangField(it.title, lang) || '');
-          var s = (typeof it.summary === 'string') ? it.summary : (pickLangField(it.summary, lang) || '');
+          var t = pickLangField(it.title, lang) || '';
+          var s = pickLangField(it.summary, lang) || '';
           return (t + s).toLowerCase().indexOf(q) !== -1;
         });
       }
 
-      // ---- Sort ----
+      // ── Sort ──
       if (sortOrder === 'oldest') items.sort(function (a, b) { return new Date(a.date) - new Date(b.date); });
       else items.sort(function (a, b) { return new Date(b.date) - new Date(a.date); });
 
       total = items.length;
 
-      // ---- Paginate ----
+      // ── Paginate ──
       var paged = items.slice(offset, offset + PAGE_SIZE);
       renderItems(container, paged, lang, !reset);
       offset += paged.length;
 
-      // ---- Populate year filter on reset ----
+      // ── Populate year filter on reset ──
       if (filter && reset) {
-        var years = Array.from(new Set((Array.isArray(data) ? data : []).map(function (i) { return new Date(i.date).getFullYear(); }))).sort(function (a, b) { return b - a; });
+        var allItems = Array.isArray(data) ? data : (data.items || []);
+        allItems.forEach(normalizeItemLangKeys);
+        var years = Array.from(new Set(allItems.map(function (i) { return new Date(i.date).getFullYear(); }))).filter(function(y){ return !isNaN(y); }).sort(function (a, b) { return b - a; });
         filter.innerHTML = '';
         filter.appendChild(el('option', { value: '' }, 'All years'));
         years.forEach(function (y) { filter.appendChild(el('option', { value: y }, String(y))); });
       }
 
-      // ---- Load-more button state ----
+      // ── Load-more button state ──
       if (loadMore) {
         loadMore.textContent = i18n('load_more', 'Load more');
         loadMore.classList.remove('btn-loading');
@@ -318,14 +396,16 @@
 
     } catch (err) {
       if (loading) loading.textContent = 'Failed to load updates';
-      container.innerHTML = '<p class="empty-state">Unable to load updates. Please try again later.</p>';
+      container.innerHTML = '<div class="empty-state"><h3>Unable to load updates</h3><p>Please try again later.</p></div>';
       console.error('updates load error', err);
     } finally {
       isLoading = false;
     }
   }
 
-  // ---- Wire up controls ----
+  // ═══════════════════════════════════════
+  // WIRE EVERYTHING UP
+  // ═══════════════════════════════════════
 
   document.addEventListener('DOMContentLoaded', function () {
     var filter     = document.getElementById(FILTER_ID);
@@ -334,10 +414,13 @@
     var categoryEl = document.getElementById('updates-category-filter');
     var sortEl     = document.getElementById('updates-sort');
 
+    // Init language switcher
+    initLangSwitcher();
+
+    // Initial load
     loadAndRender(true);
 
-    // Re-render on language change
-    window.addEventListener('site:langchange', function () { loadAndRender(true); });
+
 
     if (filter) filter.addEventListener('change', function () { yearFilter = filter.value; loadAndRender(true); });
     if (categoryEl) categoryEl.addEventListener('change', function () { categoryFilter = (categoryEl.value || '').toLowerCase(); loadAndRender(true); });
@@ -348,7 +431,7 @@
       var t = null;
       search.addEventListener('input', function () {
         clearTimeout(t);
-        t = setTimeout(function () { query = (search.value || '').trim(); loadAndRender(true); }, 350);
+        t = setTimeout(function () { query = (search.value || '').trim(); loadAndRender(true); }, 300);
       });
     }
 

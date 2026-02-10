@@ -179,13 +179,17 @@ function sanitizeI18n(obj, html = false) {
 function validate(body) {
   const err = {};
   const t = parseI18n(body.title);
-  if (!t.en || t.en.length > 200) err.title = 'English title required (≤200 chars)';
+  const hasTitle = Object.values(t).some(v => typeof v === 'string' && v.trim());
+  if (!hasTitle) err.title = 'Title required in at least one language';
+  const titleLen = Object.values(t).filter(v => typeof v === 'string').some(v => v.length > 200);
+  if (titleLen) err.title = 'Title must be ≤200 chars';
   if (!body.slug || !/^[-a-z0-9]+$/.test(body.slug)) err.slug = 'Slug: lowercase, numbers, hyphens';
   if (!body.author) err.author = 'Author required';
   if (!body.publish_date || !isoDateValid(body.publish_date)) err.publish_date = 'Date: YYYY-MM-DD';
   if (!['draft', 'published', 'archived'].includes(body.status)) err.status = 'Invalid status';
   const b = parseI18n(body.body);
-  if (!b.en) err.body = 'English content required';
+  const hasBody = Object.values(b).some(v => typeof v === 'string' && v.trim());
+  if (!hasBody) err.body = 'Content required in at least one language';
   return err;
 }
 

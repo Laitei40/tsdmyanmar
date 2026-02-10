@@ -1,0 +1,25 @@
+# Dependencies
+node_modules/
+
+# Build outputs
+dist/
+admin/dist/
+
+# Wrangler local state (D1 databases, R2 objects, temp files)
+.wrangler/
+
+# Local D1 database state (if copied outside .wrangler)
+v3/
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# IDE
+.vscode/
+*.swp
+
+# Env files
+.env
+.env.local
+.dev.vars

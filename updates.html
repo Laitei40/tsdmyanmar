@@ -8,75 +8,91 @@
   <link rel="manifest" href="/manifest.json">
   <link rel="icon" id="site-favicon" href="/assets/images/logo/logo_en.svg" type="image/svg+xml">
   <link rel="stylesheet" href="/css/updates.css">
-    <script>
-      (function(){
-        try{
-          const k = 'tsd_theme';
-          const stored = localStorage.getItem(k) || 'system';
-          if (stored === 'system'){
-            const dark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
-            document.documentElement.setAttribute('data-theme', dark? 'dark':'light');
-          } else {
-            document.documentElement.setAttribute('data-theme', stored);
-          }
-        }catch(e){}
-      })();
-    </script>
+  <script>
+    (function(){
+      try{
+        const k = 'tsd_theme';
+        const stored = localStorage.getItem(k) || 'system';
+        if (stored === 'system'){
+          const dark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+          document.documentElement.setAttribute('data-theme', dark? 'dark':'light');
+        } else {
+          document.documentElement.setAttribute('data-theme', stored);
+        }
+      }catch(e){}
+    })();
+  </script>
 </head>
 <body>
   <div class="updates-page-shell">
-    <div class="updates-aurora" aria-hidden="true"></div>
-
     <div id="header"></div>
 
     <main class="updates-page">
       <!-- Hero -->
-      <section class="updates-hero updates-layout">
-        <p class="eyebrow" data-i18n="updates_eyebrow">Transparency &amp; Impact</p>
-        <h1 data-i18n="updates_title">Updates &amp; News</h1>
-        <p class="lead" data-i18n="updates_subtitle">Recent activity, program progress, and transparency notes from TSD Myanmar.</p>
-        <div class="hero-controls">
-          <div class="search" aria-label="Search updates">
-            <label for="updates-search" class="visually-hidden" data-i18n="search_placeholder">Search updates</label>
-            <input id="updates-search" type="search" placeholder="Search updates…" aria-controls="updates-list" data-i18n-placeholder="search_placeholder">
+      <section class="news-hero">
+        <div class="news-hero__bg" aria-hidden="true"></div>
+        <div class="news-hero__content">
+          <span class="news-hero__eyebrow" data-i18n="updates_eyebrow">Transparency &amp; Impact</span>
+          <h1 class="news-hero__title" data-i18n="updates_title">Updates &amp; News</h1>
+          <p class="news-hero__lead" data-i18n="updates_subtitle">Recent activity, program progress, and transparency notes from TSD Myanmar.</p>
+        </div>
+      </section>
+
+      <!-- Toolbar: Language + Search + Filters -->
+      <div class="news-toolbar" id="news-toolbar">
+        <div class="news-toolbar__inner">
+
+          <!-- Language Selector -->
+          <div class="lang-switcher" role="group" aria-label="Select language">
+            <button class="lang-btn active" data-lang="en" aria-pressed="true" title="English">EN</button>
+            <button class="lang-btn" data-lang="my" aria-pressed="false" title="Myanmar (Burmese)">မြန်မာ</button>
+            <button class="lang-btn" data-lang="mrh" aria-pressed="false" title="Mara (Chin)">Mara</button>
+          </div>
+
+          <!-- Search -->
+          <div class="news-search">
+            <svg class="news-search__icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.35-4.35"/></svg>
+            <label for="updates-search" class="visually-hidden">Search updates</label>
+            <input id="updates-search" type="search" placeholder="Search articles…" aria-controls="updates-list" data-i18n-placeholder="search_placeholder">
+          </div>
+
+          <!-- Filters -->
+          <div class="news-filters">
+            <label for="updates-year-filter" class="visually-hidden">Year</label>
+            <select id="updates-year-filter" aria-controls="updates-list">
+              <option value="">All years</option>
+            </select>
+
+            <label for="updates-category-filter" class="visually-hidden">Category</label>
+            <select id="updates-category-filter" aria-controls="updates-list">
+              <option value="">All categories</option>
+              <option value="news">News</option>
+              <option value="report">Report</option>
+              <option value="announcement">Announcement</option>
+              <option value="story">Story</option>
+            </select>
+
+            <label for="updates-sort" class="visually-hidden">Sort</label>
+            <select id="updates-sort" aria-controls="updates-list">
+              <option value="newest">Newest first</option>
+              <option value="oldest">Oldest first</option>
+            </select>
           </div>
         </div>
-      </section>
+        <div class="news-toolbar__status" aria-live="polite"><span id="updates-loading"></span></div>
+      </div>
 
-      <!-- Filters -->
-      <section class="filter-bar updates-layout" aria-label="Filter controls">
-        <div class="filter-group">
-          <label for="updates-year-filter" class="visually-hidden">Filter by year</label>
-          <select id="updates-year-filter" aria-controls="updates-list">
-            <option value="">All years</option>
-          </select>
-          <label for="updates-category-filter" class="visually-hidden">Filter by category</label>
-          <select id="updates-category-filter" aria-controls="updates-list">
-            <option value="">All categories</option>
-            <option value="news">News</option>
-            <option value="report">Report</option>
-            <option value="announcement">Announcement</option>
-          </select>
-          <label for="updates-sort" class="visually-hidden">Sort</label>
-          <select id="updates-sort" aria-controls="updates-list">
-            <option value="newest">Newest first</option>
-            <option value="oldest">Oldest first</option>
-          </select>
-        </div>
-        <div class="status" aria-live="polite" aria-atomic="true"><span id="updates-loading"></span></div>
-      </section>
-
-      <!-- Card grid -->
-      <section class="updates-layout">
-        <div id="updates-list" class="updates-list" role="list" aria-label="Updates and news">
+      <!-- Article grid -->
+      <section class="news-content">
+        <div id="updates-list" class="news-grid" role="list" aria-label="Updates and news">
           <p class="visually-hidden" data-i18n="loading">Loading updates…</p>
         </div>
       </section>
 
       <!-- Load more -->
-      <div class="updates-actions updates-layout" style="text-align:center; margin-bottom:2rem;">
-        <button id="updates-load-more" data-i18n="load_more" aria-label="Load more updates">Load more</button>
-        <p style="margin-top:.75rem;font-size:.9rem;"><a href="updates-archive.html" data-i18n="see_archive">See full archive →</a></p>
+      <div class="news-actions">
+        <button id="updates-load-more" class="news-load-btn" data-i18n="load_more" aria-label="Load more updates">Load more</button>
+        <p class="news-archive-link"><a href="updates-archive.html" data-i18n="see_archive">See full archive →</a></p>
       </div>
     </main>
 

@@ -40,7 +40,7 @@
     }
   }
 
-  async function fetchAllFromApi(lang){
+  async function fetchAllFromApi(){
     const pageSize = 40;
     let offset = 0;
     let items = [];
@@ -49,7 +49,8 @@
     const maxPages = 15; // guardrail
     while (pages < maxPages){
       pages++;
-      const url = '/api/news?limit=' + pageSize + '&offset=' + offset + '&lang=' + encodeURIComponent(lang);
+      // Don't send lang — return full i18n objects so client-side language filtering works
+      const url = '/api/news?limit=' + pageSize + '&offset=' + offset;
       const res = await fetch(url, {cache:'no-cache'});
       if (!res.ok) throw new Error('API index fetch failed: ' + res.status);
       const data = await res.json();
@@ -63,15 +64,15 @@
   }
 
   async function fetchNewsIndex(){
-    const lang = getLang();
-    // 1) Try D1 API (paged)
+    // 1) Try D1 API (paged) — returns full i18n objects for client-side filtering
     try{
-      return await fetchAllFromApi(lang);
+      return await fetchAllFromApi();
     }catch(e){
       console.warn('API index fetch failed, falling back to static JSON', e);
     }
 
     // 2) Fallback to static news index
+    const lang = getLang();
     const tryFor = async (l) => {
       const url = '/news/' + encodeURIComponent(l) + '/index.json';
       return tryFetchJson(url);

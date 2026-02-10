@@ -696,12 +696,8 @@ function syncLangUI() {
   if (dotMy)  dotMy.classList.toggle('hidden',  !!(formTitle.my));
 
   // Placeholder text
-  if (activeLang === 'en') {
-    $('#inp-title').placeholder = 'Article title (required)';
-  } else {
-    const langLabel = LANGS.find(l => l.code === activeLang)?.label || activeLang;
-    $('#inp-title').placeholder = `Title in ${langLabel}`;
-  }
+  const langLabel = LANGS.find(l => l.code === activeLang)?.label || activeLang;
+  $('#inp-title').placeholder = `Article title in ${langLabel}`;
 }
 
 function updateImagePreview() {
@@ -730,15 +726,18 @@ async function handleSave(e) {
   e.preventDefault();
   saveCurrentLangInputs();
 
-  // Validation
-  if (!formTitle.en?.trim())       { showFormError('English title is required.');   return; }
+  // Validation — at least one language must have title + body
+  const hasAnyTitle = Object.values(formTitle).some(v => v?.trim());
+  if (!hasAnyTitle)                { showFormError('Title is required in at least one language.');  return; }
   if (!$('#inp-slug').value.trim()){ showFormError('Slug is required.');            return; }
   if (!$('#inp-author').value.trim()){ showFormError('Author is required.');        return; }
   if (!$('#inp-date').value)       { showFormError('Publish date is required.');    return; }
 
-  // Check English body content (strip empty Quill markup)
-  const enBody = (formBody.en || '').replace(/<p><br><\/p>/g, '').trim();
-  if (!enBody)                     { showFormError('English content is required.'); return; }
+  // Check body content in at least one language (strip empty Quill markup)
+  const hasAnyBody = Object.values(formBody).some(v =>
+    (v || '').replace(/<p><br><\/p>/g, '').trim()
+  );
+  if (!hasAnyBody)                 { showFormError('Content is required in at least one language.'); return; }
 
   const tagsRaw = $('#inp-tags').value;
   const payload = {
@@ -879,7 +878,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
   /* ── Auto-slug ── */
   $('#inp-title').addEventListener('input', () => {
-    if (autoSlug && activeLang === 'en') {
+    if (autoSlug) {
       $('#inp-slug').value = slugify($('#inp-title').value);
     }
   });
@@ -888,9 +887,11 @@ document.addEventListener('DOMContentLoaded', () => {
 
   $('#btn-auto-slug').addEventListener('click', () => {
     autoSlug = true;
-    // Use English title regardless of current tab
-    const enTitle = activeLang === 'en' ? $('#inp-title').value : (formTitle.en || '');
-    $('#inp-slug').value = slugify(enTitle);
+    // Use current tab title, or first available title from any language
+    saveCurrentLangInputs();
+    const currentTitle = $('#inp-title').value.trim();
+    const firstTitle = currentTitle || Object.values(formTitle).find(v => v?.trim()) || '';
+    $('#inp-slug').value = slugify(firstTitle);
   });
 
   /* ── Image preview ── */
