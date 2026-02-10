@@ -1,0 +1,24 @@
+{
+  "name": "TSD Myanmar",
+  "short_name": "TSD",
+  "description": "Towards Sustainable Development Myanmar — Education, food security, inclusion, relief & DRR",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#0d6e3f",
+  "icons": [
+    {
+      "src": "/assets/images/logo/logo_en.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    },
+    {
+      "src": "/assets/images/logo/favicon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "maskable"
+    }
+  ]
+}

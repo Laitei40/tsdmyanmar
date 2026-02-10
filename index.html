@@ -5,6 +5,7 @@
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <title>TSD Myanmar - Home</title>
   <link rel="stylesheet" href="css/main.css">
+  <link rel="manifest" href="/manifest.json">
   <link id="site-favicon" rel="icon" href="/assets/images/logo/logo_en.svg" type="image/svg+xml">
   <script>
     // Early theme application to avoid flash; reads saved preference and applies immediately.
@@ -64,7 +65,7 @@
       </div>
 
       <div class="hero-media reveal" aria-hidden="true">
-        <div style="border-radius:12px;overflow:hidden;box-shadow:0 6px 18px rgba(0,0,0,0.06)">
+        <div class="hero-media-frame">
           <div id="hero-slider"
                data-urls-light='["https://picsum.photos/id/1018/1600/900","https://picsum.photos/id/1015/1600/900","https://picsum.photos/id/1005/1600/900","https://picsum.photos/id/1003/1600/900","https://picsum.photos/id/1020/1600/900","https://picsum.photos/id/1021/1600/900","https://picsum.photos/id/1033/1600/900","https://picsum.photos/id/1043/1600/900"]'
                data-urls-dark='["https://picsum.photos/id/1024/1600/900","https://picsum.photos/id/1025/1600/900","https://picsum.photos/id/1027/1600/900","https://picsum.photos/id/1028/1600/900","https://picsum.photos/id/1031/1600/900","https://picsum.photos/id/1035/1600/900","https://picsum.photos/id/1036/1600/900","https://picsum.photos/id/1044/1600/900"]'
@@ -156,6 +157,7 @@
   <script src="js/components/hero-motto.js" defer></script>
   <script src="js/components/footer-nav.js" defer></script>
   <script src="js/main.js"></script>
+  <script src="/js/sw-register.js"></script>
 </body>
 </html>
 

@@ -56,12 +56,17 @@ document.addEventListener('DOMContentLoaded', () => {
     s.className = 'slide' + (i === 0 ? ' active' : '');
     s.setAttribute('role', 'group');
     s.setAttribute('aria-roledescription', 'testimonial');
-    s.innerHTML = `
-      <div class="card">
-        <div class="media"><img src="${it.img}" alt="testimonial image ${i+1}" loading="lazy"></div>
-        <div class="content"><p>${it.quote}</p><cite>${it.author}</cite></div>
-      </div>
-    `;
+    function esc(str){ return String(str||'').replace(/[&<>"']/g, function(c){ return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]||''; }); }
+    var card = document.createElement('div'); card.className = 'card';
+    var media = document.createElement('div'); media.className = 'media';
+    var img = document.createElement('img'); img.src = it.img || ''; img.alt = 'testimonial image ' + (i+1); img.loading = 'lazy';
+    media.appendChild(img);
+    var content = document.createElement('div'); content.className = 'content';
+    var p = document.createElement('p'); p.textContent = it.quote || '';
+    var cite = document.createElement('cite'); cite.textContent = it.author || '';
+    content.appendChild(p); content.appendChild(cite);
+    card.appendChild(media); card.appendChild(content);
+    s.appendChild(card);
     wrap.appendChild(s);
     return s;
   });

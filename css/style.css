@@ -18,6 +18,7 @@
 	/* Neutrals */
 	--color-bg:   #ffffff; /* page background (light) */
 	--color-surface: #ffffff; /* cards, surfaces */
+	--card-bg: #ffffff; /* card backgrounds (used by updates.css) */
 	--color-text: #0b1720; /* primary readable text */
 	--color-muted: #6b7280; /* secondary text */
 	--color-border: #e6e6e6;
@@ -44,6 +45,7 @@
 [data-theme="dark"]{
 	--color-bg: #0f1720; /* deep, soft neutral */
 	--color-surface: #0b1a22; /* slightly lighter surface */
+	--card-bg: #0b1a22; /* card backgrounds dark */
 	--color-text: #e6eef2; /* soft light text */
 	--color-muted: #98a2ad; /* muted secondary */
 	--color-border: rgba(255,255,255,0.06);
@@ -73,7 +75,7 @@ main{padding-top:22px}
 
 /* Improve readability for updates and stats */
 .updates-hero h1{font-size:1.6rem;margin-bottom:6px}
-.updates-list .update-card, .update-item{padding:16px;border-radius:12px}
+.update-item{padding:16px;border-radius:12px}
 .stats{gap:18px}
 .stat{padding:16px}
 
@@ -81,7 +83,6 @@ main{padding-top:22px}
 .btn-primary{background:var(--primary);border-color:transparent}
 .btn-primary:hover{background:var(--color-primary);filter:brightness(1.02)}
 .btn-primary:focus{box-shadow:0 0 0 4px rgba(0,127,63,0.12)}
-.btn-link{color:var(--primary);text-decoration:underline}
 
 /* Skeleton loader for updates list */
 .skeleton-card{height:76px;border-radius:12px;background:linear-gradient(90deg,var(--surface),rgba(0,0,0,0.03),var(--surface));background-size:200% 100%;animation:skeleton-shimmer 1.2s linear infinite;margin-bottom:12px}
@@ -131,6 +132,8 @@ main{max-width:var(--max-width);margin:18px auto;padding:0 16px}
 .page-section{scroll-margin-top:88px}
 @media(max-width:719px){.page-section{scroll-margin-top:64px}}
 
+.hero-media-frame{border-radius:12px;overflow:hidden;box-shadow:0 6px 18px rgba(0,0,0,0.06)}
+
 /* Hero */
 .hero{display:grid;gap:18px;padding:18px;background:linear-gradient(180deg,rgba(0,0,0,0.02),transparent);border-radius:var(--radius);align-items:center}
 .hero-inner{display:flex;flex-direction:column;gap:12px}
@@ -170,8 +173,9 @@ main{max-width:var(--max-width);margin:18px auto;padding:0 16px}
 .hero-ctas{display:flex;gap:10px;flex-wrap:wrap}
 .btn{display:inline-flex;align-items:center;gap:10px;padding:10px 16px;border-radius:10px;border:0;cursor:pointer;font-weight:600;text-decoration:none}
 
-/* Professional Donate button */
-.btn-primary{
+/* Professional Donate button (scoped to header to avoid override on feature pages) */
+.header-actions .btn-primary,
+.hero-ctas .btn-primary{
   background: linear-gradient(180deg, var(--accent), var(--color-accent-muted));
   color: #ffffff;
   padding: 10px 18px;
@@ -181,9 +185,12 @@ main{max-width:var(--max-width);margin:18px auto;padding:0 16px}
   transition: transform 200ms var(--easing), box-shadow 200ms var(--easing), opacity 160ms var(--easing);
   display:inline-flex;align-items:center;gap:8px;text-decoration:none
 }
-.btn-primary:hover{transform:translateY(-3px);box-shadow:0 12px 30px rgba(16,24,40,0.16)}
-.btn-primary:active{transform:translateY(0);box-shadow:0 6px 18px rgba(16,24,40,0.10)}
-.btn-primary:focus-visible{outline:3px solid rgba(0,127,63,0.14);outline-offset:3px}
+.header-actions .btn-primary:hover,
+.hero-ctas .btn-primary:hover{transform:translateY(-3px);box-shadow:0 12px 30px rgba(16,24,40,0.16)}
+.header-actions .btn-primary:active,
+.hero-ctas .btn-primary:active{transform:translateY(0);box-shadow:0 6px 18px rgba(16,24,40,0.10)}
+.header-actions .btn-primary:focus-visible,
+.hero-ctas .btn-primary:focus-visible{outline:3px solid rgba(0,127,63,0.14);outline-offset:3px}
 
 .btn-ghost{background:transparent;border:1px solid var(--color-border);color:var(--text)}
 .btn-ghost:hover{border-color:var(--primary);color:var(--primary)}

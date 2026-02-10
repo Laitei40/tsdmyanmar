@@ -81,9 +81,6 @@ document.addEventListener('DOMContentLoaded', function(){
   loadUpdatesPreview();
 });
 
-// Main JS logic (placeholder)
-document.addEventListener('DOMContentLoaded', function(){
-  console.log('TSD Myanmar site loaded');
-});
+
 
 

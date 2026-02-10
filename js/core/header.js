@@ -126,7 +126,7 @@
 
       // update aria-expanded on hover so assistive tech sees current state
       d.addEventListener('mouseenter', ()=>{ d.classList.add('open'); btn.setAttribute('aria-expanded','true'); });
-      d.addEventListener('mouseleave', ()=>{ if (!d.classList.contains('open')){ btn.setAttribute('aria-expanded','false'); } d.classList.remove('open'); });
+      d.addEventListener('mouseleave', ()=>{ d.classList.remove('open'); btn.setAttribute('aria-expanded','false'); });
 
       // click/tap toggles (useful for mobile and keyboard users)
       btn.addEventListener('click', (e)=>{
@@ -391,7 +391,7 @@
 
     // Sync drawer language selector
     if (drawerLang){
-      const storedLang = localStorage.getItem('tsd_site_lang') || 'en';
+      let storedLang = 'en'; try{ storedLang = localStorage.getItem('tsd_site_lang') || 'en'; }catch(e){}
       drawerLang.value = storedLang;
       
       drawerLang.addEventListener('change', (e) => {

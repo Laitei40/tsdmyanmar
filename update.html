@@ -5,8 +5,24 @@
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <title data-i18n="updates_title">News & Updates — TSD Myanmar</title>
   <link rel="stylesheet" href="/css/main.css">
+  <link rel="manifest" href="/manifest.json">
   <link rel="stylesheet" href="/css/updates.css">
   <link rel="stylesheet" href="/css/update.css">
+  <link id="site-favicon" rel="icon" href="/assets/images/logo/logo_en.svg" type="image/svg+xml">
+  <script>
+    (function(){
+      try{
+        const k = 'tsd_theme';
+        const stored = localStorage.getItem(k) || 'system';
+        if (stored === 'system'){
+          const dark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+          document.documentElement.setAttribute('data-theme', dark? 'dark':'light');
+        } else {
+          document.documentElement.setAttribute('data-theme', stored);
+        }
+      }catch(e){ /* ignore */ }
+    })();
+  </script>
 </head>
 <body>
   <div class="updates-page-shell">
@@ -15,15 +31,16 @@
     <div id="header"></div>
 
     <main class="update-page" id="update-detail-root">
-      <section class="update-hero updates-layout">
-        <div class="crumb-row" aria-label="Breadcrumb">
+      <!-- Hero header -->
+      <section class="update-hero">
+        <nav class="crumb-row" aria-label="Breadcrumb">
           <a class="pill pill-link" href="/updates.html" data-i18n="back_to_updates">
             <span class="pill-icon" aria-hidden="true"></span>
             <span data-i18n="back_to_updates">Back to updates</span>
           </a>
-          <span class="crumb-divider" aria-hidden="true">•</span>
+          <span class="crumb-divider" aria-hidden="true">/</span>
           <span class="crumb-current" id="crumb-title">Loading…</span>
-        </div>
+        </nav>
         <div class="update-hero-meta">
           <span class="pill" id="update-badge"></span>
           <time id="update-date" class="pill pill-ghost"></time>
@@ -32,10 +49,11 @@
         <p id="update-summary" class="update-summary-lead"></p>
       </section>
 
+      <!-- Article content -->
       <section class="update-layout">
         <article id="update-article" class="update-article" role="article">
           <div class="update-content-wrapper">
-            <div id="update-body" class="update-body" role="article" aria-live="polite">
+            <div id="update-body" class="update-body" aria-live="polite">
               <div class="skeleton skel-title"></div>
               <div class="skeleton skel-meta"></div>
               <div class="skeleton skel-para"></div>
@@ -47,7 +65,18 @@
               <div class="download-ctas" id="update-ctas"></div>
             </aside>
           </div>
+
+          <!-- Share bar (populated by JS) -->
+          <div class="share-bar" id="share-bar" style="display:none">
+            <span>Share</span>
+          </div>
         </article>
+      </section>
+
+      <!-- Related posts (populated by JS) -->
+      <section class="related-section" id="related-section" style="display:none">
+        <h2 data-i18n="related_posts">More Updates</h2>
+        <div class="related-grid" id="related-grid"></div>
       </section>
     </main>
 
@@ -61,5 +90,6 @@
   <script src="/js/core/i18n.js"></script>
   <script src="/js/core/news.js"></script>
   <script src="/js/pages/update-detail.js"></script>
+  <script src="/js/sw-register.js"></script>
 </body>
 </html>

@@ -12,6 +12,11 @@ database_name = "tsd_updates"
 # Pin to specific D1 database (useful for local dev)
 database_id = "bb376db4-497c-4ac3-9761-675b8a537422"
 
+# Local dev: bypass Cloudflare Access for admin API endpoints.
+# Remove or set to "0" in production where Cloudflare Access protects admin routes.
+[vars]
+ADMIN_BYPASS_ACCESS = "1"
+
 # Optional: add other settings such as zone_id, account_id, or site configuration
 # Example:
 # account_id = "your-account-id"

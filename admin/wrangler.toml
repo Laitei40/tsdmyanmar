@@ -2,8 +2,8 @@ name = "tsd-admin"
 # Use a supported date to avoid runtime fallback warnings.
 compatibility_date = "2026-01-07"
 
-# Pages output directory (Vite build)
-pages_build_output_dir = "dist"
+# Pages output directory (vanilla HTML/CSS/JS — no build step needed)
+pages_build_output_dir = "public"
 
 [vars]
 # Local dev only: bypass Access when no CF_Authorization token is present.

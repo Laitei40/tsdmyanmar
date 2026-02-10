@@ -29,7 +29,8 @@
 
   function getSiteLang(){ try{ if (window.tsdI18n && window.tsdI18n.getSiteLang) return window.tsdI18n.getSiteLang(); }catch(e){} return (navigator.language||'en').split('-')[0]; }
 
-  function showMessage(msg){ TITLE.textContent = ''; DATE.textContent=''; BODY.innerHTML = '<p class="small-muted">'+msg+'</p>'; CRUMB.textContent = ''; BADGE.textContent = ''; if (LEAD) LEAD.textContent=''; }
+  function escapeHtml(str){ return String(str||'').replace(/[&<>"']/g, function(c){ return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]||''; }); }
+  function showMessage(msg){ TITLE.textContent = ''; DATE.textContent=''; BODY.innerHTML = '<p class="small-muted">'+escapeHtml(msg)+'</p>'; CRUMB.textContent = ''; BADGE.textContent = ''; if (LEAD) LEAD.textContent=''; }
 
   function showSkeleton(){
     updateBodyInnerHTML('<div class="skeleton skel-title"></div><div class="skeleton skel-meta"></div><div class="skeleton skel-para"></div><div class="skeleton skel-para"></div><div class="skeleton skel-para" style="width:80%"></div>');
@@ -65,6 +66,94 @@
       // remove original link from content
       try{ a.parentNode.removeChild(a); }catch(e){}
     });
+  }
+
+  // ---- Share bar ----
+  function populateShareBar(title) {
+    const bar = document.getElementById('share-bar');
+    if (!bar) return;
+    const url = encodeURIComponent(window.location.href);
+    const t   = encodeURIComponent(title);
+
+    bar.innerHTML = '<span class="share-label">' + ((window.I18N && window.I18N.share) || 'Share') + '</span>';
+
+    // Twitter / X
+    const tw = document.createElement('a');
+    tw.className = 'share-btn'; tw.target = '_blank'; tw.rel = 'noopener noreferrer';
+    tw.href = 'https://twitter.com/intent/tweet?url=' + url + '&text=' + t;
+    tw.setAttribute('aria-label', 'Share on X');
+    tw.innerHTML = '<svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>';
+    bar.appendChild(tw);
+
+    // Facebook
+    const fb = document.createElement('a');
+    fb.className = 'share-btn'; fb.target = '_blank'; fb.rel = 'noopener noreferrer';
+    fb.href = 'https://www.facebook.com/sharer/sharer.php?u=' + url;
+    fb.setAttribute('aria-label', 'Share on Facebook');
+    fb.innerHTML = '<svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg>';
+    bar.appendChild(fb);
+
+    // Copy link
+    const cp = document.createElement('button');
+    cp.className = 'share-btn'; cp.type = 'button';
+    cp.setAttribute('aria-label', 'Copy link');
+    cp.innerHTML = '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg>';
+    cp.addEventListener('click', function () {
+      navigator.clipboard.writeText(window.location.href).then(function () {
+        cp.innerHTML = '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>';
+        setTimeout(function () {
+          cp.innerHTML = '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg>';
+        }, 2000);
+      });
+    });
+    bar.appendChild(cp);
+
+    bar.style.display = '';
+  }
+
+  // ---- Related posts ----
+  async function populateRelatedPosts(currentItem, lang) {
+    const section = document.getElementById('related-section');
+    const grid    = document.getElementById('related-grid');
+    if (!section || !grid) return;
+
+    let items = [];
+    try {
+      const data = await (window.tsdNews && window.tsdNews.fetchNewsIndex
+        ? window.tsdNews.fetchNewsIndex()
+        : Promise.reject(new Error('news helper missing')));
+      items = Array.isArray(data) ? data : (data.items || []);
+    } catch (e) { return; }
+
+    // Filter out current article and sort by date descending
+    items = items
+      .filter(function (it) { return it.id !== currentItem.id; })
+      .sort(function (a, b) { return new Date(b.date) - new Date(a.date); })
+      .slice(0, 3);
+
+    if (!items.length) return;
+
+    grid.innerHTML = '';
+    items.forEach(function (it) {
+      const title = (typeof it.title === 'string') ? it.title : pickLangField(it.title, lang) || 'Untitled';
+      const href  = '/update.html?id=' + encodeURIComponent(it.id || '');
+      const imgUrl = (it.image || it.thumbnail || '');
+
+      const card = document.createElement('a');
+      card.className = 'related-card';
+      card.href = href;
+
+      var html = '';
+      if (imgUrl) {
+        html += '<img class="related-thumb" src="' + escapeHtml(imgUrl) + '" alt="" loading="lazy" decoding="async">';
+      }
+      html += '<span class="related-date">' + formatDate(it.date) + '</span>';
+      html += '<span class="related-title">' + escapeHtml(title) + '</span>';
+      card.innerHTML = html;
+      grid.appendChild(card);
+    });
+
+    section.style.display = '';
   }
 
   async function load(id){
@@ -110,9 +199,13 @@
       CRUMB.textContent = titleStr;
       BADGE.textContent = item.isLatest ? ((window.I18N && window.I18N.latest_badge) || 'Latest') : '';
 
+      // Hide badge pill when empty
+      if (BADGE && !BADGE.textContent.trim()) BADGE.style.display = 'none';
+      else if (BADGE) BADGE.style.display = '';
+
       // If there's a top-level featured image, render it as a hero in the header
       try{
-        const headerEl = document.querySelector('.update-header');
+        const headerEl = document.querySelector('.update-hero');
         if (headerEl && Array.isArray(item.images) && item.images.length){
           const heroImg = item.images[0];
           const heroWrap = document.createElement('div'); heroWrap.className = 'article-hero';
@@ -142,6 +235,12 @@
 
       // Update document title
       try{ document.title = titleStr + ' — ' + ((window.I18N && window.I18N.site_title) || document.title); }catch(e){}
+
+      // ---- Share bar ----
+      try { populateShareBar(titleStr); } catch (e) { console.error('share bar error', e); }
+
+      // ---- Related posts ----
+      try { await populateRelatedPosts(item, lang); } catch (e) { console.error('related posts error', e); }
 
       // Move focus to title for accessibility
       TITLE.setAttribute('tabindex','-1'); TITLE.focus();

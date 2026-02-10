@@ -8,7 +8,7 @@
 (function(){
   const STORAGE_KEY = 'tsd_theme';
   const ATTR = 'data-theme';
-  const SELECTORS = '#site-theme-select, #drawer-theme-select, .theme-select, .drawer-select';
+  const SELECTORS = '#site-theme-select, #drawer-theme-select, .theme-select';
 
   function getStored(){
     try{ return localStorage.getItem(STORAGE_KEY); }catch(e){ return null; }

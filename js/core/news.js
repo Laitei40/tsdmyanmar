@@ -13,7 +13,7 @@
   }
 
   async function fetchFromApi(articleId, lang){
-    const apiUrl = '/api/update?id=' + encodeURIComponent(articleId) + '&lang=' + encodeURIComponent(lang);
+    const apiUrl = '/api/news/' + encodeURIComponent(articleId) + '?lang=' + encodeURIComponent(lang);
     const res = await fetch(apiUrl, {cache:'no-cache'});
     if (!res.ok) throw new Error('API fetch failed: ' + res.status);
     return res.json();
@@ -49,7 +49,7 @@
     const maxPages = 15; // guardrail
     while (pages < maxPages){
       pages++;
-      const url = '/api/updates?limit=' + pageSize + '&offset=' + offset + '&lang=' + encodeURIComponent(lang);
+      const url = '/api/news?limit=' + pageSize + '&offset=' + offset + '&lang=' + encodeURIComponent(lang);
       const res = await fetch(url, {cache:'no-cache'});
       if (!res.ok) throw new Error('API index fetch failed: ' + res.status);
       const data = await res.json();
