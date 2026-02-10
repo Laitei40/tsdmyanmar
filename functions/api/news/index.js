@@ -160,6 +160,10 @@ function sanitizeHtml(html) {
   s = s.replace(/<style[\s\S]*?<\/style>/gi, '');
   s = s.replace(/\son\w+\s*=\s*("[\s\S]*?"|'[^']*?')/gi, '');
   s = s.replace(/(href|src)\s*=\s*("|')\s*javascript:[^"']*("|')/gi, '$1="#"');
+  // Only allow YouTube iframes — strip all other iframes
+  s = s.replace(/<iframe[\s\S]*?<\/iframe>/gi, (match) => {
+    return /src\s*=\s*["']https:\/\/www\.youtube\.com\/embed\//i.test(match) ? match : '';
+  });
   return s;
 }
 
@@ -202,6 +206,8 @@ function validate(body) {
 
 function rowToAdminItem(r) {
   const it = { ...r };
+  // Expose date alias so consumers don't need to know about publish_date
+  if (!it.date && it.publish_date) it.date = it.publish_date;
   for (const f of ['title', 'summary', 'body']) it[f] = parseI18n(it[f]);
   if (typeof it.tags === 'string') {
     try { it.tags = JSON.parse(it.tags); } catch { it.tags = []; }

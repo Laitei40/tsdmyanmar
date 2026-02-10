@@ -55,6 +55,74 @@ let autoSlug    = true;
 // Quill editor instance
 let quill = null;
 
+/* ══════════════════════════════════════════════
+   CUSTOM QUILL BLOTS
+   ══════════════════════════════════════════════ */
+(function registerCustomBlots() {
+  const Block     = Quill.import('blots/block');
+  const BlockEmbed = Quill.import('blots/block/embed');
+  const BaseImage = Quill.import('formats/image');
+
+  /* ── Enhanced Image (preserves width, border, caption) ── */
+  const IMG_ATTRS = ['alt','height','width','style','class','data-caption','data-border'];
+  class EnhancedImage extends BaseImage {
+    static formats(node) {
+      return IMG_ATTRS.reduce((f, a) => {
+        if (node.hasAttribute(a)) f[a] = node.getAttribute(a);
+        return f;
+      }, {});
+    }
+    format(name, value) {
+      if (IMG_ATTRS.includes(name)) {
+        if (value) this.domNode.setAttribute(name, value);
+        else this.domNode.removeAttribute(name);
+      } else {
+        super.format(name, value);
+      }
+    }
+  }
+  EnhancedImage.blotName = 'image';
+  EnhancedImage.tagName  = 'IMG';
+  Quill.register(EnhancedImage, true);
+
+  /* ── Poem block ── */
+  class PoemBlock extends Block {}
+  PoemBlock.blotName = 'poem';
+  PoemBlock.tagName  = 'DIV';
+  PoemBlock.className = 'poem-block';
+  Quill.register(PoemBlock);
+
+  /* ── Song / Lyrics block ── */
+  class SongBlock extends Block {}
+  SongBlock.blotName = 'song';
+  SongBlock.tagName  = 'DIV';
+  SongBlock.className = 'song-block';
+  Quill.register(SongBlock);
+
+  /* ── YouTube Video (overrides default video) ── */
+  class VideoBlot extends BlockEmbed {
+    static create(url) {
+      const node = super.create();
+      node.setAttribute('contenteditable', 'false');
+      const iframe = document.createElement('iframe');
+      iframe.setAttribute('src', url);
+      iframe.setAttribute('frameborder', '0');
+      iframe.setAttribute('allowfullscreen', 'true');
+      iframe.setAttribute('allow', 'accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture');
+      node.appendChild(iframe);
+      return node;
+    }
+    static value(node) {
+      const iframe = node.querySelector('iframe');
+      return iframe ? iframe.getAttribute('src') : '';
+    }
+  }
+  VideoBlot.blotName = 'video';
+  VideoBlot.tagName  = 'DIV';
+  VideoBlot.className = 'video-wrapper';
+  Quill.register(VideoBlot, true);
+})();
+
 
 /* ══════════════════════════════════════════════
    API MODULE
@@ -310,10 +378,14 @@ async function loadArticles(reset = false) {
    ══════════════════════════════════════════════ */
 
 function initQuill() {
-  // Destroy previous instance if any
   const container = $('#editor-container');
+
+  // Destroy previous instance — remove stale toolbar siblings & reset container
   if (quill) {
     quill = null;
+    const parent = container.parentNode;
+    parent.querySelectorAll('.ql-toolbar').forEach(el => el.remove());
+    container.className = '';          // strip Quill-added classes
     container.innerHTML = '';
   }
 
@@ -321,16 +393,218 @@ function initQuill() {
     theme: 'snow',
     placeholder: 'Write article content here…',
     modules: {
-      toolbar: [
-        [{ header: [1, 2, 3, false] }],
-        ['bold', 'italic', 'underline'],
-        [{ color: [] }],
-        ['link'],
-        [{ list: 'ordered' }, { list: 'bullet' }],
-        ['clean']
-      ]
+      toolbar: {
+        container: [
+          [{ header: [1, 2, 3, false] }, { align: [] }],
+          ['bold', 'italic', 'underline', { color: [] }],
+          ['link', 'image', 'video'],
+          [{ list: 'ordered' }, { list: 'bullet' }, 'blockquote', 'poem', 'song'],
+          ['clean']
+        ],
+        handlers: {
+          image: imageUploadHandler,
+          video: youtubeHandler,
+          poem()  { toggleBlockFormat('poem'); },
+          song()  { toggleBlockFormat('song'); },
+        }
+      }
     }
   });
+
+  // Label custom toolbar buttons (Quill creates empty buttons for custom formats)
+  const tb = document.querySelector('.ql-toolbar');
+  if (tb) {
+    const poemBtn = tb.querySelector('.ql-poem');
+    if (poemBtn) { poemBtn.setAttribute('title', 'Poem / verse'); }
+    const songBtn = tb.querySelector('.ql-song');
+    if (songBtn) { songBtn.setAttribute('title', 'Song / lyrics'); }
+  }
+
+  // Set up image click‐to‐configure toolbar
+  setupImageToolbar();
+}
+
+/* ══════════════════════════════════════════════
+   TOOLBAR HANDLERS
+   ══════════════════════════════════════════════ */
+
+/** Toggle a custom block format (poem / song) */
+function toggleBlockFormat(format) {
+  const range = quill.getSelection();
+  if (!range) return;
+  const fmt = quill.getFormat(range);
+  quill.format(format, !fmt[format]);
+}
+
+/** YouTube — prompt for URL, validate, embed */
+function youtubeHandler() {
+  const url = prompt('Paste a YouTube video URL:');
+  if (!url) return;
+  const embedUrl = parseYouTubeUrl(url.trim());
+  if (!embedUrl) {
+    showFormError('Please enter a valid YouTube URL (e.g. https://youtube.com/watch?v=…)');
+    return;
+  }
+  const range = quill.getSelection(true);
+  quill.insertEmbed(range.index, 'video', embedUrl, Quill.sources.USER);
+  quill.setSelection(range.index + 1);
+}
+
+function parseYouTubeUrl(url) {
+  const m = url.match(/(?:youtube\.com\/(?:watch\?v=|embed\/|shorts\/)|youtu\.be\/)([a-zA-Z0-9_-]{11})/);
+  return m ? `https://www.youtube.com/embed/${m[1]}` : null;
+}
+
+/* ── Image upload handler for Quill ── */
+
+function imageUploadHandler() {
+  const input = document.createElement('input');
+  input.type = 'file';
+  input.accept = 'image/jpeg,image/png,image/gif,image/webp,image/svg+xml';
+
+  input.addEventListener('change', async () => {
+    const file = input.files?.[0];
+    if (!file) return;
+
+    // Size check (5 MB)
+    if (file.size > 5 * 1024 * 1024) {
+      showFormError('Image must be under 5 MB.');
+      return;
+    }
+
+    // Show uploading indicator on the toolbar image button
+    const btn = document.querySelector('.ql-toolbar .ql-image');
+    const origHTML = btn?.innerHTML;
+    if (btn) {
+      btn.classList.add('uploading');
+      btn.setAttribute('disabled', '');
+    }
+
+    try {
+      const fd = new FormData();
+      fd.append('file', file);
+
+      const res = await fetch(`${API_BASE.replace('/news', '/images')}`, {
+        method: 'POST',
+        body: fd,
+      });
+
+      if (!res.ok) {
+        const err = await res.json().catch(() => ({}));
+        throw new Error(err.error || `Upload failed (${res.status})`);
+      }
+
+      const { url } = await res.json();
+
+      // Insert image at current cursor position
+      const range = quill.getSelection(true);
+      quill.insertEmbed(range.index, 'image', url);
+      quill.setSelection(range.index + 1);
+    } catch (err) {
+      showFormError(`Image upload failed: ${err.message}`);
+    } finally {
+      if (btn) {
+        btn.classList.remove('uploading');
+        btn.removeAttribute('disabled');
+        if (origHTML) btn.innerHTML = origHTML;
+      }
+    }
+  });
+
+  input.click();
+}
+
+/* ══════════════════════════════════════════════
+   IMAGE TOOLBAR (size / border / caption)
+   ══════════════════════════════════════════════ */
+
+function setupImageToolbar() {
+  if (!quill) return;
+  const editor = quill.root;
+
+  editor.addEventListener('click', (e) => {
+    if (e.target.tagName === 'IMG') {
+      e.stopPropagation();
+      showImageToolbar(e.target);
+    } else {
+      hideImageToolbar();
+    }
+  });
+
+  // Hide when clicking outside editor
+  document.addEventListener('click', (e) => {
+    const tb = $('#img-toolbar');
+    if (!tb || tb.hidden) return;
+    if (e.target.closest('#img-toolbar') || e.target.closest('.ql-editor')) return;
+    hideImageToolbar();
+  });
+}
+
+function showImageToolbar(img) {
+  const tb = $('#img-toolbar');
+  if (!tb) return;
+
+  // Read current values
+  const curWidth  = img.style.width || '100%';
+  const curBorder = img.getAttribute('data-border') || 'none';
+  const curCap    = img.getAttribute('data-caption') || '';
+
+  // Active states
+  tb.querySelectorAll('[data-size]').forEach(b =>
+    b.classList.toggle('active', b.dataset.size === curWidth));
+  tb.querySelectorAll('[data-border]').forEach(b =>
+    b.classList.toggle('active', b.dataset.border === curBorder));
+
+  const capInput = tb.querySelector('#img-caption-input');
+  if (capInput) capInput.value = curCap;
+
+  // Position fixed near the image
+  const imgRect   = img.getBoundingClientRect();
+  tb.style.top    = (imgRect.bottom + 6) + 'px';
+  tb.style.left   = imgRect.left + 'px';
+  tb.style.maxWidth = Math.max(imgRect.width, 320) + 'px';
+
+  tb.hidden = false;
+  tb._img = img;
+
+  // Wire buttons (re-bind each time to reference correct img)
+  tb.querySelectorAll('[data-size]').forEach(btn => {
+    btn.onclick = () => {
+      const blot = Quill.find(img);
+      if (blot) blot.format('style', `width:${btn.dataset.size}`);
+      else img.style.width = btn.dataset.size;
+      tb.querySelectorAll('[data-size]').forEach(b =>
+        b.classList.toggle('active', b === btn));
+    };
+  });
+
+  tb.querySelectorAll('[data-border]').forEach(btn => {
+    btn.onclick = () => {
+      const blot = Quill.find(img);
+      if (blot) blot.format('data-border', btn.dataset.border);
+      else img.setAttribute('data-border', btn.dataset.border);
+      tb.querySelectorAll('[data-border]').forEach(b =>
+        b.classList.toggle('active', b === btn));
+    };
+  });
+
+  if (capInput) {
+    capInput.oninput = () => {
+      const blot = Quill.find(img);
+      if (blot) {
+        blot.format('alt', capInput.value);
+        blot.format('data-caption', capInput.value);
+      } else {
+        img.setAttribute('alt', capInput.value);
+        img.setAttribute('data-caption', capInput.value);
+      }
+    };
+  }
+}
+
+function hideImageToolbar() {
+  const tb = $('#img-toolbar');
+  if (tb) { tb.hidden = true; tb._img = null; }
 }
 
 /* ══════════════════════════════════════════════
@@ -378,6 +652,7 @@ function openModal(item) {
 
 function closeModal() {
   hide($('#modal-backdrop'));
+  hideImageToolbar();
   editItem = null;
   editEtag = '';
 }

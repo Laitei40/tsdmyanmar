@@ -20,6 +20,8 @@
 
   function normalizeItemLangKeys(item){
     if (!item || typeof item !== 'object') return;
+    // Ensure .date is always set (admin responses use publish_date)
+    if (!item.date && item.publish_date) item.date = item.publish_date;
     ['title','summary','body'].forEach(field=>{
       const obj = item[field]; if (!obj || typeof obj !== 'object') return;
       if (obj.mara && !obj.mrh) obj.mrh = obj.mara;
@@ -40,18 +42,60 @@
   function updateBodyInnerHTML(html){ BODY.innerHTML = html; }
 
   function wrapMediaAndSetup(root){
-    // Wrap iframes for responsive video
+    // ── YouTube iframes: wrap bare iframes in responsive wrapper ──
     root.querySelectorAll('iframe').forEach(ifr => {
+      if (ifr.parentNode.classList?.contains('video-wrapper')) return; // already wrapped by Quill
       const wrap = document.createElement('div'); wrap.className = 'video-wrapper';
       ifr.parentNode.replaceChild(wrap, ifr); wrap.appendChild(ifr);
     });
-    // Image fallback and styling
+
+    // ── Images: size, border, caption, fallback ──
     root.querySelectorAll('img').forEach(img => {
-      img.style.maxWidth = '100%'; img.style.height = 'auto'; img.style.borderRadius = '8px';
+      // Responsive: ensure max-width: 100% but respect authored width
+      const inlineWidth = img.style.width;
+      if (inlineWidth && inlineWidth !== '100%') {
+        // Keep authored width but cap at viewport
+        img.style.maxWidth = '100%';
+      } else {
+        img.style.maxWidth = '100%';
+        img.style.width = '';
+      }
+      img.style.height = 'auto';
+
+      // Wrap captioned images in <figure>
+      const caption = img.getAttribute('data-caption');
+      if (caption) {
+        const fig = document.createElement('figure');
+        fig.className = 'img-captioned';
+        // Inherit width from the image for sized + captioned images
+        if (inlineWidth && inlineWidth !== '100%') {
+          fig.style.width = inlineWidth;
+          fig.style.maxWidth = '100%';
+        }
+        const figcap = document.createElement('figcaption');
+        figcap.textContent = caption;
+        img.parentNode.replaceChild(fig, img);
+        fig.appendChild(img);
+        fig.appendChild(figcap);
+      }
+
+      // Error fallback
       img.addEventListener('error', ()=>{
         const ph = document.createElement('div'); ph.className='img-fallback center'; ph.textContent = (window.I18N && window.I18N.image_unavailable) || 'Image not available';
-        img.parentNode.replaceChild(ph, img);
+        (img.closest('figure') || img).parentNode.replaceChild(ph, img.closest('figure') || img);
       });
+    });
+
+    // ── Poem blocks: ensure line breaks are preserved ──
+    root.querySelectorAll('.poem-block').forEach(el => {
+      el.setAttribute('role', 'group');
+      el.setAttribute('aria-label', 'Poem');
+    });
+
+    // ── Song blocks: ensure line breaks are preserved ──
+    root.querySelectorAll('.song-block').forEach(el => {
+      el.setAttribute('role', 'group');
+      el.setAttribute('aria-label', 'Song / Lyrics');
     });
   }
 

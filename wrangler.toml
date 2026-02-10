@@ -14,6 +14,11 @@ database_id = "bb376db4-497c-4ac3-9761-675b8a537422"
 
 # Local dev: bypass Cloudflare Access for admin API endpoints.
 # Remove or set to "0" in production where Cloudflare Access protects admin routes.
+# Bind Cloudflare R2 bucket for image uploads
+[[r2_buckets]]
+binding = "IMAGES"
+bucket_name = "tsd-images"
+
 [vars]
 ADMIN_BYPASS_ACCESS = "1"
 

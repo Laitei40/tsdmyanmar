@@ -58,6 +58,8 @@
 
   function normalizeItemLangKeys(item) {
     if (!item || typeof item !== 'object') return;
+    // Ensure .date is always set (admin responses use publish_date)
+    if (!item.date && item.publish_date) item.date = item.publish_date;
     ['title', 'summary', 'body'].forEach(function (field) {
       var obj = item[field];
       if (!obj || typeof obj !== 'object') return;

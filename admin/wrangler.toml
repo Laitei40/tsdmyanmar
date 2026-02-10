@@ -10,6 +10,11 @@ pages_build_output_dir = "public"
 # Remove or set to "0" in production where Cloudflare Access protects the admin hostname.
 ADMIN_BYPASS_ACCESS = "1"
 
+# Bind Cloudflare R2 bucket for image uploads
+[[r2_buckets]]
+binding = "IMAGES"
+bucket_name = "tsd-images"
+
 # Bind D1 for admin APIs
 [[d1_databases]]
 binding = "UPDATES_DB"

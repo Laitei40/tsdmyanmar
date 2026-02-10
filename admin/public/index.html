@@ -115,6 +115,28 @@
           <div id="editor-container"></div>
         </div>
 
+        <!-- Image Options Toolbar (appears when clicking an image in editor) -->
+        <div id="img-toolbar" class="img-toolbar" hidden>
+          <div class="img-tb-section">
+            <span class="img-tb-label">Size</span>
+            <button type="button" data-size="33%" class="img-tb-btn">S</button>
+            <button type="button" data-size="50%" class="img-tb-btn">M</button>
+            <button type="button" data-size="100%" class="img-tb-btn active">L</button>
+          </div>
+          <div class="img-tb-divider"></div>
+          <div class="img-tb-section">
+            <span class="img-tb-label">Border</span>
+            <button type="button" data-border="none" class="img-tb-btn active">None</button>
+            <button type="button" data-border="thin" class="img-tb-btn">Thin</button>
+            <button type="button" data-border="normal" class="img-tb-btn">Normal</button>
+          </div>
+          <div class="img-tb-divider"></div>
+          <div class="img-tb-section img-tb-caption-section">
+            <span class="img-tb-label">Caption</span>
+            <input type="text" id="img-caption-input" placeholder="Add image caption…">
+          </div>
+        </div>
+
         <!-- Metadata grid -->
         <div class="form-grid">
           <div class="field">
