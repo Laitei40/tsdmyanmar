@@ -5,8 +5,12 @@
 name = "tsdmyanmar"
 compatibility_date = "2026-01-12"
 
-# Pages: serve static assets from the project root
-pages_build_output_dir = "."
+# NOTE: pages_build_output_dir is intentionally NOT set here.
+# The admin project (admin/wrangler.toml) defines its own pages_build_output_dir.
+# Having it here causes a conflict when the Cloudflare Pages root directory is
+# set to "admin/" — the v2 build strategy finds this file first and resolves
+# "." relative to admin/, producing ".." (outside the repo), which fails the build.
+# This file is used for local dev bindings only.
 
 # Bind your Cloudflare D1 database to the environment variable UPDATES_DB
 [[d1_databases]]
