@@ -237,6 +237,12 @@
       const summaryStr = (typeof item.summary === 'string') ? item.summary : pickLangField(item.summary, lang) || '';
       const dateStr = item.date || '';
 
+      // Promote resolved body HTML (from Quill editor) to body_html so renderArticle
+      // uses the innerHTML path instead of treating rich-text as plain text.
+      if (bodyStr && !item.body_html && /<[a-z][\s\S]*>/i.test(bodyStr)) {
+        item.body_html = bodyStr;
+      }
+
       TITLE.textContent = titleStr;
       if (LEAD) LEAD.textContent = summaryStr;
       if (dateStr) DATE.textContent = formatDate(dateStr);
