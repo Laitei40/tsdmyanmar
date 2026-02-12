@@ -71,10 +71,13 @@ export async function onRequest(context) {
     const errs = validate(body);
     if (Object.keys(errs).length) return json(422, { errors: errs });
 
-    const etag = request.headers.get('if-match') || body._etag || '';
+    const etag = normalizeEtag(request.headers.get('if-match') || body._etag || '');
     const existing = await db.prepare('SELECT etag FROM news WHERE id = ?').bind(id).first();
     if (!existing) return json(404, { error: 'not found' });
-    if (existing.etag !== etag) return json(409, { error: 'Version conflict — reload and retry' });
+    const currentEtag = normalizeEtag(existing.etag || '');
+    if (currentEtag && currentEtag !== etag) {
+      return json(409, { error: 'Version conflict — reload and retry' });
+    }
 
     const nextEtag = crypto.randomUUID();
     await db.prepare(
@@ -99,10 +102,11 @@ export async function onRequest(context) {
 
     let deleteBody = null;
     try { deleteBody = await request.json(); } catch {}
-    const etag = request.headers.get('if-match') || deleteBody?._etag || '';
+    const etag = normalizeEtag(request.headers.get('if-match') || deleteBody?._etag || '');
     const existing = await db.prepare('SELECT etag FROM news WHERE id = ?').bind(id).first();
     if (!existing) return json(404, { error: 'not found' });
-    if (existing.etag !== etag) return json(409, { error: 'Version conflict' });
+    const currentEtag = normalizeEtag(existing.etag || '');
+    if (currentEtag && currentEtag !== etag) return json(409, { error: 'Version conflict' });
     await db.prepare('DELETE FROM news WHERE id = ?').bind(id).run();
     return json(200, { ok: true });
   }
@@ -178,6 +182,10 @@ function parseI18n(val) {
     catch { return { en: val }; }
   }
   return typeof val === 'object' && val !== null ? val : {};
+}
+
+function normalizeEtag(val) {
+  return String(val || '').trim().replace(/^W\//i, '').replace(/^"|"$/g, '');
 }
 
 function sanitizeI18n(obj, html = false) {
