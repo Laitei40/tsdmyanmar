@@ -772,8 +772,13 @@ async function handleSave(e) {
       toast('Version conflict — reload and try again.', 'error');
     } else if (e.message === 'slug-conflict') {
       showFormError('Slug already in use. Choose a different one.');
+    } else if (e.errors) {
+      // Server returned 422 with validation errors
+      const msgs = Object.values(e.errors).join('; ');
+      showFormError(msgs || 'Validation failed.');
     } else {
-      toast('Save failed. Check required fields.', 'error');
+      const msg = e.message || 'Save failed. Check required fields.';
+      toast(msg, 'error');
     }
   }
 }
