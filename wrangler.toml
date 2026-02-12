@@ -5,8 +5,11 @@
 name = "tsdmyanmar"
 compatibility_date = "2026-01-12"
 
-# Pages: serve static assets from the project root
-pages_build_output_dir = "."
+# Pages: copy static assets into dist/ (Cloudflare Pages rejects "." as output dir)
+pages_build_output_dir = "dist"
+
+[build]
+command = "mkdir -p dist && for f in *; do case \"$f\" in dist|admin|functions|scripts|tests|docs|node_modules|wrangler.toml|package.json|package-lock.json) ;; *) cp -r \"$f\" dist/ ;; esac; done"
 
 # Bind your Cloudflare D1 database to the environment variable UPDATES_DB
 [[d1_databases]]

@@ -128,6 +128,12 @@ export async function onRequest(context) {
  * Returns { email } on success, or null for non-admin / public requests.
  */
 function verifyAdmin(request, env) {
+  // Local dev bypass — Wrangler doesn't inject Cloudflare Access headers.
+  // DEV_MODE must NEVER be "true" in production.
+  if (env.DEV_MODE === 'true') {
+    return { email: env.ADMIN_EMAIL || 'dev@localhost' };
+  }
+
   const email = request.headers
     .get('cf-access-authenticated-user-email')
     ?.toLowerCase();

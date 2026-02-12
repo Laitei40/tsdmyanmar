@@ -11,6 +11,10 @@ pages_build_output_dir = "public"
 # so it is never committed to the repository.
 ADMIN_EMAIL = "admin@tsdmyanmar.org"
 
+# DEV_MODE — set to "true" for local development to bypass Cloudflare Access auth.
+# NEVER set this in production. Remove or set to "false" before deploying.
+DEV_MODE = "true"
+
 # Bind Cloudflare R2 bucket for image uploads
 [[r2_buckets]]
 binding = "IMAGES"
