@@ -144,7 +144,10 @@ async function apiList(params = {}) {
     if (v !== undefined && v !== null && v !== '') qs.set(k, String(v));
   }
   const res = await fetch(`${API_BASE}?${qs}`, { credentials: 'include' });
-  if (!res.ok) throw new Error(`List failed: ${res.status}`);
+  if (!res.ok) {
+    const body = await res.json().catch(() => ({}));
+    throw new Error(body.detail || body.error || `List failed: ${res.status}`);
+  }
   return res.json();
 }
 

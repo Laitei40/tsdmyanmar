@@ -27,38 +27,43 @@ export async function onRequest(context) {
     const reqLang = (url.searchParams.get('lang') || '').toLowerCase();
     const lang = SUPPORTED.includes(reqLang) ? reqLang : null;
 
-    let row = null;
+    try {
+      let row = null;
 
-    if (isAdmin) {
-      // Admin can see any status; try by ID first, then slug
-      row = /^\d+$/.test(id)
-        ? await db.prepare('SELECT * FROM news WHERE id = ?').bind(id).first()
-        : await db.prepare('SELECT * FROM news WHERE slug = ?').bind(id).first();
-    } else {
-      // Public: published only
-      const cols = 'id, slug, publish_date AS date, title, summary, body, category, featured_image, tags';
-      if (/^\d+$/.test(id)) {
-        row = await db.prepare(
-          `SELECT ${cols} FROM news WHERE id = ? AND status = 'published' LIMIT 1`
-        ).bind(id).first();
+      if (isAdmin) {
+        // Admin can see any status; try by ID first, then slug
+        row = /^\d+$/.test(id)
+          ? await db.prepare('SELECT * FROM news WHERE id = ?').bind(id).first()
+          : await db.prepare('SELECT * FROM news WHERE slug = ?').bind(id).first();
       } else {
-        row = await db.prepare(
-          `SELECT ${cols} FROM news WHERE slug = ? AND status = 'published' LIMIT 1`
-        ).bind(id).first();
+        // Public: published only
+        const cols = 'id, slug, publish_date AS date, title, summary, body, category, featured_image, tags';
+        if (/^\d+$/.test(id)) {
+          row = await db.prepare(
+            `SELECT ${cols} FROM news WHERE id = ? AND status = 'published' LIMIT 1`
+          ).bind(id).first();
+        } else {
+          row = await db.prepare(
+            `SELECT ${cols} FROM news WHERE slug = ? AND status = 'published' LIMIT 1`
+          ).bind(id).first();
+        }
+        // Fallback: try numeric ID if slug didn't match
+        if (!row && /^\d+$/.test(id) === false) {
+          // no fallback for non-numeric slugs
+        }
       }
-      // Fallback: try numeric ID if slug didn't match
-      if (!row && /^\d+$/.test(id) === false) {
-        // no fallback for non-numeric slugs
+
+      if (!row) return json(404, { error: 'not found' });
+
+      if (isAdmin) {
+        return json(200, rowToAdminItem(row), { ETag: `"${row.etag || ''}"` });
+      } else {
+        const item = rowToPublicItem(row);
+        return json(200, lang ? localize(item, lang) : item, { 'Cache-Control': 'public, max-age=30' });
       }
-    }
-
-    if (!row) return json(404, { error: 'not found' });
-
-    if (isAdmin) {
-      return json(200, rowToAdminItem(row), { ETag: `"${row.etag || ''}"` });
-    } else {
-      const item = rowToPublicItem(row);
-      return json(200, lang ? localize(item, lang) : item, { 'Cache-Control': 'public, max-age=30' });
+    } catch (e) {
+      console.error('GET /api/news/:id error:', e);
+      return json(500, { error: 'DB query failed', detail: e?.message || String(e) });
     }
   }
 
