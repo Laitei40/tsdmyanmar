@@ -55,33 +55,28 @@ export async function onRequest(context) {
     const limit = Math.min(parseInt(p.limit || (isAdmin ? '20' : '6')) || 6, 100);
     const offset = parseInt(p.offset || '0') || 0;
 
-    try {
-      const cntRow = await db.prepare(`SELECT COUNT(*) AS c FROM news WHERE ${where}`).bind(...vals).first();
-      const total = cntRow?.c || 0;
+    const cntRow = await db.prepare(`SELECT COUNT(*) AS c FROM news WHERE ${where}`).bind(...vals).first();
+    const total = cntRow?.c || 0;
 
-      // Admin gets all columns; public gets a subset
-      const cols = isAdmin
-        ? '*'
-        : 'id, slug, publish_date AS date, title, summary, body, category, featured_image, tags';
+    // Admin gets all columns; public gets a subset
+    const cols = isAdmin
+      ? '*'
+      : 'id, slug, publish_date AS date, title, summary, body, category, featured_image, tags';
 
-      const rows = await db.prepare(
-        `SELECT ${cols} FROM news WHERE ${where} ORDER BY publish_date DESC LIMIT ? OFFSET ?`
-      ).bind(...vals, limit, offset).all();
+    const rows = await db.prepare(
+      `SELECT ${cols} FROM news WHERE ${where} ORDER BY publish_date DESC LIMIT ? OFFSET ?`
+    ).bind(...vals, limit, offset).all();
 
-      const items = (rows.results || []).map(r => {
-        const it = isAdmin ? rowToAdminItem(r) : rowToPublicItem(r);
-        return (!isAdmin && lang) ? localize(it, lang) : it;
-      });
+    const items = (rows.results || []).map(r => {
+      const it = isAdmin ? rowToAdminItem(r) : rowToPublicItem(r);
+      return (!isAdmin && lang) ? localize(it, lang) : it;
+    });
 
-      const headers = isAdmin
-        ? {}
-        : { 'Cache-Control': 'public, max-age=30' };
+    const headers = isAdmin
+      ? {}
+      : { 'Cache-Control': 'public, max-age=30' };
 
-      return json(200, { items, total }, headers);
-    } catch (e) {
-      console.error('GET /api/news error:', e);
-      return json(500, { error: 'DB query failed', detail: e?.message || String(e) });
-    }
+    return json(200, { items, total }, headers);
   }
 
   // ── POST: create (admin only) ──

@@ -216,20 +216,7 @@
           wrapper.querySelectorAll('iframe').forEach(ifr=> ifr.parentNode && ifr.parentNode.removeChild(ifr));
           target.appendChild(wrapper);
         } else if (article.body){
-          // Detect HTML content from Quill editor and render with innerHTML
-          if (/<[a-z][\s\S]*>/i.test(article.body)) {
-            const wrapper = document.createElement('div');
-            wrapper.innerHTML = article.body;
-            // Enhance external links with security attrs
-            wrapper.querySelectorAll('a[href]').forEach(a=>{
-              try{ const u = new URL(a.href, location.href); if (u.origin !== location.origin){ a.target='_blank'; a.rel='noopener noreferrer'; } }catch(e){}
-            });
-            // Remove raw iframes for safety (prefer structured videos)
-            wrapper.querySelectorAll('iframe').forEach(ifr=> ifr.parentNode && ifr.parentNode.removeChild(ifr));
-            target.appendChild(wrapper);
-          } else {
-            const p = document.createElement('p'); p.appendChild(linkifyTextToFragment(article.body)); target.appendChild(p);
-          }
+          const p = document.createElement('p'); p.appendChild(linkifyTextToFragment(article.body)); target.appendChild(p);
         }
         // append top-level images/videos if present
         if (Array.isArray(article.images) && article.images.length){
