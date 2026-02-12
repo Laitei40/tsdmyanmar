@@ -298,7 +298,7 @@ function renderTable() {
   }
 
   const rows = items.map(item => {
-    const titleEn = (item.title && item.title.en) || '(untitled)';
+    const titleEn = (item.title && (item.title.en || item.title.mrh || item.title.my || Object.values(item.title).find(v => v && v.trim()))) || '(untitled)';
     const imgCell = item.featured_image
       ? `<img src="${escapeHtml(item.featured_image)}" alt="" class="thumb" />`
       : `<div class="thumb thumb-placeholder"></div>`;
@@ -806,7 +806,7 @@ async function handleEdit(id) {
 
 async function handleDelete(id) {
   const item = items.find(i => i.id === Number(id));
-  const titleEn = item?.title?.en || 'this article';
+  const titleEn = item?.title?.en || item?.title?.mrh || item?.title?.my || 'this article';
   if (!confirm(`Delete "${titleEn}"?`)) return;
 
   try {
