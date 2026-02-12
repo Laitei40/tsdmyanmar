@@ -130,7 +130,11 @@ let quill = null;
 
 function apiHeaders(etag) {
   const h = { 'Content-Type': 'application/json' };
-  if (etag) h['If-Match'] = etag;
+  if (etag) {
+    // Send properly quoted ETag per HTTP spec; strip any existing quotes first
+    const raw = etag.replace(/^"|"$/g, '').replace(/^W\//i, '');
+    h['If-Match'] = `"${raw}"`;
+  }
   return h;
 }
 
@@ -147,7 +151,9 @@ async function apiList(params = {}) {
 async function apiGet(id) {
   const res = await fetch(`${API_BASE}/${encodeURIComponent(id)}`, { credentials: 'include' });
   if (!res.ok) throw new Error(`Get failed: ${res.status}`);
-  const headerEtag = res.headers.get('etag') || '';
+  const rawHeader = res.headers.get('etag') || '';
+  // Strip quotes / W/ prefix that HTTP layer may add
+  const headerEtag = rawHeader.replace(/^"|"$/g, '').replace(/^W\//i, '').trim();
   const body = await res.json();
   // Prefer etag from JSON body — Cloudflare CDN can strip/modify the ETag header
   const etag = body.etag || headerEtag;

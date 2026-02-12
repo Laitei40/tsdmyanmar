@@ -55,7 +55,7 @@ export async function onRequest(context) {
     if (!row) return json(404, { error: 'not found' });
 
     if (isAdmin) {
-      return json(200, rowToAdminItem(row), { ETag: row.etag || '' });
+      return json(200, rowToAdminItem(row), { ETag: `"${row.etag || ''}"` });
     } else {
       const item = rowToPublicItem(row);
       return json(200, lang ? localize(item, lang) : item, { 'Cache-Control': 'public, max-age=30' });
@@ -75,7 +75,7 @@ export async function onRequest(context) {
     const existing = await db.prepare('SELECT etag FROM news WHERE id = ?').bind(id).first();
     if (!existing) return json(404, { error: 'not found' });
     const currentEtag = normalizeEtag(existing.etag || '');
-    if (currentEtag && currentEtag !== etag) {
+    if (currentEtag && etag && currentEtag !== etag) {
       return json(409, { error: 'Version conflict — reload and retry' });
     }
 
@@ -93,7 +93,7 @@ export async function onRequest(context) {
       body.tags ? JSON.stringify(body.tags) : null,
       actor, nextEtag, id
     ).run();
-    return json(200, { ok: true }, { ETag: nextEtag });
+    return json(200, { ok: true }, { ETag: `"${nextEtag}"` });
   }
 
   // ── DELETE (admin only) ──
@@ -106,7 +106,7 @@ export async function onRequest(context) {
     const existing = await db.prepare('SELECT etag FROM news WHERE id = ?').bind(id).first();
     if (!existing) return json(404, { error: 'not found' });
     const currentEtag = normalizeEtag(existing.etag || '');
-    if (currentEtag && currentEtag !== etag) return json(409, { error: 'Version conflict' });
+    if (currentEtag && etag && currentEtag !== etag) return json(409, { error: 'Version conflict' });
     await db.prepare('DELETE FROM news WHERE id = ?').bind(id).run();
     return json(200, { ok: true });
   }

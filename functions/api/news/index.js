@@ -107,7 +107,7 @@ export async function onRequest(context) {
         body.tags ? JSON.stringify(body.tags) : null,
         actor, actor, etag
       ).run();
-      return json(201, { id: res.meta.last_row_id, etag }, { ETag: etag });
+      return json(201, { id: res.meta.last_row_id, etag }, { ETag: `"${etag}"` });
     } catch (e) {
       if (e?.message?.includes('UNIQUE')) return json(409, { error: 'Slug already exists' });
       throw e;
