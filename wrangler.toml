@@ -9,6 +9,9 @@ compatibility_date = "2026-01-12"
 # Must match the build script output directory (npm run build → dist/).
 pages_build_output_dir = "dist"
 
+[build]
+command = "npm install && npm run build"
+
 # Bind your Cloudflare D1 database to the environment variable UPDATES_DB
 [[d1_databases]]
 binding = "UPDATES_DB"
