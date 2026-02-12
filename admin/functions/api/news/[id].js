@@ -137,7 +137,7 @@ function verifyAdmin(request, env) {
 function json(status, data, extra = {}) {
   return new Response(JSON.stringify(data), {
     status,
-    headers: { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*', ...extra },
+    headers: { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*', 'Access-Control-Expose-Headers': 'ETag', ...extra },
   });
 }
 
@@ -148,6 +148,7 @@ function handleCors() {
       'Access-Control-Allow-Origin': '*',
       'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, OPTIONS',
       'Access-Control-Allow-Headers': 'Content-Type, If-Match',
+      'Access-Control-Expose-Headers': 'ETag',
       'Access-Control-Max-Age': '86400',
     },
   });

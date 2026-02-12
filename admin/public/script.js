@@ -147,8 +147,10 @@ async function apiList(params = {}) {
 async function apiGet(id) {
   const res = await fetch(`${API_BASE}/${encodeURIComponent(id)}`, { credentials: 'include' });
   if (!res.ok) throw new Error(`Get failed: ${res.status}`);
-  const etag = res.headers.get('etag') || '';
+  const headerEtag = res.headers.get('etag') || '';
   const body = await res.json();
+  // Prefer etag from JSON body — Cloudflare CDN can strip/modify the ETag header
+  const etag = body.etag || headerEtag;
   return { ...body, etag };
 }
 
