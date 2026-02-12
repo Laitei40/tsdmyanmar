@@ -266,6 +266,11 @@
         }
       }catch(e){ console.error('hero render error', e); }
 
+      // Ensure body_html is set for the renderer when body contains HTML from Quill editor
+      if (!item.body_html && typeof bodyStr === 'string' && /<[a-z][\s\S]*>/i.test(bodyStr)) {
+        item.body_html = bodyStr;
+      }
+
       // Render the article body and media using the news renderer (preserves backward compatibility)
       if (window.tsdNews && window.tsdNews.renderArticle){
         try{ window.tsdNews.renderArticle(item, BODY); }catch(e){ updateBodyInnerHTML(item.body_html || bodyStr || ((window.I18N && window.I18N.no_updates_body) || '<p>No content available.</p>')); }

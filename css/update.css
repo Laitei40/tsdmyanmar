@@ -206,6 +206,29 @@
 .update-body .ql-align-justify,
 .update-body [style*="text-align: justify"]{ text-align: justify; }
 
+/* ── Inline text decoration from Quill editor ── */
+.update-body strong, .update-body b { font-weight: 700; }
+.update-body em, .update-body i { font-style: italic; }
+.update-body u { text-decoration: underline; text-underline-offset: 2px; }
+.update-body s, .update-body del { text-decoration: line-through; }
+.update-body sub { vertical-align: sub; font-size: .85em; }
+.update-body sup { vertical-align: super; font-size: .85em; }
+
+/* Quill inline color / background — Quill uses style="color:…" and style="background-color:…"
+   These are set inline, so they work out of the box. We only add a tiny guard for dark mode
+   to ensure light-on-light / dark-on-dark text remains readable. */
+[data-theme="dark"] .update-body [style*="color: rgb(0, 0, 0)"],
+[data-theme="dark"] .update-body [style*="color:#000"],
+[data-theme="dark"] .update-body [style*="color: #000"] {
+  color: var(--text) !important;
+}
+
+/* Quill indent classes */
+.update-body .ql-indent-1 { padding-left: 2em; }
+.update-body .ql-indent-2 { padding-left: 4em; }
+.update-body .ql-indent-3 { padding-left: 6em; }
+.update-body .ql-indent-4 { padding-left: 8em; }
+
 /* ── Image Enhancements ── */
 .update-body img[data-border="thin"]   { border: 1px solid rgba(0,0,0,.12); }
 .update-body img[data-border="normal"] { border: 2px solid rgba(0,0,0,.18); }

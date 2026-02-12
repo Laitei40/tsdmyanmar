@@ -204,10 +204,15 @@
           else if (block.type === 'video' && block.url) target.appendChild(createLazyYouTubeEmbed(block));
         });
       } else {
-        // Fallbacks: body_html > body string
-        if (article.body_html){
+        // Fallbacks: body_html > body string (may contain Quill HTML)
+        var htmlSource = article.body_html || '';
+        // If body_html is empty but body is a string containing HTML tags (from Quill editor), use it
+        if (!htmlSource && typeof article.body === 'string' && /<[a-z][\s\S]*>/i.test(article.body)) {
+          htmlSource = article.body;
+        }
+        if (htmlSource){
           // preserve existing HTML but ensure links have security attrs
-          const wrapper = document.createElement('div'); wrapper.innerHTML = article.body_html;
+          const wrapper = document.createElement('div'); wrapper.innerHTML = htmlSource;
           // enhance anchors
           wrapper.querySelectorAll('a[href]').forEach(a=>{
             try{ const u = new URL(a.href, location.href); if (u.origin !== location.origin){ a.target='_blank'; a.rel='noopener noreferrer'; } }catch(e){}
@@ -216,6 +221,7 @@
           wrapper.querySelectorAll('iframe').forEach(ifr=> ifr.parentNode && ifr.parentNode.removeChild(ifr));
           target.appendChild(wrapper);
         } else if (article.body){
+          // Plain text fallback — linkify URLs
           const p = document.createElement('p'); p.appendChild(linkifyTextToFragment(article.body)); target.appendChild(p);
         }
         // append top-level images/videos if present
