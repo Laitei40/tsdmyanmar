@@ -40,14 +40,24 @@ function loadUpdatesPreview(){
   var container = document.getElementById('updates-preview-list');
   if (!container) return;
 
-  // Use promise flow to stay ES5-friendly
+  // Pick the best available text from an i18n object or plain string
+  function pickText(val) {
+    if (!val) return '';
+    if (typeof val === 'string') return val;
+    if (typeof val === 'object') return val.en || val.mrh || val.my || Object.values(val).find(function(v){ return v && v.trim(); }) || '';
+    return '';
+  }
+
+  // Use the D1 API via news.js helper, with inline API fallback
   var fetchIndex = function(){
     if (window.tsdNews && window.tsdNews.fetchNewsIndex){
-      return window.tsdNews.fetchNewsIndex().catch(function(){
-        return fetch('/news/en/index.json').then(function(r){ return r.json(); });
-      });
+      return window.tsdNews.fetchNewsIndex();
     }
-    return fetch('/news/en/index.json').then(function(r){ return r.json(); });
+    // Direct API call as fallback
+    return fetch('/api/news?limit=6', {cache:'no-cache'}).then(function(r){
+      if (!r.ok) throw new Error('API failed: ' + r.status);
+      return r.json();
+    }).then(function(data){ return data.items || []; });
   };
 
   fetchIndex().then(function(items){
@@ -56,9 +66,9 @@ function loadUpdatesPreview(){
     var parts = [];
     for (var i = 0; i < slice.length; i++){
       var it = slice[i];
-      var title = (it && it.title && it.title.en) || (it && it.title) || '';
-      var date = (it && it.date) || '';
-      var summary = (it && it.summary && it.summary.en) || (it && it.summary) || '';
+      var title = pickText(it && it.title);
+      var date = (it && (it.date || it.publish_date)) || '';
+      var summary = pickText(it && it.summary);
       parts.push('<article class="update-item"><h4>' + escapeHtml(title) + '</h4><time>' + escapeHtml(date) + '</time><p>' + escapeHtml(summary) + '</p></article>');
     }
     container.innerHTML = parts.join('') || '<p>No updates yet.</p>';
