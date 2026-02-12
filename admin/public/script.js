@@ -495,6 +495,7 @@ function imageUploadHandler() {
 
       const res = await fetch(`${API_BASE.replace('/news', '/images')}`, {
         method: 'POST',
+        credentials: 'include',
         body: fd,
       });
 
