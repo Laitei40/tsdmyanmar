@@ -13,8 +13,8 @@ export async function onRequest(context) {
   const id = params.id;
   if (!id) return json(400, { error: 'Missing id' });
 
-  const claims = await auth(request, env);
-  const isAdmin = !!claims?.email;
+  const claims = verifyAdmin(request, env);
+  const isAdmin = !!claims;
   const actor = claims?.email || 'anonymous';
 
   // ── CORS ──
@@ -64,7 +64,7 @@ export async function onRequest(context) {
 
   // ── PUT: update (admin only) ──
   if (request.method === 'PUT') {
-    if (!isAdmin) return json(401, { error: 'unauthorized' });
+    if (!isAdmin) return json(403, { error: 'Forbidden' });
 
     const body = await request.json().catch(() => null);
     if (!body) return json(400, { error: 'Invalid JSON' });
@@ -95,7 +95,7 @@ export async function onRequest(context) {
 
   // ── DELETE (admin only) ──
   if (request.method === 'DELETE') {
-    if (!isAdmin) return json(401, { error: 'unauthorized' });
+    if (!isAdmin) return json(403, { error: 'Forbidden' });
 
     const etag = request.headers.get('if-match') || '';
     const existing = await db.prepare('SELECT etag FROM news WHERE id = ?').bind(id).first();
@@ -109,16 +109,25 @@ export async function onRequest(context) {
 }
 
 /* ══════════════════════════════════════
-   Auth
+   Auth — Cloudflare Access (Zero Trust)
    ══════════════════════════════════════ */
 
-async function auth(req, env) {
-  const tok = req.headers.get('Cf-Access-Jwt-Assertion') ||
-    req.headers.get('CF_Authorization') ||
-    (req.headers.get('cookie') || '').match(/CF_Authorization=([^;]+)/)?.[1];
-  if (!tok && env?.ADMIN_BYPASS_ACCESS === '1') return { email: 'dev@localhost' };
-  if (!tok) return null;
-  return { email: req.headers.get('cf-access-verified-email') || 'unknown' };
+/**
+ * Verify the request comes from an allowed admin.
+ * Cloudflare Access injects `cf-access-authenticated-user-email` on authenticated requests.
+ * The allowed admin email is stored in env.ADMIN_EMAIL (set via Cloudflare dashboard).
+ * Returns { email } on success, or null for non-admin / public requests.
+ */
+function verifyAdmin(request, env) {
+  const email = request.headers
+    .get('cf-access-authenticated-user-email')
+    ?.toLowerCase();
+
+  const allowedAdmin = env.ADMIN_EMAIL?.toLowerCase();
+
+  if (!email || !allowedAdmin || email !== allowedAdmin) return null;
+
+  return { email };
 }
 
 /* ══════════════════════════════════════
@@ -138,7 +147,7 @@ function handleCors() {
     headers: {
       'Access-Control-Allow-Origin': '*',
       'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, OPTIONS',
-      'Access-Control-Allow-Headers': 'Content-Type, If-Match, CF_Authorization, Cf-Access-Jwt-Assertion',
+      'Access-Control-Allow-Headers': 'Content-Type, If-Match',
       'Access-Control-Max-Age': '86400',
     },
   });

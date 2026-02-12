@@ -15,15 +15,18 @@ database_name = "tsd_updates"
 # Pin to specific D1 database (useful for local dev)
 database_id = "bb376db4-497c-4ac3-9761-675b8a537422"
 
-# Local dev: bypass Cloudflare Access for admin API endpoints.
-# Remove or set to "0" in production where Cloudflare Access protects admin routes.
+# Auth: Cloudflare Access (Zero Trust) protects admin routes at the edge.
+# Workers verify identity via cf-access-authenticated-user-email header against env.ADMIN_EMAIL.
 # Bind Cloudflare R2 bucket for image uploads
 [[r2_buckets]]
 binding = "IMAGES"
 bucket_name = "tsd-images"
 
 [vars]
-ADMIN_BYPASS_ACCESS = "1"
+# ADMIN_EMAIL — the Cloudflare Access verified email allowed to use admin APIs.
+# For local dev, set here. For production, set via Cloudflare dashboard (Settings > Environment Variables)
+# so it is never committed to the repository.
+ADMIN_EMAIL = "admin@tsdmyanmar.org"
 
 # Optional: add other settings such as zone_id, account_id, or site configuration
 # Example:

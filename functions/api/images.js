@@ -4,15 +4,16 @@
  * Accepts multipart/form-data with a "file" field.
  * Returns { url: "/api/images/<key>" }
  *
- * Only authenticated admins may upload (same auth as news CRUD).
+ * Auth: Cloudflare Access (Zero Trust) — admin only.
  */
 
 export async function onRequestPost(ctx) {
   const { request, env } = ctx;
 
-  /* ── Auth ── */
-  if (!isAdmin(request, env)) {
-    return json(401, { error: 'Unauthorized' });
+  /* ── Auth — Cloudflare Access (Zero Trust) ── */
+  const admin = verifyAdmin(request, env);
+  if (!admin) {
+    return json(403, { error: 'Forbidden' });
   }
 
   /* ── Parse multipart body ── */
@@ -75,18 +76,20 @@ function extFromMime(mime) {
   return map[mime] || '';
 }
 
-function isAdmin(request, env) {
-  // Dev bypass
-  if (env.ADMIN_BYPASS_ACCESS === '1') return true;
+/**
+ * Verify the request comes from an allowed admin.
+ * Cloudflare Access injects `cf-access-authenticated-user-email` on authenticated requests.
+ * The allowed admin email is stored in env.ADMIN_EMAIL (set via Cloudflare dashboard).
+ * Returns { email } on success, or null for non-admin requests.
+ */
+function verifyAdmin(request, env) {
+  const email = request.headers
+    .get('cf-access-authenticated-user-email')
+    ?.toLowerCase();
 
-  // Cloudflare Access JWT
-  const jwt = request.headers.get('Cf-Access-Jwt-Assertion') ||
-              getCookie(request, 'CF_Authorization');
-  return !!jwt;
-}
+  const allowedAdmin = env.ADMIN_EMAIL?.toLowerCase();
 
-function getCookie(request, name) {
-  const hdr = request.headers.get('Cookie') || '';
-  const match = hdr.match(new RegExp(`(?:^|;\\s*)${name}=([^;]*)`));
-  return match ? match[1] : null;
+  if (!email || !allowedAdmin || email !== allowedAdmin) return null;
+
+  return { email };
 }
