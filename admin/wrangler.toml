@@ -6,9 +6,10 @@ compatibility_date = "2026-01-07"
 pages_build_output_dir = "public"
 
 [vars]
-# Local dev only: bypass Access when no CF_Authorization token is present.
-# Remove or set to "0" in production where Cloudflare Access protects the admin hostname.
-ADMIN_BYPASS_ACCESS = "1"
+# ADMIN_EMAIL — the Cloudflare Access verified email allowed to use admin APIs.
+# For local dev, set here. For production, set via Cloudflare dashboard (Settings > Environment Variables)
+# so it is never committed to the repository.
+ADMIN_EMAIL = "admin@tsdmyanmar.org"
 
 # Bind Cloudflare R2 bucket for image uploads
 [[r2_buckets]]
@@ -21,5 +22,5 @@ binding = "UPDATES_DB"
 database_name = "tsd_updates"
 database_id = "bb376db4-497c-4ac3-9761-675b8a537422"  # replace if needed
 
-# Access settings are enforced via Cloudflare Access policies at the edge.
-# API handlers will also validate CF Access JWT (CF_Authorization / Cf-Access-Jwt-Assertion).
+# Auth: Cloudflare Access (Zero Trust) protects the admin hostname at the edge.
+# Workers verify identity via the cf-access-authenticated-user-email header against env.ADMIN_EMAIL.
