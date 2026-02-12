@@ -71,7 +71,7 @@ export async function onRequest(context) {
     const errs = validate(body);
     if (Object.keys(errs).length) return json(422, { errors: errs });
 
-    const etag = request.headers.get('if-match') || '';
+    const etag = request.headers.get('if-match') || body._etag || '';
     const existing = await db.prepare('SELECT etag FROM news WHERE id = ?').bind(id).first();
     if (!existing) return json(404, { error: 'not found' });
     if (existing.etag !== etag) return json(409, { error: 'Version conflict — reload and retry' });
@@ -97,7 +97,9 @@ export async function onRequest(context) {
   if (request.method === 'DELETE') {
     if (!isAdmin) return json(403, { error: 'Forbidden' });
 
-    const etag = request.headers.get('if-match') || '';
+    let deleteBody = null;
+    try { deleteBody = await request.json(); } catch {}
+    const etag = request.headers.get('if-match') || deleteBody?._etag || '';
     const existing = await db.prepare('SELECT etag FROM news WHERE id = ?').bind(id).first();
     if (!existing) return json(404, { error: 'not found' });
     if (existing.etag !== etag) return json(409, { error: 'Version conflict' });

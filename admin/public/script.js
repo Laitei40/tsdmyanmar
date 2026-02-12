@@ -168,7 +168,7 @@ async function apiCreate(payload) {
 async function apiUpdate(id, etag, payload) {
   const res = await fetch(`${API_BASE}/${encodeURIComponent(id)}`, {
     method: 'PUT', credentials: 'include',
-    headers: apiHeaders(etag), body: JSON.stringify(payload),
+    headers: apiHeaders(etag), body: JSON.stringify({ ...payload, _etag: etag }),
   });
   if (res.status === 422) throw await res.json();
   if (res.status === 409) throw new Error('etag-conflict');
@@ -180,6 +180,7 @@ async function apiDelete(id, etag) {
   const res = await fetch(`${API_BASE}/${encodeURIComponent(id)}`, {
     method: 'DELETE', credentials: 'include',
     headers: apiHeaders(etag),
+    body: JSON.stringify({ _etag: etag }),
   });
   if (res.status === 409) throw new Error('etag-conflict');
   if (!res.ok) throw new Error(`Delete failed: ${res.status}`);
