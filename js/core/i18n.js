@@ -174,6 +174,22 @@ function applySiteTranslations(){
         const val = window.I18N[key];
         if (typeof val === 'string') el.setAttribute('aria-label', val); else if (val && typeof val === 'object') el.setAttribute('aria-label', val[lang] || val.en || '');
       });
+
+      // support data-i18n-num for stat counters – after count-up animation,
+      // replace the displayed number with the translated string for non-English locales.
+      document.querySelectorAll('[data-i18n-num]').forEach(el => {
+        const key = el.getAttribute('data-i18n-num');
+        if (!key) return;
+        const val = window.I18N[key];
+        let text = '';
+        if (typeof val === 'string') text = val;
+        else if (val && typeof val === 'object') text = val[lang] || val.en || '';
+        if (text) {
+          el.setAttribute('data-i18n-final', text);
+          // If the counter animation already completed, update the displayed value
+          if (el.classList.contains('counted')) el.textContent = text;
+        }
+      });
     }
 
     // Update logos / favicons and document title

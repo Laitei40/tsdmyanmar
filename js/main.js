@@ -26,7 +26,14 @@ function animateCountUps(){
         if (!start) start = ts;
         var progress = Math.min((ts - start) / duration, 1);
         el.textContent = Math.floor(progress * target).toLocaleString();
-        if (progress < 1) requestAnimationFrame(step); else el.textContent = target.toLocaleString();
+        if (progress < 1) {
+          requestAnimationFrame(step);
+        } else {
+          // Use translated final value if available, otherwise default formatted number
+          var i18nFinal = el.getAttribute('data-i18n-final');
+          el.textContent = i18nFinal || target.toLocaleString();
+          el.classList.add('counted');
+        }
       }
       var io = new IntersectionObserver(function(entries){
         if (entries[0].isIntersecting){ requestAnimationFrame(step); io.disconnect(); }

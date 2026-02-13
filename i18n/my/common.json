@@ -91,6 +91,13 @@
   "stats_women_shg": "Women participating in Self-Help Groups",
   "stats_communities_disaster": "Communities with disaster committees & better prepared for crises",
 
+  "stats_students_num": "၂,၈၇၀",
+  "stats_farmers_num": "၂၅၃",
+  "stats_people_relief_num": "၃,၀၀၀",
+  "stats_people_relief_suffix": "+",
+  "stats_women_shg_num": "၇၅၀",
+  "stats_communities_disaster_num": "၁၃",
+
   "projects_heading": "Featured projects",
   "project_water_title": "Community Water & Sanitation",
   "project_water_body": "Locally managed water systems, latrine construction, and hygiene training reduce water-borne illness and improve attendance at schools and clinics.",
