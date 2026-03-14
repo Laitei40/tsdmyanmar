@@ -1,0 +1,382 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Wi-Fi Pricing</title>
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    },
+                    colors: {
+                        brand: {
+                            50: '#eff6ff',
+                            100: '#dbeafe',
+                            500: '#3b82f6',
+                            600: '#2563eb',
+                            900: '#1e3a8a',
+                        }
+                    },
+                    animation: {
+                        'fade-in': 'fadeIn 0.5s ease-out',
+                        'slide-up': 'slideUp 0.6s ease-out forwards',
+                    },
+                    keyframes: {
+                        fadeIn: {
+                            '0%': { opacity: '0' },
+                            '100%': { opacity: '1' },
+                        },
+                        slideUp: {
+                            '0%': { opacity: '0', transform: 'translateY(20px)' },
+                            '100%': { opacity: '1', transform: 'translateY(0)' },
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        /* Modern invisible scrollbar for the table */
+        .table-container::-webkit-scrollbar {
+            height: 6px;
+        }
+        .table-container::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        .table-container::-webkit-scrollbar-thumb {
+            background-color: #cbd5e1;
+            border-radius: 20px;
+        }
+        .table-container:hover::-webkit-scrollbar-thumb {
+            background-color: #94a3b8;
+        }
+        
+        /* Glassmorphism utilities */
+        .glass-header {
+            background: rgba(255, 255, 255, 0.85);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+        }
+    </style>
+</head>
+<body class="bg-gradient-to-br from-slate-50 via-white to-blue-50 text-slate-800 font-sans antialiased min-h-screen flex flex-col selection:bg-brand-500 selection:text-white">
+
+    <!-- Sticky Glass Header -->
+    <header class="glass-header shadow-sm border-b border-white/50 sticky top-0 z-50 transition-all duration-300">
+        <div class="max-w-7xl mx-auto px-4 py-4 sm:px-6 lg:px-8 flex flex-col sm:flex-row justify-between items-center gap-4">
+            
+            <!-- Logo / Title -->
+            <div class="flex items-center gap-3">
+                <div class="p-2 bg-gradient-to-br from-brand-500 to-indigo-600 rounded-xl shadow-lg shadow-brand-500/30">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M8.111 16.404a5.5 5.5 0 017.778 0M12 20h.01m-7.08-7.071c3.904-3.905 10.236-3.905 14.141 0M1.394 9.393c5.857-5.857 15.355-5.857 21.213 0" />
+                    </svg>
+                </div>
+                <h1 id="page-title" class="text-2xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-brand-900 to-indigo-800 tracking-tight">
+                    Wi-Fi Pricing
+                </h1>
+            </div>
+            
+            <!-- Controls -->
+            <div class="flex flex-wrap justify-center items-center gap-3 w-full sm:w-auto">
+                <div class="relative flex items-center bg-white border border-slate-200 rounded-lg shadow-sm hover:shadow transition-shadow">
+                    <div class="pl-3 pr-2 py-2 border-r border-slate-100 flex items-center">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-slate-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z" /></svg>
+                    </div>
+                    <select id="plan-filter" onchange="renderContent()" class="bg-transparent text-slate-700 text-sm font-medium focus:ring-0 focus:outline-none block py-2 pr-8 pl-3 cursor-pointer appearance-none w-full sm:w-32">
+                        <option value="all" id="opt-all">All Plans</option>
+                        <option value="basic" id="opt-basic">Basic</option>
+                        <option value="premium" id="opt-premium">Premium</option>
+                    </select>
+                </div>
+
+                <div class="relative flex items-center bg-white border border-slate-200 rounded-lg shadow-sm hover:shadow transition-shadow">
+                    <div class="pl-3 pr-2 py-2 border-r border-slate-100 flex items-center">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-slate-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5h12M9 3v2m1.048 9.5A18.022 18.022 0 016.412 9m6.088 9h7M11 21l5-10 5 10M12.751 5C11.783 10.77 8.07 15.61 3 18.129" /></svg>
+                    </div>
+                    <select id="language" onchange="renderContent()" class="bg-transparent text-slate-700 text-sm font-medium focus:ring-0 focus:outline-none block py-2 pr-8 pl-3 cursor-pointer appearance-none w-full sm:w-32">
+                        <option value="mr">Mara</option>
+                        <option value="en">English</option>
+                        <option value="my">မြန်မာ</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="flex-grow max-w-7xl mx-auto w-full px-4 py-8 sm:px-6 lg:px-8 overflow-hidden">
+        
+        <!-- Hero Section -->
+        <div class="text-center max-w-2xl mx-auto mb-10 animate-fade-in pt-4">
+            <h2 id="hero-subtitle" class="text-base font-semibold text-brand-600 tracking-wide uppercase mb-2">High Speed Connection</h2>
+            <p id="hero-desc" class="text-3xl font-extrabold text-slate-900 sm:text-4xl">Choose the perfect plan for your needs</p>
+        </div>
+
+        <!-- Pricing Table Section -->
+        <section class="mb-16 animate-slide-up" style="animation-delay: 0.1s;">
+            <div class="bg-white rounded-2xl shadow-xl shadow-slate-200/50 border border-slate-100 overflow-hidden relative">
+                
+                <!-- Decorative background elements -->
+                <div class="absolute top-0 right-0 w-64 h-64 bg-gradient-to-br from-brand-50 to-purple-50 rounded-full blur-3xl opacity-50 -z-10 translate-x-1/2 -translate-y-1/2"></div>
+                
+                <div class="overflow-x-auto table-container z-10 relative">
+                    <table class="w-full text-left border-collapse">
+                        <thead id="table-head" class="text-xs text-slate-500 uppercase bg-slate-50/80 border-b border-slate-200">
+                            <!-- Dynamic Headers inserted here -->
+                        </thead>
+                        <tbody id="table-body" class="divide-y divide-slate-100">
+                            <!-- Dynamic Rows inserted here -->
+                        </tbody>
+                    </table>
+                </div>
+                
+                <!-- Empty State -->
+                <div id="empty-state" class="hidden flex-col items-center justify-center py-16 text-slate-500">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-12 w-12 text-slate-300 mb-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9.172 16.172a4 4 0 015.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                    </svg>
+                    <p class="text-lg font-medium text-slate-600">No plans match your selected filter.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Rules Section -->
+        <section class="mb-8 animate-slide-up" style="animation-delay: 0.2s;">
+            <div class="flex items-center gap-3 mb-8">
+                <div class="p-2 bg-purple-100 rounded-lg text-purple-600">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                    </svg>
+                </div>
+                <h2 id="rules-title" class="text-2xl font-bold text-slate-800">Rules</h2>
+            </div>
+            
+            <div id="rules-container" class="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+                <!-- Dynamic Rules inserted here -->
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-white border-t border-slate-200 mt-auto">
+        <div class="max-w-7xl mx-auto px-4 py-8 sm:px-6 lg:px-8 flex flex-col md:flex-row items-center justify-between gap-4">
+            <div class="flex items-center gap-2">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-brand-500" viewBox="0 0 20 20" fill="currentColor">
+                    <path fill-rule="evenodd" d="M2.166 4.999A11.954 11.954 0 0010 1.944 11.954 11.954 0 0017.834 5c.11.65.166 1.32.166 2.001 0 5.225-3.34 9.67-8 11.317C5.34 16.67 2 12.225 2 7c0-.682.057-1.35.166-2.001zm11.541 3.708a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" />
+                </svg>
+                <p id="footer-text" class="text-sm font-medium text-slate-600">IT & Communication Team | TSD</p>
+            </div>
+            <p class="text-xs text-slate-400">&copy; 2026 Wi-Fi Network. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <!-- Application Logic & Embedded Data -->
+    <script>
+        const siteData = {
+            "en": {
+                "title": "Wi-Fi Plans & Pricing",
+                "ui": { "all": "All Plans", "basic": "Basic", "premium": "Premium", "subtitle": "High Speed Connection", "desc": "Choose the perfect plan for your needs" },
+                "headers": ["Plan", "Duration", "Data & Device Limits", "One Time (MMK)", "Resume (MMK)"],
+                "plans": [
+                    ["Basic", "30 Mins", "Unlimited Data • 1 Device", "500", "700"],
+                    ["Basic", "1 Hour", "Unlimited Data • 1 Device", "1,000", "1,200"],
+                    ["Basic", "2 Hours", "Unlimited Data • 1 Device", "2,000", "2,400"],
+                    ["Basic", "3 Hours", "Unlimited Data • 1 Device", "3,000", "3,600"],
+                    ["Basic", "4 Hours", "Unlimited Data • 1 Device", "4,000", "4,800"],
+                    ["Basic", "5 Hours", "Unlimited Data • 1 Device", "5,000", "6,000"],
+                    ["Basic", "8 Hours", "Unlimited Data • 1 Device", "8,000", "8,800"],
+                    ["Basic", "1 Day", "Unlimited Data • 1 Device", "10,000", "12,000"],
+                    ["Basic", "1 Month", "Unlimited Data • 1 Device", "20,000", "25,000"],
+                    ["Basic", "1 Year", "Unlimited Data • 1 Device", "200,000", "220,000"],
+                    ["Premium", "8 Hours", "Unlimited Data • 12 Devices + Custom Care", "50,000", "-"],
+                    ["Premium", "12 Hours", "Unlimited Data • 12 Devices + Custom Care", "70,000", "-"],
+                    ["Premium", "1 Day", "Unlimited Data • 12 Devices + Custom Care", "100,000", "-"]
+                ],
+                "rulesTitle": "Usage Rules & Policies",
+                "rules": [
+                    {"h": "Voucher Required", "p": "Internet access is available only with a valid Wi-Fi voucher code."},
+                    {"h": "Device Limit", "p": "Basic Plan: One device per voucher.<br>Premium Plan: Up to 12 devices as specified."},
+                    {"h": "Time Activation", "p": "<strong>One Time Plan:</strong> Time starts immediately after login and runs continuously.<br><strong>Resume Plan:</strong> Time counts only when connected."},
+                    {"h": "Automatic Expiration", "p": "Internet access will automatically stop when the purchased duration ends."},
+                    {"h": "Fair Use Policy", "p": "Please avoid activities that excessively slow down the network for other users."},
+                    {"h": "Illegal Activities Prohibited", "p": "The network must not be used for hacking, illegal downloads, fraud, or harmful activities."},
+                    {"h": "User Device Responsibility", "p": "Users are responsible for the security and safety of their own devices."},
+                    {"h": "Service Availability", "p": "Internet speed and service may vary due to network load, maintenance, or technical issues."},
+                    {"h": "Right to Disconnect", "p": "The network administrator may disconnect users who misuse the service."}
+                ],
+                "footer": "IT & Communication Team | TSD"
+            },
+            "mr": {
+                "title": "Wi-Fi Mâ Ryhpazy",
+                "ui": { "all": "Zydua", "basic": "Basic", "premium": "Premium", "subtitle": "Chatliepa ta Internet Hmâna", "desc": "Nâ châta a phapa hmâ awpa chhi te" },
+                "headers": ["Plan", "Châh", "Data & Device Thliena", "One Time (MMK)", "Resume (MMK)"],
+                "plans": [
+                    ["Basic", "Mini 30", "Data thliena ylei • Chhaichhi 1", "500", "700"],
+                    ["Basic", "Dawh 1", "Data thliena ylei • Chhaichhi 1", "1,000", "1,200"],
+                    ["Basic", "Dawh 2", "Data thliena ylei • Chhaichhi 1", "2,000", "2,400"],
+                    ["Basic", "Dawh 3", "Data thliena ylei • Chhaichhi 1", "3,000", "3,600"],
+                    ["Basic", "Dawh 4", "Data thliena ylei • Chhaichhi 1", "4,000", "4,800"],
+                    ["Basic", "Dawh 5", "Data thliena ylei • Chhaichhi 1", "5,000", "6,000"],
+                    ["Basic", "Dawh 8", "Data thliena ylei • Chhaichhi 1", "8,000", "8,800"],
+                    ["Basic", "Noh 1", "Data thliena ylei • Chhaichhi 1", "10,000", "12,000"],
+                    ["Basic", "Thla 1", "Data thliena ylei • Chhaichhi 1", "20,000", "25,000"],
+                    ["Basic", "Kô 1", "Data thliena ylei • Chhaichhi 1", "200,000", "220,000"],
+                    ["Premium", "Dawh 8", "Data thliena ylei • Chhaichhi 12 + Baona", "50,000", "-"],
+                    ["Premium", "Dawh 12", "Data thliena ylei • Chhaichhi 12 + Baona", "70,000", "-"],
+                    ["Premium", "Noh 1", "Data thliena ylei • Chhaichhi 12 + Baona", "100,000", "-"]
+                ],
+                "rulesTitle": "Wi-Fi Hmâna Ryhpazy",
+                "rules": [
+                    {"h": "Voucher Â Byuh", "p": "Wi-Fi hmâh awpa ta Voucher code a dopa hmâ awpa â byuh."},
+                    {"h": "Device Thliena", "p": "Basic Plan: Voucher sâ 1 he device 1 deita hmâ theipa a châ.<br>Premium Plan: Device 12 taih hmâ theipa a châ."},
+                    {"h": "Daihti Reina", "p": "<strong>One Time Plan:</strong> Login na tao nata daihti reih pathao hapa châ ta, a reih pazao ngâ thlâh ha aw.<br><strong>Resume Plan:</strong> Pazao chhôh deita daihti a reih aw."},
+                    {"h": "Anotata Daihti Chhâna", "p": "Na chaleipa daihti a pha tita, internet nâ pazaopa cha â chalih ha aw."},
+                    {"h": "Â Dopa Ta Hmâhna", "p": "A hropa hmâhtuhpazy châta internet pasôsa theipa hmo tao leipa ta hmâh awpa a châ."},
+                    {"h": "Hmo Pha Leipa Taona Pakhâkhâhpa A Châ", "p": "Hacking, ado leipa ta download taopa, dôpa nata hmo pha leipa taopazy châta internet hmâ awpa châ vei."},
+                    {"h": "Hmâhtuhpazy Device Maohphaona", "p": "Hmâhtuhpazy ta ama hmâpa device thlalõhna nata abohna cha âmo ku lia deita â pahnieh."},
+                    {"h": "Chakaona Ahmo Theina", "p": "Internet chatliena he, network hmâhtuhpa ama hluh zie, paraihna zy vâta â nano thei aw."},
+                    {"h": "Apazao Lei Theina", "p": "Wi-Fi mohõhtuhpa cha hmâ dâh ado leipa hmâhtuhpazy he Wi-Fi hmâna tawh a pabâsa thei ei."}
+                ],
+                "footer": "IT & Communication Team | TSD"
+            },
+            "my": {
+                "title": "ဝိုင်ဖိုင် ဈေးနှုန်းများ",
+                "ui": { "all": "အားလုံး", "basic": "အခြေခံ", "premium": "ပရီမီယံ", "subtitle": "မြန်နှုန်းမြင့် အင်တာနက်ချိတ်ဆက်မှု", "desc": "သင့်အတွက် အသင့်တော်ဆုံး အစီအစဉ်ကို ရွေးချယ်ပါ" },
+                "headers": ["အစီစဉ်", "ကြာချိန်", "ဒေတာနှင့် စက်ကန့်သတ်ချက်", "တစ်ကြိမ်သုံး", "ပြန်လည်စတင်"],
+                "plans": [
+                    ["အခြေခံ", "၃၀ မိနစ်", "ဒေတာ အကန့်အသတ်မရှိ • စက် ၁ လုံး", "၇၀၀ ကျပ်", "၇၀၀ ကျပ်"],
+                    ["အခြေခံ", "၁ နာရီ", "ဒေတာ အကန့်အသတ်မရှိ • စက် ၁ လုံး", "၁,၀၀၀ ကျပ်", "၁,၂၀၀ ကျပ်"],
+                    ["အခြေခံ", "၂ နာရီ", "ဒေတာ အကန့်အသတ်မရှိ • စက် ၁ လုံး", "၂,၀၀၀ ကျပ်", "၂,၄၀၀ ကျပ်"],
+                    ["အခြေခံ", "၃ နာရီ", "ဒေတာ အကန့်အသတ်မရှိ • စက် ၁ လုံး", "၃,၀၀၀ ကျပ်", "၃,၆၀၀ ကျပ်"],
+                    ["အခြေခံ", "၄ နာရီ", "ဒေတာ အကန့်အသတ်မရှိ • စက် ၁ လုံး", "၄,၀၀၀ ကျပ်", "၄,၈၀၀ ကျပ်"],
+                    ["အခြေခံ", "၅ နာရီ", "ဒေတာ အကန့်အသတ်မရှိ • စက် ၁ လုံး", "၅,၀၀၀ ကျပ်", "၆,၀၀၀ ကျပ်"],
+                    ["အခြေခံ", "၈ နာရီ", "ဒေတာ အကန့်အသတ်မရှိ • စက် ၁ လုံး", "၈,၀၀၀ ကျပ်", "၈,၈၀၀ ကျပ်"],
+                    ["အခြေခံ", "၁ ရက်", "ဒေတာ အကန့်အသတ်မရှိ • စက် ၁ လုံး", "၁၀,၀၀၀ ကျပ်", "၁၂,၀၀၀ ကျပ်"],
+                    ["အခြေခံ", "၁ လ", "ဒေတာ အကန့်အသတ်မရှိ • စက် ၁ လုံး", "၂၀,၀၀၀ ကျပ်", "၂၅,၀၀၀ ကျပ်"],
+                    ["အခြေခံ", "၁ နှစ်", "ဒေတာ အကန့်အသတ်မရှိ • စက် ၁ လုံး", "၂၀၀,၀၀၀ ကျပ်", "၂၂၀,၀၀၀ ကျပ်"],
+                    ["ပရီမီယံ", "၈ နာရီ", "ဒေတာ အကန့်အသတ်မရှိ • စက် ၁၂ လုံး + အထူးဝန်ဆောင်မှု", "၅၀,၀၀၀ ကျပ်", "-"],
+                    ["ပရီမီယံ", "၁၂ နာရီ", "ဒေတာ အကန့်အသတ်မရှိ • စက် ၁၂ လုံး + အထူးဝန်ဆောင်မှု", "၇၀,၀၀၀ ကျပ်", "-"],
+                    ["ပရီမီယံ", "၁ ရက်", "ဒေတာ အကန့်အသတ်မရှိ • စက် ၁၂ လုံး + အထူးဝန်ဆောင်မှု", "၁၀၀,၀၀၀ ကျပ်", "-"]
+                ],
+                "rulesTitle": "အသုံးပြုခြင်းဆိုင်ရာ စည်းမျဉ်းများ",
+                "rules": [
+                    {"h": "ဘောက်ချာ လိုအပ်ပါသည်", "p": "အင်တာနက်ကို တရားဝင် ဝိုင်ဖိုင် ဘောက်ချာကုဒ်ဖြင့်သာ အသုံးပြုနိုင်ပါသည်။"},
+                    {"h": "စက်အရေအတွက် ကန့်သတ်ချက်", "p": "အခြေခံအစီအစဉ်: ဘောက်ချာတစ်ခုလျှင် စက်တစ်လုံး။<br>ပရီမီယံအစီအစဉ်: စက် ၁၂ လုံးအထိ သုံးနိုင်သည်။"},
+                    {"h": "အချိန်စတင်ခြင်း", "p": "<strong>တစ်ကြိမ်သုံး:</strong> လော့ဂ်အင် ဝင်ပြီးသည်နှင့် အချိန်စတင်ပြီး ဆက်တိုက် သွားနေမည်။<br><strong>ပြန်လည်စတင်နိုင်သော:</strong> ချိတ်ဆက်ထားသည့် အချိန်ကိုသာ ရေတွက်မည်။"},
+                    {"h": "အလိုအလျောက် သက်တမ်းကုန်ဆုံးခြင်း", "p": "ဝယ်ယူထားသော အချိန်ကာလ ကုန်ဆုံးသွားပါက အင်တာနက်ချိတ်ဆက်မှု အလိုအလျောက် ရပ်တန့်သွားမည်။"},
+                    {"h": "တရားမျှတစွာ အသုံးပြုခြင်း မူဝါဒ", "p": "အခြားအသုံးပြုသူများအတွက် ကွန်ရက်ကို အလွန်အမင်း နှေးကွေးစေမည့် လုပ်ဆောင်ချက်များကို ရှောင်ကြဉ်ပါ။"},
+                    {"h": "တရားမဝင် လုပ်ဆောင်မှုများ တားမြစ်ထားသည်", "p": "ကွန်ရက်ကို ဟက်ကင်းလုပ်ခြင်း၊ တရားမဝင် ဒေါင်းလုဒ် ဆွဲခြင်း၊ လိမ်လည်ခြင်းများအတွက် အသုံးမပြုရပါ။"},
+                    {"h": "အသုံးပြုသူ၏ စက်ပိုင်းဆိုင်ရာ တာဝန်ယူမှု", "p": "အသုံးပြုသူများသည် မိမိတို့၏ ကိုယ်ပိုင်စက်များ၏ လုံခြုံရေးအတွက် တာဝန်ရှိပါသည်။"},
+                    {"h": "ဝန်ဆောင်မှု ရရှိနိုင်မှု", "p": "ကွန်ရက်အသုံးပြုမှု များခြင်း သို့မဟုတ် နည်းပညာပိုင်းဆိုင်ရာ ပြဿနာများကြောင့် အင်တာနက် အမြန်နှုန်း ကွာခြားနိုင်ပါသည်။"},
+                    {"h": "ချိတ်ဆက်မှု ဖြတ်တောက်နိုင်ခြင်း", "p": "ကွန်ရက် စီမံခန့်ခွဲသူသည် ဝန်ဆောင်မှုကို အလွဲသုံးစားလုပ်သော အသုံးပြုသူများကို ချိတ်ဆက်မှု ဖြတ်တောက်နိုင်ပါသည်။"}
+                ],
+                "footer": "အိုင်တီ & ဆက်သွယ်ရေး အဖွဲ့ | တီအက်စ်ဒီ"
+            }
+        };
+
+        function getPlanBadge(planName) {
+            const isPremium = planName === 'Premium' || planName === 'ပရီမီယံ';
+            if (isPremium) {
+                return `<span class="inline-flex items-center px-2.5 py-1 rounded-md text-xs font-bold bg-gradient-to-r from-purple-500 to-indigo-500 text-white shadow-sm ring-1 ring-inset ring-purple-600/20 uppercase tracking-wider">
+                            <svg class="w-3 h-3 mr-1" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"></path></svg>
+                            ${planName}
+                        </span>`;
+            } else {
+                return `<span class="inline-flex items-center px-2.5 py-1 rounded-md text-xs font-bold bg-slate-100 text-slate-700 shadow-sm ring-1 ring-inset ring-slate-200 uppercase tracking-wider">
+                            ${planName}
+                        </span>`;
+            }
+        }
+
+        function renderContent() {
+            const lang = document.getElementById('language').value;
+            const filter = document.getElementById('plan-filter').value;
+            const content = siteData[lang];
+
+            if (!content) return;
+
+            // UI strings update
+            document.getElementById('opt-all').textContent = content.ui.all;
+            document.getElementById('opt-basic').textContent = content.ui.basic;
+            document.getElementById('opt-premium').textContent = content.ui.premium;
+            document.getElementById('hero-subtitle').textContent = content.ui.subtitle;
+            document.getElementById('hero-desc').textContent = content.ui.desc;
+
+            // Header & Title
+            document.getElementById('page-title').textContent = content.title;
+            document.title = content.title;
+
+            // Table Headers
+            const thead = document.getElementById('table-head');
+            thead.innerHTML = '<tr>' + content.headers.map((h, i) => 
+                `<th scope="col" class="px-6 py-4 font-semibold text-slate-600 tracking-wider whitespace-nowrap">${h}</th>`
+            ).join('') + '</tr>';
+
+            // Filter logic
+            const tbody = document.getElementById('table-body');
+            const emptyState = document.getElementById('empty-state');
+            
+            const filteredPlans = content.plans.filter(row => {
+                const planName = row[0];
+                if (filter === 'all') return true;
+                if (filter === 'basic') return planName === 'Basic' || planName === 'အခြေခံ';
+                if (filter === 'premium') return planName === 'Premium' || planName === 'ပရီမီယံ';
+                return true;
+            });
+
+            // Render Rows
+            if (filteredPlans.length > 0) {
+                emptyState.classList.add('hidden');
+                tbody.innerHTML = filteredPlans.map(row => {
+                    const planBadge = getPlanBadge(row[0]);
+                    return `<tr class="hover:bg-brand-50/50 transition-colors group">
+                        <td class="px-6 py-4 whitespace-nowrap">${planBadge}</td>
+                        <td class="px-6 py-4 whitespace-nowrap font-medium text-slate-800">${row[1]}</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-slate-600 text-sm">${row[2]}</td>
+                        <td class="px-6 py-4 whitespace-nowrap font-bold text-brand-600">${row[3]}</td>
+                        <td class="px-6 py-4 whitespace-nowrap font-bold ${row[4] === '-' ? 'text-slate-300' : 'text-indigo-600'}">${row[4]}</td>
+                    </tr>`;
+                }).join('');
+            } else {
+                tbody.innerHTML = '';
+                emptyState.classList.remove('hidden');
+                emptyState.classList.add('flex');
+            }
+
+            // Render Rules
+            document.getElementById('rules-title').textContent = content.rulesTitle;
+            const rulesContainer = document.getElementById('rules-container');
+            rulesContainer.innerHTML = content.rules.map((rule, index) => `
+                <div class="bg-white p-6 rounded-xl border border-slate-100 shadow-sm hover:shadow-lg hover:-translate-y-1 transition-all duration-300 relative overflow-hidden group">
+                    <div class="w-10 h-10 rounded-full bg-brand-50 flex items-center justify-center text-brand-600 mb-4 group-hover:scale-110 group-hover:bg-brand-500 group-hover:text-white transition-all duration-300">
+                        <span class="font-bold text-sm">${index + 1}</span>
+                    </div>
+                    <h3 class="text-base font-bold text-slate-800 mb-2">${rule.h}</h3>
+                    <p class="text-slate-500 text-sm leading-relaxed">${rule.p}</p>
+                </div>
+            `).join('');
+
+            // Footer
+            document.getElementById('footer-text').textContent = content.footer;
+        }
+
+        // Initialize and set default to user preference (Mara is first in the select, but let's ensure it renders)
+        window.onload = () => {
+            renderContent();
+        };
+    </script>
+</body>
+</html>
