@@ -1,23 +1,16 @@
 /**
  * updates.js — TSD Myanmar · News & Updates feed
  *
- * Features:
- *  - Fetches from /api/news via tsdNews helper
- *  - Language selector (EN / မြန်မာ / Mara) — filters news content language only (does not change site UI)
- *  - Featured hero card + card grid
- *  - Client-side year/category filter, search, sort
- *  - Pagination via "Load more"
- *  - IntersectionObserver reveal animations
- *  - Category color-coded badges
- *  - Theme-aware, fully accessible
+ * Clean minimal design — featured hero + 3-column card grid
+ * Language selector, category pills, search, year/sort filters, pagination
  */
 (function () {
   'use strict';
 
-  var CONTAINER_ID     = 'updates-list';
-  var FILTER_ID        = 'updates-year-filter';
-  var LOADING_MSG_ID   = 'updates-loading';
-  var PAGE_SIZE        = 6;
+  var CONTAINER_ID   = 'updates-list';
+  var FILTER_ID      = 'updates-year-filter';
+  var LOADING_MSG_ID = 'updates-loading';
+  var PAGE_SIZE      = 9;
 
   // ── State ──
   var offset         = 0;
@@ -27,7 +20,7 @@
   var categoryFilter = '';
   var sortOrder      = 'newest';
   var isLoading      = false;
-  var contentLang    = 'en'; // language for filtering news content only (not site UI)
+  var contentLang    = 'en';
 
   // ── DOM helpers ──
   function el(tag, props) {
@@ -63,10 +56,7 @@
   }
 
   // ── i18n helpers ──
-  /** Returns the content language chosen via the on-page lang switcher (not the site UI language). */
-  function getLang() {
-    return contentLang;
-  }
+  function getLang() { return contentLang; }
 
   function i18n(key, fallback) {
     return (window.I18N && window.I18N[key]) || fallback;
@@ -77,14 +67,12 @@
     if (typeof obj === 'string') return obj;
     var candidates = (lang === 'mrh') ? ['mrh', 'mara', 'en'] : [lang, 'en'];
     for (var i = 0; i < candidates.length; i++) { if (obj[candidates[i]]) return obj[candidates[i]]; }
-    // fallback to any available value
     var keys = Object.keys(obj);
     return keys.length ? obj[keys[0]] : '';
   }
 
   function normalizeItemLangKeys(item) {
     if (!item || typeof item !== 'object') return;
-    // Ensure .date is always set (admin responses use publish_date)
     if (!item.date && item.publish_date) item.date = item.publish_date;
     ['title', 'summary', 'body'].forEach(function (field) {
       var obj = item[field];
@@ -113,16 +101,20 @@
     return '';
   }
 
-  /** Check if an item has non-empty content in a specific language (no fallback). */
   function hasLangContent(item, lang) {
     var title = item.title;
     if (!title) return false;
-    if (typeof title === 'string') return true; // plain string = available
+    if (typeof title === 'string') return true;
     return !!(title[lang] && title[lang].trim());
   }
 
-  // Category display label map
   var CAT_LABELS = { news: 'News', report: 'Report', announcement: 'Announcement', story: 'Story' };
+
+  function estimateReadTime(item, lang) {
+    var text = stripHtml(pickLangField(item.body, lang) || pickLangField(item.summary, lang) || '');
+    var words = text.split(/\s+/).filter(function(w) { return w.length > 0; }).length;
+    return Math.max(1, Math.round(words / 200));
+  }
 
   // ═══════════════════════════════════════
   // LANGUAGE SELECTOR
@@ -131,29 +123,21 @@
     var btns = document.querySelectorAll('.lang-btn');
     if (!btns.length) return;
 
-    // Set initial active state (default: EN)
     btns.forEach(function (btn) {
       var lang = btn.getAttribute('data-lang');
-      var isActive = lang === contentLang;
-      btn.classList.toggle('active', isActive);
-      btn.setAttribute('aria-pressed', isActive ? 'true' : 'false');
+      btn.classList.toggle('active', lang === contentLang);
+      btn.setAttribute('aria-pressed', lang === contentLang ? 'true' : 'false');
     });
 
-    // Click handler — only filters news content language, does NOT change site UI language
     btns.forEach(function (btn) {
       btn.addEventListener('click', function () {
         var lang = btn.getAttribute('data-lang');
         if (!lang || lang === contentLang) return;
 
-        // Update visual state immediately
-        btns.forEach(function (b) {
-          b.classList.remove('active');
-          b.setAttribute('aria-pressed', 'false');
-        });
+        btns.forEach(function (b) { b.classList.remove('active'); b.setAttribute('aria-pressed', 'false'); });
         btn.classList.add('active');
         btn.setAttribute('aria-pressed', 'true');
 
-        // Update local content language and re-render
         contentLang = lang;
         loadAndRender(true);
       });
@@ -161,111 +145,96 @@
   }
 
   // ═══════════════════════════════════════
-  // CARD BUILDERS
+  // FEATURED HERO BUILDER
   // ═══════════════════════════════════════
-
-  /** Featured (hero) card */
   function buildFeatured(it, lang) {
     var title    = pickLangField(it.title, lang) || 'Untitled';
     var summary  = stripHtml(pickLangField(it.summary, lang) || '');
-    var ctaLabel = i18n('read_more', 'Read more');
     var href     = '/update.html?id=' + encodeURIComponent(it.id || '');
-    var category = buildCategory(it) || i18n('latest_badge', 'Latest');
-    var catLabel = CAT_LABELS[category.toLowerCase()] || category;
+    var category = buildCategory(it);
+    var catLabel = CAT_LABELS[category.toLowerCase()] || category || 'Update';
     var imgUrl   = getItemImage(it);
+    var readMin  = estimateReadTime(it, lang);
 
-    var card = el('article', { class: 'featured-card reveal', attrs: { role: 'listitem' } });
+    var link = el('a', { class: 'up-hero', attrs: { href: href } });
 
-    // Image area
-    var imageWrap = el('div', { class: 'featured-image-wrap' });
+    // Image
+    var imgWrap = el('div', { class: 'up-hero__img-wrap' });
     if (imgUrl) {
-      var img = el('img', { class: 'featured-image', attrs: { src: imgUrl, alt: title, loading: 'lazy', decoding: 'async' } });
+      var img = el('img', { class: 'up-hero__img', attrs: { src: imgUrl, alt: title, loading: 'eager', decoding: 'async' } });
       img.onerror = function () { img.style.display = 'none'; };
-      imageWrap.appendChild(img);
+      imgWrap.appendChild(img);
     }
-    card.appendChild(imageWrap);
+    link.appendChild(imgWrap);
 
     // Body
-    var body = el('div', { class: 'featured-body' });
+    var body = el('div', { class: 'up-hero__body' });
+    body.appendChild(el('span', { class: 'up-hero__tag', attrs: { 'data-cat': category.toLowerCase() } }, catLabel));
+    body.appendChild(el('h2', { class: 'up-hero__title' }, title));
+    if (summary) body.appendChild(el('p', { class: 'up-hero__excerpt' }, summary));
 
-    var chip = el('span', { class: 'featured-chip', attrs: { 'data-cat': category.toLowerCase() } }, catLabel);
-    var metaRow = el('div', { class: 'featured-meta' },
-      chip,
-      el('time', { class: 'featured-date', attrs: { datetime: it.date || '' } }, formatDate(it.date))
-    );
-    body.appendChild(metaRow);
-    body.appendChild(el('h2', { class: 'featured-title' }, title));
-    if (summary) body.appendChild(el('p', { class: 'featured-lead' }, summary));
-    body.appendChild(el('div', { class: 'featured-actions' },
-      el('a', { class: 'btn-primary', attrs: { href: href } }, ctaLabel)
-    ));
+    var meta = el('div', { class: 'up-hero__meta' });
+    meta.appendChild(el('time', { attrs: { datetime: it.date || '' } }, formatDate(it.date)));
+    meta.appendChild(el('span', { class: 'up-hero__dot' }));
+    meta.appendChild(el('span', {}, readMin + ' min read'));
+    body.appendChild(meta);
 
-    card.appendChild(body);
-    return card;
+    body.appendChild(el('span', { class: 'up-hero__cta' }, i18n('read_more', 'Read article')));
+
+    link.appendChild(body);
+    return link;
   }
 
-  /** Standard grid card */
+  // ═══════════════════════════════════════
+  // CARD BUILDER
+  // ═══════════════════════════════════════
   function buildCard(it, lang) {
     var title      = pickLangField(it.title, lang) || 'Untitled';
     var summaryRaw = stripHtml(pickLangField(it.summary, lang) || '');
     var bodyRaw    = stripHtml(pickLangField(it.body, lang) || '');
-    var summary    = summaryRaw || (bodyRaw.length > 200 ? bodyRaw.substring(0, 200) + '…' : bodyRaw);
-    var ctaLabel   = i18n('read_more', 'Read more');
+    var summary    = summaryRaw || (bodyRaw.length > 180 ? bodyRaw.substring(0, 180) + '…' : bodyRaw);
     var href       = '/update.html?id=' + encodeURIComponent(it.id || '');
     var category   = buildCategory(it);
-    var catLabel   = CAT_LABELS[category.toLowerCase()] || category;
+    var catLabel   = CAT_LABELS[category.toLowerCase()] || category || 'Update';
     var imgUrl     = getItemImage(it);
+    var readMin    = estimateReadTime(it, lang);
 
-    var article = el('article', { class: 'update-card reveal', attrs: { role: 'listitem' } });
+    var article = el('article', { class: 'up-card reveal', attrs: { role: 'listitem' } });
 
-    // Thumbnail
+    // Image
     if (imgUrl) {
-      var thumbWrap = el('div', { class: 'card-thumb-wrap' });
-      var thumb = el('img', { class: 'card-thumb', attrs: { src: imgUrl, alt: '', loading: 'lazy', decoding: 'async' } });
-      thumb.onerror = function () { thumbWrap.style.display = 'none'; };
-      thumbWrap.appendChild(thumb);
-      article.appendChild(thumbWrap);
+      var imgWrap = el('div', { class: 'up-card__img-wrap' });
+      var img = el('img', { class: 'up-card__img', attrs: { src: imgUrl, alt: '', loading: 'lazy', decoding: 'async' } });
+      img.onerror = function () { imgWrap.style.display = 'none'; };
+      imgWrap.appendChild(img);
+      article.appendChild(imgWrap);
     }
 
-    // Content
-    var content = el('div', { class: 'card-content' });
+    // Body
+    var body = el('div', { class: 'up-card__body' });
+    body.appendChild(el('span', { class: 'up-card__tag', attrs: { 'data-cat': category.toLowerCase() } }, catLabel));
+    body.appendChild(el('h3', { class: 'up-card__title' }, title));
+    if (summary) body.appendChild(el('p', { class: 'up-card__excerpt' }, summary));
 
-    // Header row (badge + date)
-    var header = el('div', { class: 'card-header' });
-    if (catLabel) {
-      var badge = el('span', { class: 'badge', attrs: { 'data-cat': category.toLowerCase() } }, catLabel);
-      header.appendChild(badge);
-    }
-    header.appendChild(el('time', { class: 'update-date', attrs: { datetime: it.date || '' } }, formatDate(it.date)));
-    content.appendChild(header);
+    // Footer
+    var footer = el('div', { class: 'up-card__footer' });
+    footer.appendChild(el('time', { attrs: { datetime: it.date || '' } }, formatDate(it.date) + '  ·  ' + readMin + ' min'));
+    footer.appendChild(el('a', { class: 'up-card__read', attrs: { href: href } }, i18n('read_more', 'Read')));
+    body.appendChild(footer);
 
-    // Title
-    content.appendChild(el('h3', { class: 'update-title' }, title));
-
-    // Summary
-    if (summary) content.appendChild(el('p', { class: 'update-summary' }, summary));
-
-    // CTA
-    content.appendChild(el('div', { class: 'update-cta' },
-      el('a', { class: 'btn-link', attrs: { href: href } }, ctaLabel)
-    ));
-
-    article.appendChild(content);
+    article.appendChild(body);
     return article;
   }
 
   // ═══════════════════════════════════════
-  // RENDER HELPERS
+  // RENDER
   // ═══════════════════════════════════════
-
   function renderEmpty(container) {
     container.innerHTML = '';
-    var title = i18n('no_updates', 'No updates yet');
-    var body  = i18n('no_updates_body', 'Check back soon for the latest news and reports.');
     container.appendChild(
       el('div', { class: 'empty-state' },
-        el('h3', {}, title),
-        el('p', {}, body)
+        el('h3', {}, i18n('no_updates', 'No updates yet')),
+        el('p', {}, i18n('no_updates_body', 'Check back soon for the latest news and reports.'))
       )
     );
   }
@@ -274,14 +243,7 @@
     if (!append) container.innerHTML = '';
     if (!items.length && !append) return renderEmpty(container);
 
-    var remaining = items.slice();
-
-    // Show featured card only on fresh render
-    if (!append && remaining.length) {
-      container.appendChild(buildFeatured(remaining.shift(), lang));
-    }
-
-    remaining.forEach(function (it) {
+    items.forEach(function (it) {
       container.appendChild(buildCard(it, lang));
     });
 
@@ -303,19 +265,19 @@
   function showSkeleton(container, count) {
     container.innerHTML = '';
     for (var i = 0; i < count; i++) {
-      container.appendChild(el('div', { class: 'skeleton-card', attrs: { role: 'listitem', 'aria-hidden': 'true' } }));
+      container.appendChild(el('div', { class: 'skeleton-card', attrs: { 'aria-hidden': 'true' } }));
     }
   }
 
   // ═══════════════════════════════════════
   // MAIN LOAD
   // ═══════════════════════════════════════
-
   async function loadAndRender(reset) {
-    var container  = document.getElementById(CONTAINER_ID);
-    var filter     = document.getElementById(FILTER_ID);
-    var loading    = document.getElementById(LOADING_MSG_ID);
-    var loadMore   = document.getElementById('updates-load-more');
+    var container = document.getElementById(CONTAINER_ID);
+    var filter    = document.getElementById(FILTER_ID);
+    var loading   = document.getElementById(LOADING_MSG_ID);
+    var loadMore  = document.getElementById('updates-load-more');
+    var featured  = document.getElementById('up-featured');
     if (!container) return;
 
     if (isLoading) return;
@@ -323,11 +285,10 @@
 
     try {
       if (loading) loading.textContent = i18n('loading', 'Loading…');
-
       var lang = getLang();
-      if (reset) { offset = 0; total = 0; showSkeleton(container, 4); }
+      if (reset) { offset = 0; total = 0; showSkeleton(container, 6); }
 
-      // Fetch data
+      // Fetch
       var data;
       try {
         data = await (window.tsdNews && window.tsdNews.fetchNewsIndex
@@ -342,9 +303,7 @@
       items.forEach(normalizeItemLangKeys);
 
       // ── Filters ──
-      // Language filter: only show articles that have content in the selected language
       items = items.filter(function (it) { return hasLangContent(it, lang); });
-
       if (yearFilter) items = items.filter(function (it) { return (new Date(it.date)).getFullYear() === Number(yearFilter); });
       if (categoryFilter) {
         items = items.filter(function (it) {
@@ -368,31 +327,54 @@
 
       total = items.length;
 
-      // ── Paginate ──
-      var paged = items.slice(offset, offset + PAGE_SIZE);
-      renderItems(container, paged, lang, !reset);
-      offset += paged.length;
+      // ── Featured article (first load only, no filters active) ──
+      var feedItems = items;
+      if (featured && reset) {
+        featured.innerHTML = '';
+        if (items.length && !query && !yearFilter && !categoryFilter) {
+          featured.appendChild(buildFeatured(items[0], lang));
+          feedItems = items.slice(1); // rest go to grid
+        } else {
+          feedItems = items;
+        }
+      } else if (!reset) {
+        feedItems = items;
+      } else {
+        feedItems = items; // filtered: skip featured
+      }
 
-      // ── Populate year filter on reset ──
+      // ── Paginate ──
+      var startIdx = reset ? 0 : offset;
+      // On fresh reset with featured, skip first item for grid
+      var gridItems = (reset && featured && items.length && !query && !yearFilter && !categoryFilter)
+        ? items.slice(1)
+        : items;
+      total = gridItems.length;
+      var paged = gridItems.slice(startIdx, startIdx + PAGE_SIZE);
+
+      renderItems(container, paged, lang, !reset);
+      offset = startIdx + paged.length;
+
+      // ── Year filter ──
       if (filter && reset) {
         var allItems = Array.isArray(data) ? data : (data.items || []);
         allItems.forEach(normalizeItemLangKeys);
-        var years = Array.from(new Set(allItems.map(function (i) { return new Date(i.date).getFullYear(); }))).filter(function(y){ return !isNaN(y); }).sort(function (a, b) { return b - a; });
+        var years = Array.from(new Set(allItems.map(function (i) { return new Date(i.date).getFullYear(); }))).filter(function(y) { return !isNaN(y); }).sort(function (a, b) { return b - a; });
         filter.innerHTML = '';
         filter.appendChild(el('option', { value: '' }, 'All years'));
         years.forEach(function (y) { filter.appendChild(el('option', { value: y }, String(y))); });
       }
 
-      // ── Load-more button state ──
+      // ── Load-more ──
       if (loadMore) {
         loadMore.textContent = i18n('load_more', 'Load more');
         loadMore.classList.remove('btn-loading');
-        if (offset >= total) { loadMore.setAttribute('disabled', 'disabled'); }
-        else { loadMore.removeAttribute('disabled'); }
+        if (offset >= total) loadMore.setAttribute('disabled', 'disabled');
+        else loadMore.removeAttribute('disabled');
       }
 
       if (loading) loading.textContent = '';
-      if (!items.length && offset === 0) renderEmpty(container);
+      if (!gridItems.length && offset === 0) renderEmpty(container);
 
     } catch (err) {
       if (loading) loading.textContent = 'Failed to load updates';
@@ -404,9 +386,35 @@
   }
 
   // ═══════════════════════════════════════
-  // WIRE EVERYTHING UP
+  // CATEGORY PILLS
   // ═══════════════════════════════════════
+  function initCategoryPills() {
+    var pills = document.querySelectorAll('.up-pill');
+    if (!pills.length) return;
 
+    pills.forEach(function (pill) {
+      pill.addEventListener('click', function () {
+        var cat = pill.getAttribute('data-cat') || '';
+
+        pills.forEach(function (p) { p.classList.remove('active'); p.setAttribute('aria-selected', 'false'); });
+        pill.classList.add('active');
+        pill.setAttribute('aria-selected', 'true');
+
+        var catSelect = document.getElementById('updates-category-filter');
+        if (catSelect) {
+          catSelect.value = cat;
+          catSelect.dispatchEvent(new Event('change'));
+        } else {
+          categoryFilter = cat.toLowerCase();
+          loadAndRender(true);
+        }
+      });
+    });
+  }
+
+  // ═══════════════════════════════════════
+  // INIT
+  // ═══════════════════════════════════════
   document.addEventListener('DOMContentLoaded', function () {
     var filter     = document.getElementById(FILTER_ID);
     var search     = document.getElementById('updates-search');
@@ -414,19 +422,14 @@
     var categoryEl = document.getElementById('updates-category-filter');
     var sortEl     = document.getElementById('updates-sort');
 
-    // Init language switcher
     initLangSwitcher();
-
-    // Initial load
+    initCategoryPills();
     loadAndRender(true);
-
-
 
     if (filter) filter.addEventListener('change', function () { yearFilter = filter.value; loadAndRender(true); });
     if (categoryEl) categoryEl.addEventListener('change', function () { categoryFilter = (categoryEl.value || '').toLowerCase(); loadAndRender(true); });
     if (sortEl) sortEl.addEventListener('change', function () { sortOrder = sortEl.value || 'newest'; loadAndRender(true); });
 
-    // Debounced search
     if (search) {
       var t = null;
       search.addEventListener('input', function () {
@@ -435,7 +438,6 @@
       });
     }
 
-    // Load more
     if (loadMore) {
       loadMore.addEventListener('click', function () { loadMore.classList.add('btn-loading'); loadAndRender(false); });
     }

@@ -24,76 +24,87 @@
   </script>
 </head>
 <body>
-  <div class="updates-page-shell">
+  <div class="up-shell">
     <div id="header"></div>
 
-    <main class="updates-page">
-      <!-- Hero -->
-      <section class="news-hero">
-        <div class="news-hero__bg" aria-hidden="true"></div>
-        <div class="news-hero__content">
-          <span class="news-hero__eyebrow" data-i18n="updates_eyebrow">Transparency &amp; Impact</span>
-          <h1 class="news-hero__title" data-i18n="updates_title">Updates &amp; News</h1>
-          <p class="news-hero__lead" data-i18n="updates_subtitle">Recent activity, program progress, and transparency notes from TSD Myanmar.</p>
+    <main class="up-main">
+
+      <!-- Page heading -->
+      <section class="up-masthead">
+        <div class="up-masthead__inner">
+          <h1 class="up-masthead__title" data-i18n="updates_title">News &amp; Updates</h1>
+          <p class="up-masthead__desc" data-i18n="updates_subtitle">Program updates, reports, and stories from TSD Myanmar.</p>
         </div>
       </section>
 
-      <!-- Toolbar: Language + Search + Filters -->
-      <div class="news-toolbar" id="news-toolbar">
-        <div class="news-toolbar__inner">
+      <!-- Controls bar -->
+      <div class="up-controls">
+        <div class="up-controls__inner">
 
-          <!-- Language Selector -->
-          <div class="lang-switcher" role="group" aria-label="Select language">
-            <button class="lang-btn active" data-lang="en" aria-pressed="true" title="English">EN</button>
-            <button class="lang-btn" data-lang="my" aria-pressed="false" title="Myanmar (Burmese)">မြန်မာ</button>
-            <button class="lang-btn" data-lang="mrh" aria-pressed="false" title="Mara (Chin)">Mara</button>
+          <!-- Category pills -->
+          <div class="up-pills" role="tablist" aria-label="Filter by category">
+            <button class="up-pill active" data-cat="" role="tab" aria-selected="true">All</button>
+            <button class="up-pill" data-cat="news" role="tab" aria-selected="false">News</button>
+            <button class="up-pill" data-cat="report" role="tab" aria-selected="false">Reports</button>
+            <button class="up-pill" data-cat="announcement" role="tab" aria-selected="false">Announcements</button>
+            <button class="up-pill" data-cat="story" role="tab" aria-selected="false">Stories</button>
           </div>
 
-          <!-- Search -->
-          <div class="news-search">
-            <svg class="news-search__icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.35-4.35"/></svg>
-            <label for="updates-search" class="visually-hidden">Search updates</label>
-            <input id="updates-search" type="search" placeholder="Search articles…" aria-controls="updates-list" data-i18n-placeholder="search_placeholder">
-          </div>
+          <!-- Right controls -->
+          <div class="up-controls__right">
 
-          <!-- Filters -->
-          <div class="news-filters">
+            <!-- Language -->
+            <div class="lang-switcher" role="group" aria-label="Content language">
+              <button class="lang-btn active" data-lang="en" aria-pressed="true">EN</button>
+              <button class="lang-btn" data-lang="my" aria-pressed="false">မြန်မာ</button>
+              <button class="lang-btn" data-lang="mrh" aria-pressed="false">Mara</button>
+            </div>
+
+            <!-- Search -->
+            <div class="up-search">
+              <label for="updates-search" class="visually-hidden">Search</label>
+              <input id="updates-search" type="search" placeholder="Search…" aria-controls="updates-list" data-i18n-placeholder="search_placeholder">
+              <svg class="up-search__ico" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.35-4.35"/></svg>
+            </div>
+
+            <!-- Year -->
             <label for="updates-year-filter" class="visually-hidden">Year</label>
-            <select id="updates-year-filter" aria-controls="updates-list">
+            <select id="updates-year-filter" class="up-select" title="Filter by year" aria-controls="updates-list">
               <option value="">All years</option>
             </select>
 
-            <label for="updates-category-filter" class="visually-hidden">Category</label>
-            <select id="updates-category-filter" aria-controls="updates-list">
-              <option value="">All categories</option>
-              <option value="news">News</option>
-              <option value="report">Report</option>
-              <option value="announcement">Announcement</option>
-              <option value="story">Story</option>
-            </select>
-
-            <label for="updates-sort" class="visually-hidden">Sort</label>
-            <select id="updates-sort" aria-controls="updates-list">
-              <option value="newest">Newest first</option>
-              <option value="oldest">Oldest first</option>
+            <!-- Sort -->
+            <label for="updates-sort" class="visually-hidden">Sort order</label>
+            <select id="updates-sort" class="up-select" title="Sort order" aria-controls="updates-list">
+              <option value="newest">Newest</option>
+              <option value="oldest">Oldest</option>
             </select>
           </div>
+
         </div>
-        <div class="news-toolbar__status" aria-live="polite"><span id="updates-loading"></span></div>
+        <div class="up-controls__status" aria-live="polite"><span id="updates-loading"></span></div>
       </div>
 
-      <!-- Article grid -->
-      <section class="news-content">
-        <div id="updates-list" class="news-grid" role="list" aria-label="Updates and news">
-          <p class="visually-hidden" data-i18n="loading">Loading updates…</p>
+      <!-- Hidden category select (used by JS) -->
+      <select id="updates-category-filter" aria-hidden="true" class="visually-hidden">
+        <option value="">All categories</option>
+        <option value="news">News</option>
+        <option value="report">Report</option>
+        <option value="announcement">Announcement</option>
+        <option value="story">Story</option>
+      </select>
+
+      <!-- Featured article (injected by JS) -->
+      <section class="up-featured" id="up-featured" aria-label="Featured story"></section>
+
+      <!-- Article feed -->
+      <section class="up-feed">
+        <div id="updates-list" class="up-grid" role="list" aria-label="Updates and news"></div>
+        <div class="up-more">
+          <button id="updates-load-more" class="up-more__btn" data-i18n="load_more" aria-label="Load more updates">Load more</button>
         </div>
       </section>
 
-      <!-- Load more -->
-      <div class="news-actions">
-        <button id="updates-load-more" class="news-load-btn" data-i18n="load_more" aria-label="Load more updates">Load more</button>
-        <p class="news-archive-link"><a href="updates-archive.html" data-i18n="see_archive">See full archive →</a></p>
-      </div>
     </main>
 
     <div id="footer"></div>

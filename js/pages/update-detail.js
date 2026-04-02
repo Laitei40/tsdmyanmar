@@ -3,9 +3,9 @@
   const TITLE = document.getElementById('update-title');
   const DATE = document.getElementById('update-date');
   const BODY = document.getElementById('update-body');
-  const CRUMB = document.getElementById('crumb-title');
   const BADGE = document.getElementById('update-badge');
   const LEAD = document.getElementById('update-summary');
+  const HERO_IMG = document.getElementById('ud-hero-img');
 
   function formatDate(iso){ try{ const d=new Date(iso); return d.toLocaleDateString(undefined,{year:'numeric',month:'short',day:'numeric'}); }catch(e){ return iso } }
 
@@ -32,7 +32,7 @@
   function getSiteLang(){ try{ if (window.tsdI18n && window.tsdI18n.getSiteLang) return window.tsdI18n.getSiteLang(); }catch(e){} return (navigator.language||'en').split('-')[0]; }
 
   function escapeHtml(str){ return String(str||'').replace(/[&<>"']/g, function(c){ return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]||''; }); }
-  function showMessage(msg){ TITLE.textContent = ''; DATE.textContent=''; BODY.innerHTML = '<p class="small-muted">'+escapeHtml(msg)+'</p>'; CRUMB.textContent = ''; BADGE.textContent = ''; if (LEAD) LEAD.textContent=''; }
+  function showMessage(msg){ TITLE.textContent = ''; DATE.textContent=''; BODY.innerHTML = '<p class="small-muted">'+escapeHtml(msg)+'</p>'; BADGE.textContent = ''; if (LEAD) LEAD.textContent=''; }
 
   function showSkeleton(){
     updateBodyInnerHTML('<div class="skeleton skel-title"></div><div class="skeleton skel-meta"></div><div class="skeleton skel-para"></div><div class="skeleton skel-para"></div><div class="skeleton skel-para" style="width:80%"></div>');
@@ -119,7 +119,7 @@
     const url = encodeURIComponent(window.location.href);
     const t   = encodeURIComponent(title);
 
-    bar.innerHTML = '<span class="share-label">' + ((window.I18N && window.I18N.share) || 'Share') + '</span>';
+    bar.innerHTML = '<span class="ud-share__label">' + ((window.I18N && window.I18N.share) || 'Share') + '</span>';
 
     // Twitter / X
     const tw = document.createElement('a');
@@ -152,7 +152,7 @@
     });
     bar.appendChild(cp);
 
-    bar.style.display = '';
+
   }
 
   // ---- Related posts ----
@@ -191,13 +191,15 @@
       if (imgUrl) {
         html += '<img class="related-thumb" src="' + escapeHtml(imgUrl) + '" alt="" loading="lazy" decoding="async">';
       }
+      html += '<div class="related-card__body">';
       html += '<span class="related-date">' + formatDate(it.date) + '</span>';
       html += '<span class="related-title">' + escapeHtml(title) + '</span>';
+      html += '</div>';
       card.innerHTML = html;
       grid.appendChild(card);
     });
 
-    section.style.display = '';
+    section.classList.add('visible');
   }
 
   async function load(id){
@@ -240,28 +242,22 @@
       TITLE.textContent = titleStr;
       if (LEAD) LEAD.textContent = summaryStr;
       if (dateStr) DATE.textContent = formatDate(dateStr);
-      CRUMB.textContent = titleStr;
       BADGE.textContent = item.isLatest ? ((window.I18N && window.I18N.latest_badge) || 'Latest') : '';
 
       // Hide badge pill when empty
       if (BADGE && !BADGE.textContent.trim()) BADGE.style.display = 'none';
       else if (BADGE) BADGE.style.display = '';
 
-      // If there's a top-level featured image, render it as a hero in the header
+      // If there's a top-level featured image, render it into the hero slot
       try{
-        const headerEl = document.querySelector('.update-hero');
-        if (headerEl && Array.isArray(item.images) && item.images.length){
+        if (HERO_IMG && Array.isArray(item.images) && item.images.length){
           const heroImg = item.images[0];
-          const heroWrap = document.createElement('div'); heroWrap.className = 'article-hero';
-          const heroFigure = document.createElement('figure'); heroFigure.className = 'hero-figure';
+          const fig = document.createElement('figure');
           const img = document.createElement('img'); img.src = heroImg.src; img.alt = heroImg.alt || '';
-          img.loading = 'lazy'; img.decoding = 'async'; img.className = 'hero-image';
-          heroFigure.appendChild(img);
-          if (heroImg.caption){ const c = document.createElement('figcaption'); c.className='hero-caption'; c.textContent = heroImg.caption; heroFigure.appendChild(c); }
-          heroWrap.appendChild(heroFigure);
-          // Insert hero after title within header
-          headerEl.appendChild(heroWrap);
-          // Remove the hero image from the images array so renderer doesn't duplicate it
+          img.loading = 'lazy'; img.decoding = 'async';
+          fig.appendChild(img);
+          if (heroImg.caption){ const c = document.createElement('figcaption'); c.textContent = heroImg.caption; fig.appendChild(c); }
+          HERO_IMG.appendChild(fig);
           item.images = item.images.slice(1);
         }
       }catch(e){ console.error('hero render error', e); }
