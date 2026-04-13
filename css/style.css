@@ -164,8 +164,10 @@ main{max-width:var(--max-width);margin:18px auto;padding:0 16px}
 }
 @keyframes blink{50%{opacity:0}}
 @media(max-width:719px){
-  .hero-motto-dynamic{white-space:normal;min-width:0;text-align:center}
+  .hero-motto{min-height:calc(2lh + 20px);display:flex;align-items:center;justify-content:center;line-height:1.4}
+  .hero-motto-dynamic{white-space:normal;min-width:0;text-align:center;position:relative;line-height:1.4;min-height:2lh;display:flex;align-items:center}
   .hero-motto-dynamic .typewrap{white-space:normal;word-break:break-word}
+  .hero-motto-dynamic::after{position:absolute;margin-left:2px}
 }
 @media(min-width:720px){
   .hero-motto{font-size:1.15rem;padding:14px 18px}
