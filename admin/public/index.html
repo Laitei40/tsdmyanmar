@@ -118,23 +118,40 @@
 
         <!-- Image Options Toolbar (appears when clicking an image in editor) -->
         <div id="img-toolbar" class="img-toolbar" hidden>
-          <div class="img-tb-section">
-            <span class="img-tb-label">Size</span>
-            <button type="button" data-size="33%" class="img-tb-btn">S</button>
-            <button type="button" data-size="50%" class="img-tb-btn">M</button>
-            <button type="button" data-size="100%" class="img-tb-btn active">L</button>
+          <!-- Row 1: Size & Border -->
+          <div class="img-tb-row">
+            <div class="img-tb-group">
+              <span class="img-tb-label">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="20" height="20" rx="2"/><path d="m15 3v6h6"/></svg>
+                Size
+              </span>
+              <div class="img-tb-seg">
+                <button type="button" data-size="33%" class="img-tb-seg__btn" title="Small (33%)">S</button>
+                <button type="button" data-size="50%" class="img-tb-seg__btn" title="Medium (50%)">M</button>
+                <button type="button" data-size="100%" class="img-tb-seg__btn active" title="Large (100%)">L</button>
+              </div>
+            </div>
+            <div class="img-tb-group">
+              <span class="img-tb-label">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/></svg>
+                Border
+              </span>
+              <div class="img-tb-seg">
+                <button type="button" data-border="none" class="img-tb-seg__btn active" title="No border">Off</button>
+                <button type="button" data-border="thin" class="img-tb-seg__btn" title="Thin border">Thin</button>
+                <button type="button" data-border="normal" class="img-tb-seg__btn" title="Normal border">Bold</button>
+              </div>
+            </div>
           </div>
-          <div class="img-tb-divider"></div>
-          <div class="img-tb-section">
-            <span class="img-tb-label">Border</span>
-            <button type="button" data-border="none" class="img-tb-btn active">None</button>
-            <button type="button" data-border="thin" class="img-tb-btn">Thin</button>
-            <button type="button" data-border="normal" class="img-tb-btn">Normal</button>
-          </div>
-          <div class="img-tb-divider"></div>
-          <div class="img-tb-section img-tb-caption-section">
-            <span class="img-tb-label">Caption</span>
-            <input type="text" id="img-caption-input" placeholder="Add image caption…">
+          <!-- Row 2: Caption -->
+          <div class="img-tb-row">
+            <div class="img-tb-group img-tb-group--full">
+              <span class="img-tb-label">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 6.1H3M21 12.1H3M15.1 18H3"/></svg>
+                Caption
+              </span>
+              <input type="text" id="img-caption-input" class="img-tb-caption" placeholder="Describe this image…">
+            </div>
           </div>
         </div>
 
