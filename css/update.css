@@ -93,7 +93,9 @@
    ══════════════════════════════════════ */
 .ud-header {
   padding: 2rem 1.5rem 1.5rem;
-  border-bottom: 1px solid var(--ud-line);
+  border-bottom: none;
+  background: transparent !important;
+  border-top: none;
 }
 .ud-header__inner {
   max-width: var(--ud-w);
