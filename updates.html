@@ -30,66 +30,105 @@
     <!-- News page header -->
     <header class="up-nav" role="banner">
       <div class="up-nav__inner">
+
+        <!-- Left: brand -->
         <a href="/" class="up-nav__brand" aria-label="TSD Myanmar home">
           <img class="up-nav__logo" src="/assets/images/logo/logo_en.svg" alt="TSD Myanmar logo">
           <span class="up-nav__title">TSD News</span>
         </a>
-        <a href="/" class="up-nav__home">
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
-          Home
-        </a>
+
+        <!-- Center: category tabs (desktop) -->
+        <nav class="up-tabs" role="tablist" aria-label="Filter by category">
+          <button class="up-tab active" data-cat="" role="tab" aria-selected="true">All</button>
+          <button class="up-tab" data-cat="news" role="tab" aria-selected="false">News</button>
+          <button class="up-tab" data-cat="report" role="tab" aria-selected="false">Reports</button>
+          <button class="up-tab" data-cat="announcement" role="tab" aria-selected="false">Announcements</button>
+          <button class="up-tab" data-cat="story" role="tab" aria-selected="false">Stories</button>
+        </nav>
+
+        <!-- Right: controls -->
+        <div class="up-nav__right">
+
+          <!-- Language toggle -->
+          <div class="lang-switcher" role="group" aria-label="Content language">
+            <button class="lang-btn active" data-lang="en" aria-pressed="true">EN</button>
+            <button class="lang-btn" data-lang="my" aria-pressed="false">မြန်မာ</button>
+            <button class="lang-btn" data-lang="mrh" aria-pressed="false">Mara</button>
+          </div>
+
+          <!-- Search -->
+          <div class="up-search">
+            <label for="updates-search" class="visually-hidden">Search</label>
+            <input id="updates-search" type="search" placeholder="Search updates…" aria-controls="updates-list" data-i18n-placeholder="search_placeholder">
+            <svg class="up-search__ico" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.35-4.35"/></svg>
+          </div>
+
+          <!-- Year filter -->
+          <label for="updates-year-filter" class="visually-hidden">Year</label>
+          <select id="updates-year-filter" class="up-select" title="Filter by year" aria-controls="updates-list">
+            <option value="">All years</option>
+          </select>
+
+          <!-- Sort -->
+          <label for="updates-sort" class="visually-hidden">Sort order</label>
+          <select id="updates-sort" class="up-select" title="Sort order" aria-controls="updates-list">
+            <option value="newest">Newest</option>
+            <option value="oldest">Oldest</option>
+          </select>
+
+          <!-- Home -->
+          <a href="/" class="up-nav__home" aria-label="Go to main site">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+          </a>
+        </div>
+
+        <!-- Mobile hamburger -->
+        <button class="up-nav__burger" aria-controls="up-mobile-drawer" aria-expanded="false" aria-label="Toggle navigation">
+          <span></span><span></span><span></span>
+        </button>
+      </div>
+
+      <!-- Mobile drawer -->
+      <div class="up-drawer" id="up-mobile-drawer" aria-hidden="true">
+        <nav class="up-drawer__tabs" role="tablist" aria-label="Filter by category">
+          <button class="up-tab active" data-cat="" role="tab" aria-selected="true">All</button>
+          <button class="up-tab" data-cat="news" role="tab" aria-selected="false">News</button>
+          <button class="up-tab" data-cat="report" role="tab" aria-selected="false">Reports</button>
+          <button class="up-tab" data-cat="announcement" role="tab" aria-selected="false">Announcements</button>
+          <button class="up-tab" data-cat="story" role="tab" aria-selected="false">Stories</button>
+        </nav>
+        <div class="up-drawer__controls">
+          <div class="lang-switcher" role="group" aria-label="Content language">
+            <button class="lang-btn active" data-lang="en" aria-pressed="true">EN</button>
+            <button class="lang-btn" data-lang="my" aria-pressed="false">မြန်မာ</button>
+            <button class="lang-btn" data-lang="mrh" aria-pressed="false">Mara</button>
+          </div>
+          <div class="up-search">
+            <label for="updates-search-m" class="visually-hidden">Search</label>
+            <input id="updates-search-m" type="search" placeholder="Search updates…" aria-controls="updates-list" data-i18n-placeholder="search_placeholder">
+            <svg class="up-search__ico" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.35-4.35"/></svg>
+          </div>
+          <div class="up-drawer__filters">
+            <select id="updates-year-filter-m" class="up-select" title="Filter by year" aria-controls="updates-list">
+              <option value="">All years</option>
+            </select>
+            <select id="updates-sort-m" class="up-select" title="Sort order" aria-controls="updates-list">
+              <option value="newest">Newest</option>
+              <option value="oldest">Oldest</option>
+            </select>
+          </div>
+          <a href="/" class="up-drawer__home">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+            Back to main site
+          </a>
+        </div>
       </div>
     </header>
 
     <main class="up-main">
 
-      <!-- Controls bar -->
-      <div class="up-controls">
-        <div class="up-controls__inner">
-
-          <!-- Category pills -->
-          <div class="up-pills" role="tablist" aria-label="Filter by category">
-            <button class="up-pill active" data-cat="" role="tab" aria-selected="true">All</button>
-            <button class="up-pill" data-cat="news" role="tab" aria-selected="false">News</button>
-            <button class="up-pill" data-cat="report" role="tab" aria-selected="false">Reports</button>
-            <button class="up-pill" data-cat="announcement" role="tab" aria-selected="false">Announcements</button>
-            <button class="up-pill" data-cat="story" role="tab" aria-selected="false">Stories</button>
-          </div>
-
-          <!-- Right controls -->
-          <div class="up-controls__right">
-
-            <!-- Language -->
-            <div class="lang-switcher" role="group" aria-label="Content language">
-              <button class="lang-btn active" data-lang="en" aria-pressed="true">EN</button>
-              <button class="lang-btn" data-lang="my" aria-pressed="false">မြန်မာ</button>
-              <button class="lang-btn" data-lang="mrh" aria-pressed="false">Mara</button>
-            </div>
-
-            <!-- Search -->
-            <div class="up-search">
-              <label for="updates-search" class="visually-hidden">Search</label>
-              <input id="updates-search" type="search" placeholder="Search…" aria-controls="updates-list" data-i18n-placeholder="search_placeholder">
-              <svg class="up-search__ico" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.35-4.35"/></svg>
-            </div>
-
-            <!-- Year -->
-            <label for="updates-year-filter" class="visually-hidden">Year</label>
-            <select id="updates-year-filter" class="up-select" title="Filter by year" aria-controls="updates-list">
-              <option value="">All years</option>
-            </select>
-
-            <!-- Sort -->
-            <label for="updates-sort" class="visually-hidden">Sort order</label>
-            <select id="updates-sort" class="up-select" title="Sort order" aria-controls="updates-list">
-              <option value="newest">Newest</option>
-              <option value="oldest">Oldest</option>
-            </select>
-          </div>
-
-        </div>
-        <div class="up-controls__status" aria-live="polite"><span id="updates-loading"></span></div>
-      </div>
+      <!-- Status -->
+      <div class="up-controls__status" aria-live="polite"><span id="updates-loading"></span></div>
 
       <!-- Hidden category select (used by JS) -->
       <select id="updates-category-filter" aria-hidden="true" class="visually-hidden">

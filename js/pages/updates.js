@@ -363,6 +363,13 @@
         filter.innerHTML = '';
         filter.appendChild(el('option', { value: '' }, 'All years'));
         years.forEach(function (y) { filter.appendChild(el('option', { value: y }, String(y))); });
+
+        // Mirror to mobile year filter
+        var mobileFilter = document.getElementById('updates-year-filter-m');
+        if (mobileFilter) {
+          mobileFilter.innerHTML = filter.innerHTML;
+          mobileFilter.value = filter.value;
+        }
       }
 
       // ── Load-more ──
@@ -386,19 +393,24 @@
   }
 
   // ═══════════════════════════════════════
-  // CATEGORY PILLS
+  // CATEGORY TABS
   // ═══════════════════════════════════════
-  function initCategoryPills() {
-    var pills = document.querySelectorAll('.up-pill');
-    if (!pills.length) return;
+  function initCategoryTabs() {
+    var tabs = document.querySelectorAll('.up-tab');
+    if (!tabs.length) return;
 
-    pills.forEach(function (pill) {
-      pill.addEventListener('click', function () {
-        var cat = pill.getAttribute('data-cat') || '';
+    tabs.forEach(function (tab) {
+      tab.addEventListener('click', function () {
+        var cat = tab.getAttribute('data-cat') || '';
 
-        pills.forEach(function (p) { p.classList.remove('active'); p.setAttribute('aria-selected', 'false'); });
-        pill.classList.add('active');
-        pill.setAttribute('aria-selected', 'true');
+        tabs.forEach(function (t) { t.classList.remove('active'); t.setAttribute('aria-selected', 'false'); });
+        // Activate all tabs with same data-cat (desktop + drawer)
+        tabs.forEach(function (t) {
+          if ((t.getAttribute('data-cat') || '') === cat) {
+            t.classList.add('active');
+            t.setAttribute('aria-selected', 'true');
+          }
+        });
 
         var catSelect = document.getElementById('updates-category-filter');
         if (catSelect) {
@@ -413,6 +425,69 @@
   }
 
   // ═══════════════════════════════════════
+  // NAV BEHAVIOR — hamburger, scroll shadow, drawer sync
+  // ═══════════════════════════════════════
+  function initNavBehavior() {
+    var nav    = document.querySelector('.up-nav');
+    var burger = document.querySelector('.up-nav__burger');
+    var drawer = document.getElementById('up-mobile-drawer');
+
+    // ── Hamburger toggle ──
+    if (burger && drawer) {
+      burger.addEventListener('click', function () {
+        var open = drawer.classList.toggle('open');
+        burger.setAttribute('aria-expanded', String(open));
+        drawer.setAttribute('aria-hidden', String(!open));
+        document.body.style.overflow = open ? 'hidden' : '';
+      });
+
+      // Close drawer on Escape
+      document.addEventListener('keydown', function (e) {
+        if (e.key === 'Escape' && drawer.classList.contains('open')) {
+          drawer.classList.remove('open');
+          burger.setAttribute('aria-expanded', 'false');
+          drawer.setAttribute('aria-hidden', 'true');
+          document.body.style.overflow = '';
+          burger.focus();
+        }
+      });
+    }
+
+    // ── Scroll shadow ──
+    if (nav) {
+      var ticking = false;
+      window.addEventListener('scroll', function () {
+        if (!ticking) {
+          requestAnimationFrame(function () {
+            nav.classList.toggle('scrolled', window.scrollY > 8);
+            ticking = false;
+          });
+          ticking = true;
+        }
+      }, { passive: true });
+    }
+
+    // ── Sync mobile drawer inputs with desktop ──
+    syncInputPair('updates-search', 'updates-search-m');
+    syncSelectPair('updates-year-filter', 'updates-year-filter-m');
+    syncSelectPair('updates-sort', 'updates-sort-m');
+  }
+
+  function syncInputPair(desktopId, mobileId) {
+    var d = document.getElementById(desktopId);
+    var m = document.getElementById(mobileId);
+    if (!d || !m) return;
+    m.addEventListener('input', function () { d.value = m.value; d.dispatchEvent(new Event('input', { bubbles: true })); });
+  }
+
+  function syncSelectPair(desktopId, mobileId) {
+    var d = document.getElementById(desktopId);
+    var m = document.getElementById(mobileId);
+    if (!d || !m) return;
+    m.addEventListener('change', function () { d.value = m.value; d.dispatchEvent(new Event('change', { bubbles: true })); });
+  }
+
+  // ═══════════════════════════════════════
   // INIT
   // ═══════════════════════════════════════
   document.addEventListener('DOMContentLoaded', function () {
@@ -423,7 +498,8 @@
     var sortEl     = document.getElementById('updates-sort');
 
     initLangSwitcher();
-    initCategoryPills();
+    initCategoryTabs();
+    initNavBehavior();
     loadAndRender(true);
 
     if (filter) filter.addEventListener('change', function () { yearFilter = filter.value; loadAndRender(true); });
