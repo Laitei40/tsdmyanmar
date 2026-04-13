@@ -47,8 +47,7 @@
    MASTHEAD
    ══════════════════════════════════════ */
 .up-masthead {
-  border-bottom: 1px solid var(--up-line);
-  padding: 3rem 1.5rem 2rem;
+  display: none;
 }
 .up-masthead__inner {
   max-width: var(--up-w);
