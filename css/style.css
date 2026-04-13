@@ -163,6 +163,10 @@ main{max-width:var(--max-width);margin:18px auto;padding:0 16px}
   animation:blink 1s steps(1) infinite;
 }
 @keyframes blink{50%{opacity:0}}
+@media(max-width:719px){
+  .hero-motto-dynamic{white-space:normal;min-width:0;text-align:center}
+  .hero-motto-dynamic .typewrap{white-space:normal;word-break:break-word}
+}
 @media(min-width:720px){
   .hero-motto{font-size:1.15rem;padding:14px 18px}
   .hero-motto-dynamic{min-width:220px}
