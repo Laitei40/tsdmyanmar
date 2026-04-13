@@ -74,13 +74,44 @@ textarea { resize: vertical; }
 .code-textarea { font-family: 'JetBrains Mono', 'Fira Code', monospace; font-size: 13px; line-height: 1.6; }
 
 /* ── Form grid ── */
-.form-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 12px; }
-.field { margin-bottom: 12px; }
-.field label { display: block; font-size: 12px; font-weight: 600; color: #8892a4; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 6px; }
+.form-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
+.form-grid--3 { grid-template-columns: repeat(3, 1fr); }
+.field { margin-bottom: 0; }
+.field label { display: block; font-size: 11px; font-weight: 600; color: #8892a4; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 6px; }
 .field-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 6px; }
 .field-header label { margin-bottom: 0; }
 .input-group { display: flex; gap: 6px; }
 .input-group input { flex: 1; }
+
+/* Editor field — extra bottom margin to separate from metadata */
+.field--editor { margin-bottom: 0; }
+
+/* Section divider between editor and metadata */
+.form-divider {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin: 24px 0 16px;
+}
+.form-divider::before,
+.form-divider::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: var(--border);
+}
+.form-divider__label {
+  font-size: 10px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  color: #556680;
+  white-space: nowrap;
+}
+
+/* Spacing between stacked form-grids */
+.form-grid + .form-grid { margin-top: 16px; }
+.form-grid + .field { margin-top: 16px; }
 
 /* ── Language tabs ── */
 .lang-tabs { display: flex; gap: 4px; margin-bottom: 16px; background: rgba(255,255,255,0.03); padding: 4px; border-radius: 10px; }
@@ -184,6 +215,7 @@ textarea { resize: vertical; }
   .filter-bar select, .filter-bar input { width: 100%; }
   .modal { padding: 16px; }
   .form-grid { grid-template-columns: 1fr; }
+  .form-grid--3 { grid-template-columns: 1fr; }
   .app-header { flex-direction: column; align-items: flex-start; }
   .news-table { font-size: 13px; }
   .col-img { display: none; }
