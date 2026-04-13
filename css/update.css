@@ -39,53 +39,127 @@
   background: var(--ud-bg);
 }
 
-/* Remove sticky header & bg highlight on this page */
-.ud-shell .site-header {
-  position: relative;
-  background: transparent;
-  -webkit-backdrop-filter: none;
-  backdrop-filter: none;
-  box-shadow: none;
+/* Hide main site header on this page */
+.ud-shell > #header {
+  display: none;
 }
-.ud-shell .site-header.scrolled {
+
+/* ══════════════════════════════════════
+   TSD NEWS NAV — glassmorphism bar
+   ══════════════════════════════════════ */
+.ud-nav {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  background: rgba(10,10,10,.82);
+  -webkit-backdrop-filter: saturate(140%) blur(16px);
+  backdrop-filter: saturate(140%) blur(16px);
+  border-bottom: 1px solid rgba(255,255,255,.08);
+  padding: 0 1.5rem;
+  transition: box-shadow .25s ease, background .25s ease;
+}
+[data-theme="light"] .ud-nav {
+  background: rgba(250,250,250,.88);
+  border-bottom-color: rgba(0,0,0,.08);
+}
+.ud-nav.scrolled {
+  box-shadow: 0 4px 24px rgba(0,0,0,.18);
+}
+[data-theme="light"] .ud-nav.scrolled {
+  box-shadow: 0 4px 24px rgba(0,0,0,.06);
+}
+
+.ud-nav__inner {
+  max-width: var(--ud-w-wide);
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 56px;
+}
+
+/* Brand — left */
+.ud-nav__brand {
+  display: flex;
+  align-items: center;
+  gap: .6rem;
+  text-decoration: none;
+  color: var(--ud-ink);
+  flex-shrink: 0;
+}
+.ud-nav__logo {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  transition: transform .2s ease;
+}
+.ud-nav__brand:hover .ud-nav__logo {
+  transform: scale(1.06);
+}
+.ud-nav__title {
+  font-weight: 800;
+  font-size: 1.05rem;
+  letter-spacing: -.02em;
+  white-space: nowrap;
+}
+
+/* Right controls */
+.ud-nav__right {
+  display: flex;
+  align-items: center;
+  gap: .6rem;
+}
+
+/* Back link */
+.ud-nav__back {
+  display: inline-flex;
+  align-items: center;
+  gap: .3rem;
+  padding: .4rem .75rem;
+  border-radius: 8px;
+  font-size: .82rem;
+  font-weight: 600;
+  color: var(--ud-dim);
+  text-decoration: none;
+  border: 1px solid rgba(255,255,255,.1);
+  transition: all .18s ease;
+  white-space: nowrap;
+}
+[data-theme="light"] .ud-nav__back {
+  border-color: rgba(0,0,0,.1);
+}
+.ud-nav__back:hover {
+  color: var(--ud-accent);
+  border-color: var(--ud-accent);
+}
+
+/* Home icon */
+.ud-nav__home {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 34px;
+  height: 34px;
+  border-radius: 8px;
+  color: var(--ud-dim);
+  text-decoration: none;
+  border: 1px solid rgba(255,255,255,.1);
+  transition: all .18s ease;
   background: transparent;
-  -webkit-backdrop-filter: none;
-  backdrop-filter: none;
-  box-shadow: none;
+}
+[data-theme="light"] .ud-nav__home {
+  border-color: rgba(0,0,0,.1);
+}
+.ud-nav__home:hover {
+  color: var(--ud-accent);
+  border-color: var(--ud-accent);
+  transform: translateY(-1px);
 }
 
 .ud-main {
   color: var(--ud-ink);
   font-family: var(--ud-sans);
   padding-bottom: 4rem;
-}
-
-/* ══════════════════════════════════════
-   BREADCRUMB
-   ══════════════════════════════════════ */
-.ud-breadcrumb {
-  border-bottom: 1px solid var(--ud-line);
-  padding: .65rem 1.5rem;
-}
-.ud-breadcrumb__inner {
-  max-width: var(--ud-w-wide);
-  margin: 0 auto;
-}
-.ud-back {
-  display: inline-flex;
-  align-items: center;
-  gap: .3rem;
-  color: var(--ud-dim);
-  font-size: .84rem;
-  font-weight: 600;
-  text-decoration: none;
-  transition: color var(--ud-ease);
-}
-.ud-back:hover {
-  color: var(--ud-accent);
-}
-.ud-back svg {
-  flex-shrink: 0;
 }
 
 /* ══════════════════════════════════════
@@ -596,6 +670,26 @@
 }
 
 @media (max-width: 767px) {
+  /* ── Nav bar ── */
+  .ud-nav {
+    padding: 0 1rem;
+  }
+  .ud-nav__inner {
+    height: 48px;
+  }
+  .ud-nav__logo {
+    width: 30px;
+    height: 30px;
+  }
+  .ud-nav__title {
+    font-size: .95rem;
+  }
+  .ud-nav__back span { display: none; }
+  .ud-nav__back {
+    font-size: .78rem;
+    padding: .35rem .6rem;
+  }
+
   /* ── Header area ── */
   .ud-header {
     padding: 1.75rem 1rem 0;
@@ -618,15 +712,6 @@
   }
   .ud-date {
     font-size: .84rem;
-  }
-
-  /* ── Breadcrumb ── */
-  .ud-breadcrumb {
-    padding: .55rem 1rem;
-  }
-  .ud-back {
-    font-size: .88rem;
-    gap: .35rem;
   }
 
   /* ── Hero image ── */
