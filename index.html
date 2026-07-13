@@ -5,6 +5,7 @@
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <title>TSD Myanmar - Home</title>
   <link rel="stylesheet" href="css/main.css">
+  <link rel="stylesheet" href="css/news-preview.css">
   <link rel="manifest" href="/manifest.json">
   <link id="site-favicon" rel="icon" href="/assets/images/logo/logo_en.svg" type="image/svg+xml">
   <script>
@@ -129,14 +130,33 @@
       </div>
     </section>
 
-    <section class="updates-preview" aria-labelledby="updates-heading">
-      <h2 id="updates-heading" data-i18n="latest_updates_h2">Latest updates</h2>
-      <div id="updates-preview-list">
-        <p data-i18n="loading">Loading updates…</p>
-      </div>
-      <p><a href="updates.html" data-i18n="see_all_updates">See all updates</a></p>
+    <section class="news-section" aria-labelledby="news-heading">
+      <div class="news-section__panel">
+        <div class="news-section__head">
+          <div class="news-section__intro">
+            <span class="news-eyebrow" data-i18n="newsroom_eyebrow">Newsroom</span>
+            <h2 id="news-heading" data-i18n="latest_updates_h2">Latest updates</h2>
+            <p class="news-section__sub" data-i18n="updates_subtitle">Latest news, reports, and announcements.</p>
+          </div>
+          <a class="news-viewall" href="updates.html" data-i18n="see_all_updates">
+            <span class="brand-text">See all updates</span>
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+          </a>
+        </div>
 
-      <blockquote class="testimonial reveal" aria-label="Participant testimony">
+        <div id="updates-preview-list" class="news-grid" aria-live="polite">
+          <div class="news-skel news-skel--feat" aria-hidden="true"></div>
+          <div class="news-skel-row" aria-hidden="true">
+            <div class="news-skel"></div>
+            <div class="news-skel"></div>
+            <div class="news-skel"></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="quote-section" aria-label="Participant testimony">
+      <blockquote class="testimonial reveal">
         <p data-i18n="testimonial_quote">“Participating in this programme has been a turning point for me. It has given me new skills and hope for the future.”</p>
         <cite data-i18n="testimonial_author">— Hraki, Food Security programme participant</cite>
       </blockquote>

@@ -216,12 +216,6 @@ main{max-width:var(--max-width);margin:18px auto;padding:0 16px}
 .project h3{margin:0;font-size:1rem}
 .project p{margin:6px 0 0;color:var(--muted);font-size:0.95rem}
 
-/* Updates preview */
-.updates-preview{margin-top:18px}
-.update-item{background:var(--surface);padding:12px;border-radius:10px;margin-bottom:10px}
-.update-item h4{margin:0 0 6px;font-size:1rem}
-.update-item time{font-size:0.85rem;color:var(--muted)}
-
 /* Trust indicators */
 .trust{display:flex;gap:12px;margin-top:18px;flex-wrap:wrap}
 .trust .badge{background:var(--surface);padding:10px;border-radius:8px;min-width:160px}

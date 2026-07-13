@@ -1,0 +1,304 @@
+/* ============================================================
+   news-preview.css — TSD Myanmar · Homepage "Newsroom" preview
+   Editorial card layout that mirrors updates.html so the
+   homepage teaser feels like a doorway into the full News page.
+   ============================================================ */
+
+.news-section {
+  padding: 2.5rem 0;
+}
+
+.news-section__panel {
+  max-width: var(--max-width);
+  margin: 0 auto;
+  padding: 2rem clamp(1.25rem, 3vw, 2.5rem);
+  border-radius: 20px;
+  background: var(--surface);
+  border: 1px solid var(--color-border);
+  box-shadow: var(--shadow);
+  position: relative;
+  overflow: hidden;
+}
+.news-section__panel::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 4px;
+  background: linear-gradient(90deg, var(--primary), var(--accent));
+}
+
+/* ── Head ── */
+.news-section__head {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 1.5rem;
+  margin-bottom: 1.75rem;
+  flex-wrap: wrap;
+}
+.news-eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: .45rem;
+  font-size: .72rem;
+  font-weight: 800;
+  letter-spacing: .12em;
+  text-transform: uppercase;
+  color: var(--primary);
+  margin-bottom: .5rem;
+}
+.news-eyebrow::before {
+  content: '';
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--accent);
+}
+.news-section__intro h2 {
+  margin: 0 0 .4rem;
+  font-size: clamp(1.4rem, 2.4vw, 1.9rem);
+  letter-spacing: -.01em;
+}
+.news-section__sub {
+  margin: 0;
+  color: var(--muted);
+  font-size: .96rem;
+  max-width: 46ch;
+}
+.news-viewall {
+  display: inline-flex;
+  align-items: center;
+  gap: .45rem;
+  padding: .65rem 1.15rem;
+  border-radius: 999px;
+  border: 1px solid var(--color-border);
+  color: var(--text);
+  font-weight: 700;
+  font-size: .88rem;
+  text-decoration: none;
+  white-space: nowrap;
+  transition: background .18s ease, border-color .18s ease, transform .18s ease, color .18s ease;
+}
+.news-viewall svg { transition: transform .18s ease; flex-shrink: 0; }
+.news-viewall:hover {
+  background: var(--primary);
+  border-color: var(--primary);
+  color: #fff;
+  transform: translateY(-1px);
+}
+.news-viewall:hover svg { transform: translateX(3px); }
+.news-viewall:focus-visible {
+  outline: 2px solid var(--primary);
+  outline-offset: 2px;
+}
+
+/* ── Grid: featured + secondary cards ── */
+.news-grid {
+  display: grid;
+  gap: 1.5rem;
+}
+
+.news-feat {
+  display: grid;
+  grid-template-columns: 1.1fr 1fr;
+  gap: 0;
+  border-radius: 14px;
+  overflow: hidden;
+  border: 1px solid var(--color-border);
+  text-decoration: none;
+  color: inherit;
+  background: var(--bg);
+  transition: box-shadow .22s ease, transform .22s ease;
+}
+.news-feat:hover {
+  box-shadow: 0 10px 30px rgba(8,15,20,.1);
+  transform: translateY(-2px);
+}
+[data-theme="dark"] .news-feat:hover {
+  box-shadow: 0 10px 30px rgba(0,0,0,.45);
+}
+.news-feat__img-wrap {
+  position: relative;
+  overflow: hidden;
+  background: var(--color-border);
+  min-height: 260px;
+}
+.news-feat__img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  transition: transform .45s ease;
+}
+.news-feat:hover .news-feat__img { transform: scale(1.04); }
+.news-feat__body {
+  padding: 1.75rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+.news-feat__title {
+  font-family: Georgia, 'Noto Serif', serif;
+  font-size: clamp(1.2rem, 2vw, 1.55rem);
+  line-height: 1.25;
+  margin: 0 0 .6rem;
+  color: var(--text);
+}
+.news-feat__excerpt {
+  margin: 0 0 1rem;
+  color: var(--muted);
+  font-size: .92rem;
+  line-height: 1.6;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+/* ── Category tags (shared) ── */
+.news-tag {
+  display: inline-block;
+  width: fit-content;
+  padding: .18rem .55rem;
+  border-radius: 4px;
+  font-size: .68rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: .06em;
+  margin-bottom: .65rem;
+}
+.news-tag[data-cat="news"]         { background: #e8f0fe; color: #1a56db; }
+.news-tag[data-cat="report"]       { background: #f3e8ff; color: #6d28d9; }
+.news-tag[data-cat="announcement"] { background: #fff3cd; color: #b45309; }
+.news-tag[data-cat="story"]        { background: #d1fae5; color: #047857; }
+.news-tag:not([data-cat])          { background: #e8f0fe; color: #1a56db; }
+[data-theme="dark"] .news-tag[data-cat="news"]         { background: rgba(29,86,219,.16); color: #93b4f4; }
+[data-theme="dark"] .news-tag[data-cat="report"]       { background: rgba(109,40,217,.16); color: #c4b5fd; }
+[data-theme="dark"] .news-tag[data-cat="announcement"] { background: rgba(180,83,9,.16); color: #fcd34d; }
+[data-theme="dark"] .news-tag[data-cat="story"]        { background: rgba(4,120,87,.16); color: #6ee7b7; }
+[data-theme="dark"] .news-tag:not([data-cat])          { background: rgba(29,86,219,.16); color: #93b4f4; }
+
+.news-meta {
+  display: flex;
+  align-items: center;
+  gap: .55rem;
+  font-size: .78rem;
+  color: var(--muted);
+  font-weight: 500;
+}
+.news-dot { width: 3px; height: 3px; border-radius: 50%; background: var(--muted); flex-shrink: 0; }
+
+/* ── Secondary cards row ── */
+.news-cards {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1.25rem;
+}
+.news-card {
+  display: flex;
+  flex-direction: column;
+  border-radius: 12px;
+  overflow: hidden;
+  border: 1px solid var(--color-border);
+  background: var(--bg);
+  text-decoration: none;
+  color: inherit;
+  transition: box-shadow .2s ease, transform .2s ease;
+}
+.news-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 8px 22px rgba(8,15,20,.08);
+}
+[data-theme="dark"] .news-card:hover {
+  box-shadow: 0 8px 22px rgba(0,0,0,.4);
+}
+.news-card__img-wrap {
+  aspect-ratio: 16/9;
+  overflow: hidden;
+  background: var(--color-border);
+}
+.news-card__img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  transition: transform .35s ease;
+}
+.news-card:hover .news-card__img { transform: scale(1.05); }
+.news-card__body {
+  padding: 1rem 1.1rem 1.15rem;
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+}
+.news-card__title {
+  font-family: Georgia, 'Noto Serif', serif;
+  font-size: .98rem;
+  line-height: 1.32;
+  margin: 0 0 .55rem;
+  color: var(--text);
+}
+
+/* ── Empty / error state ── */
+.news-empty {
+  grid-column: 1 / -1;
+  text-align: center;
+  padding: 3rem 1rem;
+  color: var(--muted);
+  font-size: .92rem;
+}
+
+/* ── Skeleton loading state ── */
+.news-skel {
+  border-radius: 12px;
+  background: linear-gradient(90deg, var(--color-border) 25%, transparent 37%, var(--color-border) 63%);
+  background-size: 400% 100%;
+  animation: newsShimmer 1.2s ease infinite;
+}
+.news-skel--feat { height: 300px; }
+.news-skel-row {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1.25rem;
+}
+.news-skel-row .news-skel { height: 190px; }
+@keyframes newsShimmer {
+  0%   { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
+}
+
+/* ── Quote section (moved out of newsroom card) ── */
+.quote-section {
+  max-width: var(--max-width);
+  margin: 0 auto;
+  padding: 0 1.25rem;
+}
+.quote-section .testimonial {
+  margin: 0;
+  padding: 1.75rem 2rem;
+  border-left: 4px solid var(--accent);
+  background: var(--surface);
+  border-radius: 0 12px 12px 0;
+}
+
+/* ── Responsive ── */
+@media (max-width: 899px) {
+  .news-feat { grid-template-columns: 1fr; }
+  .news-feat__img-wrap { min-height: 200px; }
+  .news-cards { grid-template-columns: repeat(2, 1fr); }
+  .news-skel-row { grid-template-columns: repeat(2, 1fr); }
+}
+
+@media (max-width: 639px) {
+  .news-section__panel { padding: 1.5rem 1.1rem; border-radius: 16px; }
+  .news-section__head { align-items: flex-start; }
+  .news-cards { grid-template-columns: 1fr; }
+  .news-skel-row { grid-template-columns: 1fr; }
+  .news-skel--feat { height: 220px; }
+  .news-skel-row .news-skel { height: 150px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .news-feat, .news-card, .news-feat__img, .news-card__img, .news-viewall, .news-viewall svg { transition: none; }
+  .news-skel { animation: none; }
+}

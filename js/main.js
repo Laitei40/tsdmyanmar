@@ -47,13 +47,53 @@ function loadUpdatesPreview(){
   var container = document.getElementById('updates-preview-list');
   if (!container) return;
 
+  function getLang(){
+    try{ return (window.tsdI18n && window.tsdI18n.getSiteLang && window.tsdI18n.getSiteLang()) || 'en'; }
+    catch(e){ return 'en'; }
+  }
+
   // Pick the best available text from an i18n object or plain string
-  function pickText(val) {
+  function pickText(val, lang) {
     if (!val) return '';
     if (typeof val === 'string') return val;
-    if (typeof val === 'object') return val.en || val.mrh || val.my || Object.values(val).find(function(v){ return v && v.trim(); }) || '';
+    if (typeof val === 'object') {
+      if (val[lang]) return val[lang];
+      if (val.en) return val.en;
+      for (var k in val) { if (val[k] && val[k].trim && val[k].trim()) return val[k]; }
+    }
     return '';
   }
+
+  function stripHtml(html){
+    if (!html) return '';
+    var tmp = document.createElement('div');
+    tmp.innerHTML = html;
+    return (tmp.textContent || tmp.innerText || '').trim();
+  }
+
+  function formatDate(iso){
+    if (!iso) return '';
+    try{ return new Date(iso).toLocaleDateString(undefined, { year: 'numeric', month: 'short', day: 'numeric' }); }
+    catch(e){ return iso; }
+  }
+
+  function getItemImage(it){
+    if (it.image) return it.image;
+    if (it.thumbnail) return it.thumbnail;
+    if (Array.isArray(it.images) && it.images.length) {
+      var first = it.images[0];
+      return (typeof first === 'string') ? first : (first.src || first.url || '');
+    }
+    return '';
+  }
+
+  function getCategory(it){
+    if (it.category) return String(it.category).toLowerCase();
+    if (Array.isArray(it.categories) && it.categories.length) return String(it.categories[0]).toLowerCase();
+    return '';
+  }
+
+  var CAT_LABELS = { news: 'News', report: 'Report', announcement: 'Announcement', story: 'Story' };
 
   // Use the D1 API via news.js helper, with inline API fallback
   var fetchIndex = function(){
@@ -67,20 +107,65 @@ function loadUpdatesPreview(){
     }).then(function(data){ return data.items || []; });
   };
 
+  function buildFeatCard(it, lang){
+    var title = pickText(it.title, lang) || 'Untitled';
+    var summary = stripHtml(pickText(it.summary, lang)) || stripHtml(pickText(it.body, lang)).slice(0,180);
+    var date = it.date || it.publish_date || '';
+    var href = '/update.html?id=' + encodeURIComponent(it.id || '');
+    var cat = getCategory(it);
+    var catLabel = CAT_LABELS[cat] || (cat ? cat : 'Update');
+    var img = getItemImage(it);
+
+    var html = '<a class="news-feat" href="' + href + '">';
+    html += '<div class="news-feat__img-wrap">' + (img ? '<img class="news-feat__img" src="' + escapeHtml(img) + '" alt="" loading="eager" decoding="async">' : '') + '</div>';
+    html += '<div class="news-feat__body">';
+    html += '<span class="news-tag" data-cat="' + escapeHtml(cat) + '">' + escapeHtml(catLabel) + '</span>';
+    html += '<h3 class="news-feat__title">' + escapeHtml(title) + '</h3>';
+    if (summary) html += '<p class="news-feat__excerpt">' + escapeHtml(summary) + '</p>';
+    html += '<div class="news-meta"><time datetime="' + escapeHtml(date) + '">' + escapeHtml(formatDate(date)) + '</time></div>';
+    html += '</div></a>';
+    return html;
+  }
+
+  function buildCard(it, lang){
+    var title = pickText(it.title, lang) || 'Untitled';
+    var date = it.date || it.publish_date || '';
+    var href = '/update.html?id=' + encodeURIComponent(it.id || '');
+    var cat = getCategory(it);
+    var catLabel = CAT_LABELS[cat] || (cat ? cat : 'Update');
+    var img = getItemImage(it);
+
+    var html = '<a class="news-card" href="' + href + '">';
+    if (img) html += '<div class="news-card__img-wrap"><img class="news-card__img" src="' + escapeHtml(img) + '" alt="" loading="lazy" decoding="async"></div>';
+    html += '<div class="news-card__body">';
+    html += '<span class="news-tag" data-cat="' + escapeHtml(cat) + '">' + escapeHtml(catLabel) + '</span>';
+    html += '<h4 class="news-card__title">' + escapeHtml(title) + '</h4>';
+    html += '<div class="news-meta"><time datetime="' + escapeHtml(date) + '">' + escapeHtml(formatDate(date)) + '</time></div>';
+    html += '</div></a>';
+    return html;
+  }
+
+  var lang = getLang();
+
   fetchIndex().then(function(items){
-    items = Array.isArray(items) ? items : [];
-    var slice = items.slice(0,3);
-    var parts = [];
-    for (var i = 0; i < slice.length; i++){
-      var it = slice[i];
-      var title = pickText(it && it.title);
-      var date = (it && (it.date || it.publish_date)) || '';
-      var summary = pickText(it && it.summary);
-      parts.push('<article class="update-item"><h4>' + escapeHtml(title) + '</h4><time>' + escapeHtml(date) + '</time><p>' + escapeHtml(summary) + '</p></article>');
+    items = Array.isArray(items) ? items : (items && items.items) || [];
+    items = items.slice().sort(function(a,b){ return new Date(b.date || b.publish_date) - new Date(a.date || a.publish_date); });
+
+    if (!items.length){
+      container.innerHTML = '<p class="news-empty" data-i18n="no_updates">No updates yet</p>';
+      return;
     }
-    container.innerHTML = parts.join('') || '<p>No updates yet.</p>';
+
+    var featured = items[0];
+    var rest = items.slice(1, 4);
+    var html = buildFeatCard(featured, lang);
+    if (rest.length){
+      html += '<div class="news-cards">' + rest.map(function(it){ return buildCard(it, lang); }).join('') + '</div>';
+    }
+    container.innerHTML = html;
   }).catch(function(err){
-    try{ container.innerHTML = '<p>Failed to load updates: ' + escapeHtml((err && err.message) || String(err)) + '</p>'; }catch(e){ container.innerHTML = '<p>Failed to load updates</p>'; }
+    console.error('updates preview load error', err);
+    container.innerHTML = '<p class="news-empty" data-i18n="no_updates_body">Failed to load updates. Please try again later.</p>';
   });
 }
 
@@ -97,6 +182,8 @@ document.addEventListener('DOMContentLoaded', function(){
   animateCountUps();
   loadUpdatesPreview();
 });
+
+window.addEventListener('site:langchange', function(){ loadUpdatesPreview(); });
 
 
 
