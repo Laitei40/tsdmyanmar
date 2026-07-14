@@ -108,7 +108,13 @@
     return !!(title[lang] && title[lang].trim());
   }
 
-  var CAT_LABELS = { news: 'News', report: 'Report', announcement: 'Announcement', story: 'Story' };
+  var CAT_LABELS = {
+    news: 'News', report: 'Report', announcement: 'Announcement', story: 'Story',
+    mara_history: 'History', mara_geography: 'Geography', mara_villages: 'Villages',
+    mara_population: 'Population', mara_education: 'Education', mara_language: 'Language',
+    mara_culture: 'Culture', mara_organizations: 'Organizations', mara_statistics: 'Statistics',
+    mara_global: 'Global Mara'
+  };
 
   function estimateReadTime(item, lang) {
     var text = stripHtml(pickLangField(item.body, lang) || pickLangField(item.summary, lang) || '');
@@ -396,7 +402,9 @@
   // CATEGORY TABS
   // ═══════════════════════════════════════
   function initCategoryTabs() {
-    var tabs = document.querySelectorAll('.up-tab');
+    // Trigger buttons (e.g. "Mara") open a dropdown/accordion instead of
+    // filtering directly — handled separately by initTabGroups().
+    var tabs = document.querySelectorAll('.up-tab:not(.up-tab-group__trigger)');
     if (!tabs.length) return;
 
     tabs.forEach(function (tab) {
@@ -412,6 +420,12 @@
           }
         });
 
+        // Keep the "Mara" trigger visually active when one of its topics is selected
+        var isMaraTopic = cat.indexOf('mara_') === 0;
+        document.querySelectorAll('.up-tab-group__trigger').forEach(function (trigger) {
+          trigger.classList.toggle('active', isMaraTopic);
+        });
+
         var catSelect = document.getElementById('updates-category-filter');
         if (catSelect) {
           catSelect.value = cat;
@@ -421,6 +435,54 @@
           loadAndRender(true);
         }
       });
+    });
+
+    initTabGroups();
+  }
+
+  // ═══════════════════════════════════════
+  // "MARA" TAB GROUP — dropdown (desktop) / accordion (mobile drawer)
+  // ═══════════════════════════════════════
+  function initTabGroups() {
+    var groups = document.querySelectorAll('.up-tab-group');
+    if (!groups.length) return;
+
+    function openGroup(group) {
+      group.classList.add('open');
+      var trigger = group.querySelector('.up-tab-group__trigger');
+      if (trigger) trigger.setAttribute('aria-expanded', 'true');
+    }
+    function closeGroup(group) {
+      group.classList.remove('open');
+      var trigger = group.querySelector('.up-tab-group__trigger');
+      if (trigger) trigger.setAttribute('aria-expanded', 'false');
+    }
+    function closeAllGroups() {
+      document.querySelectorAll('.up-tab-group.open').forEach(closeGroup);
+    }
+
+    groups.forEach(function (group) {
+      var trigger = group.querySelector('.up-tab-group__trigger');
+      var menu = group.querySelector('.up-tab-group__menu');
+      if (!trigger || !menu) return;
+
+      trigger.addEventListener('click', function (e) {
+        e.stopPropagation();
+        var isOpen = group.classList.contains('open');
+        closeAllGroups();
+        if (!isOpen) openGroup(group);
+      });
+
+      // Selecting a topic closes the dropdown/accordion (filtering itself
+      // is already handled by the shared .up-tab click listener above).
+      menu.querySelectorAll('.up-tab').forEach(function (item) {
+        item.addEventListener('click', function () { closeGroup(group); });
+      });
+    });
+
+    document.addEventListener('click', closeAllGroups);
+    document.addEventListener('keydown', function (e) {
+      if (e.key === 'Escape') closeAllGroups();
     });
   }
 

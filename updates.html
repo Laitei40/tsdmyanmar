@@ -38,13 +38,32 @@
         </a>
 
         <!-- Center: category tabs (desktop) -->
-        <nav class="up-tabs" role="tablist" aria-label="Filter by category">
-          <button class="up-tab active" data-cat="" role="tab" aria-selected="true">All</button>
-          <button class="up-tab" data-cat="news" role="tab" aria-selected="false">News</button>
-          <button class="up-tab" data-cat="report" role="tab" aria-selected="false">Reports</button>
-          <button class="up-tab" data-cat="announcement" role="tab" aria-selected="false">Announcements</button>
-          <button class="up-tab" data-cat="story" role="tab" aria-selected="false">Stories</button>
-        </nav>
+        <div class="up-tabs-row">
+          <nav class="up-tabs" role="tablist" aria-label="Filter by category">
+            <button class="up-tab active" data-cat="" role="tab" aria-selected="true">All</button>
+            <button class="up-tab" data-cat="news" role="tab" aria-selected="false">News</button>
+            <button class="up-tab" data-cat="report" role="tab" aria-selected="false">Reports</button>
+            <button class="up-tab" data-cat="announcement" role="tab" aria-selected="false">Announcements</button>
+          </nav>
+          <div class="up-tab-group" data-group="mara">
+            <button type="button" class="up-tab up-tab-group__trigger" aria-haspopup="true" aria-expanded="false" aria-controls="mara-topic-menu">
+              Mara
+              <svg class="up-tab-group__chevron" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="6 9 12 15 18 9"/></svg>
+            </button>
+            <div class="up-tab-group__menu" id="mara-topic-menu" aria-label="Mara topics">
+              <button type="button" class="up-tab" data-cat="mara_history">History</button>
+              <button type="button" class="up-tab" data-cat="mara_geography">Geography</button>
+              <button type="button" class="up-tab" data-cat="mara_villages">Villages</button>
+              <button type="button" class="up-tab" data-cat="mara_population">Population</button>
+              <button type="button" class="up-tab" data-cat="mara_education">Education</button>
+              <button type="button" class="up-tab" data-cat="mara_language">Language</button>
+              <button type="button" class="up-tab" data-cat="mara_culture">Culture</button>
+              <button type="button" class="up-tab" data-cat="mara_organizations">Organizations</button>
+              <button type="button" class="up-tab" data-cat="mara_statistics">Statistics</button>
+              <button type="button" class="up-tab" data-cat="mara_global">Global Mara</button>
+            </div>
+          </div>
+        </div>
 
         <!-- Right: controls -->
         <div class="up-nav__right">
@@ -95,8 +114,25 @@
           <button class="up-tab" data-cat="news" role="tab" aria-selected="false">News</button>
           <button class="up-tab" data-cat="report" role="tab" aria-selected="false">Reports</button>
           <button class="up-tab" data-cat="announcement" role="tab" aria-selected="false">Announcements</button>
-          <button class="up-tab" data-cat="story" role="tab" aria-selected="false">Stories</button>
         </nav>
+        <div class="up-tab-group" data-group="mara">
+          <button type="button" class="up-tab up-tab-group__trigger" aria-haspopup="true" aria-expanded="false" aria-controls="mara-topic-menu-m">
+            Mara
+            <svg class="up-tab-group__chevron" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="6 9 12 15 18 9"/></svg>
+          </button>
+          <div class="up-tab-group__menu" id="mara-topic-menu-m" aria-label="Mara topics">
+            <button type="button" class="up-tab" data-cat="mara_history">History</button>
+            <button type="button" class="up-tab" data-cat="mara_geography">Geography</button>
+            <button type="button" class="up-tab" data-cat="mara_villages">Villages</button>
+            <button type="button" class="up-tab" data-cat="mara_population">Population</button>
+            <button type="button" class="up-tab" data-cat="mara_education">Education</button>
+            <button type="button" class="up-tab" data-cat="mara_language">Language</button>
+            <button type="button" class="up-tab" data-cat="mara_culture">Culture</button>
+            <button type="button" class="up-tab" data-cat="mara_organizations">Organizations</button>
+            <button type="button" class="up-tab" data-cat="mara_statistics">Statistics</button>
+            <button type="button" class="up-tab" data-cat="mara_global">Global Mara</button>
+          </div>
+        </div>
         <div class="up-drawer__controls">
           <div class="lang-switcher" role="group" aria-label="Content language">
             <button class="lang-btn active" data-lang="en" aria-pressed="true">EN</button>
@@ -136,7 +172,18 @@
         <option value="news">News</option>
         <option value="report">Report</option>
         <option value="announcement">Announcement</option>
-        <option value="story">Story</option>
+        <optgroup label="Mara">
+          <option value="mara_history">History</option>
+          <option value="mara_geography">Geography</option>
+          <option value="mara_villages">Villages</option>
+          <option value="mara_population">Population</option>
+          <option value="mara_education">Education</option>
+          <option value="mara_language">Language</option>
+          <option value="mara_culture">Culture</option>
+          <option value="mara_organizations">Organizations</option>
+          <option value="mara_statistics">Statistics</option>
+          <option value="mara_global">Global Mara</option>
+        </optgroup>
       </select>
 
       <!-- Featured article (injected by JS) -->

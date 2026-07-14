@@ -104,12 +104,17 @@
 }
 
 /* ── Center: Tabs ── */
-.up-tabs {
+.up-tabs-row {
   display: flex;
   align-items: center;
   gap: 2px;
   flex: 1;
   justify-content: center;
+}
+.up-tabs {
+  display: flex;
+  align-items: center;
+  gap: 2px;
 }
 .up-tab {
   position: relative;
@@ -158,6 +163,52 @@
 .up-tab:focus-visible {
   outline: 2px solid var(--up-accent);
   outline-offset: 2px;
+}
+
+/* ── "Mara" tab group — trigger + dropdown of topic sub-categories (desktop) ── */
+.up-tabs-row .up-tab-group {
+  position: relative;
+}
+.up-tab-group__trigger {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+.up-tab-group__chevron {
+  transition: transform .18s ease;
+}
+.up-tab-group.open .up-tab-group__chevron {
+  transform: rotate(180deg);
+}
+.up-tabs-row .up-tab-group__menu {
+  position: absolute;
+  top: calc(100% + 8px);
+  left: 50%;
+  transform: translateX(-50%) translateY(-6px);
+  min-width: 340px;
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 2px;
+  padding: 8px;
+  border-radius: 12px;
+  background: var(--up-surface);
+  border: 1px solid var(--up-line);
+  box-shadow: 0 18px 44px rgba(2,6,12,.22);
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+  transition: opacity .18s ease, transform .18s ease, visibility .18s ease;
+  z-index: 120;
+}
+.up-tabs-row .up-tab-group.open .up-tab-group__menu {
+  opacity: 1;
+  visibility: visible;
+  pointer-events: auto;
+  transform: translateX(-50%) translateY(0);
+}
+.up-tab-group__menu .up-tab {
+  text-align: left;
+  width: 100%;
 }
 
 /* ── Right: Controls ── */
@@ -254,6 +305,27 @@
   flex-wrap: wrap;
   gap: 4px;
   margin-bottom: .85rem;
+}
+
+/* ── "Mara" tab group in the mobile drawer — accordion, not a popover ── */
+.up-drawer .up-tab-group {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+.up-drawer .up-tab-group__trigger {
+  width: 100%;
+  justify-content: space-between;
+}
+.up-drawer .up-tab-group__menu {
+  display: none;
+  flex-wrap: wrap;
+  gap: 4px;
+  padding: 4px 0 4px 10px;
+}
+.up-drawer .up-tab-group.open .up-tab-group__menu {
+  display: flex;
 }
 .up-drawer__controls {
   display: flex;
@@ -796,7 +868,7 @@
   }
 
   /* Unified header: show hamburger, hide desktop-only parts */
-  .up-tabs { display: none; }
+  .up-tabs-row { display: none; }
   .up-nav__right { display: none; }
   .up-nav__burger { display: flex; }
 
