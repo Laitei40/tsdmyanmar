@@ -5,7 +5,7 @@
 // (via role change, disable, or delete). Password changes go through
 // /api/auth/change-password (requires current password), not this route.
 
-import { requireAdmin, destroyAllSessionsForUser, json } from '../../../../_lib/auth.js';
+import { requireAdmin, destroyAllSessionsForUser, json } from '../../../../../_lib/auth.js';
 
 async function remainingAdminCount(db, excludeId) {
   const row = await db.prepare(
