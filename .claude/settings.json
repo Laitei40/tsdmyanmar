@@ -1,0 +1,7 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(curl -sv -X POST https://admin.tsdmyanmar.org/api/auth/login -H \"Content-Type: application/json\" -d '{\"email\":\"x\",\"password\":\"y\"}')"
+    ]
+  }
+}
