@@ -160,6 +160,16 @@ async function apiGet(id) {
   return { ...body, etag };
 }
 
+/** Read a JSON error body's `.error` message, falling back to a generic message. */
+async function readErrorMessage(res, fallback) {
+  try {
+    const body = await res.json();
+    return (body && body.error) || fallback;
+  } catch {
+    return fallback;
+  }
+}
+
 async function apiCreate(payload) {
   const res = await fetch(API_BASE, {
     method: 'POST', credentials: 'include',
@@ -167,6 +177,7 @@ async function apiCreate(payload) {
   });
   if (res.status === 422) throw await res.json();
   if (res.status === 409) throw new Error('slug-conflict');
+  if (res.status === 403) throw new Error(await readErrorMessage(res, 'Forbidden'));
   if (!res.ok) throw new Error(`Create failed: ${res.status}`);
   return res.json();
 }
@@ -178,6 +189,7 @@ async function apiUpdate(id, etag, payload) {
   });
   if (res.status === 422) throw await res.json();
   if (res.status === 409) throw new Error('etag-conflict');
+  if (res.status === 403) throw new Error(await readErrorMessage(res, 'Forbidden'));
   if (!res.ok) throw new Error(`Update failed: ${res.status}`);
   return res.json();
 }
@@ -189,6 +201,7 @@ async function apiDelete(id, etag) {
     body: JSON.stringify({ _etag: etag }),
   });
   if (res.status === 409) throw new Error('etag-conflict');
+  if (res.status === 403) throw new Error(await readErrorMessage(res, 'Forbidden'));
   if (!res.ok) throw new Error(`Delete failed: ${res.status}`);
   return res.json();
 }
@@ -818,7 +831,7 @@ async function handleDelete(id) {
   } catch (e) {
     toast(e.message === 'etag-conflict'
       ? 'Version conflict — refresh and try again.'
-      : 'Delete failed', 'error');
+      : (e.message || 'Delete failed'), 'error');
   }
 }
 

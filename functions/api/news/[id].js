@@ -64,7 +64,7 @@ export async function onRequest(context) {
 
   // ── PUT: update (admin only) ──
   if (request.method === 'PUT') {
-    if (!isAdmin) return json(403, { error: 'Forbidden' });
+    if (!isAdmin) return json(403, { error: forbiddenMessage(request, env) });
 
     const body = await request.json().catch(() => null);
     if (!body) return json(400, { error: 'Invalid JSON' });
@@ -98,7 +98,7 @@ export async function onRequest(context) {
 
   // ── DELETE (admin only) ──
   if (request.method === 'DELETE') {
-    if (!isAdmin) return json(403, { error: 'Forbidden' });
+    if (!isAdmin) return json(403, { error: forbiddenMessage(request, env) });
 
     let deleteBody = null;
     try { deleteBody = await request.json(); } catch {}
@@ -140,6 +140,18 @@ function verifyAdmin(request, env) {
   if (!email || !allowedAdmin || email !== allowedAdmin) return null;
 
   return { email };
+}
+
+/**
+ * Build a diagnostic message for 403 responses so a logged-in-but-unauthorized
+ * user (or the site admin reading the error) can see exactly why access was denied,
+ * without leaking anything to requests that never authenticated at all.
+ */
+function forbiddenMessage(request, env) {
+  if (env.DEV_MODE === 'true') return 'Forbidden';
+  const email = request.headers.get('cf-access-authenticated-user-email')?.toLowerCase();
+  if (!email) return 'Forbidden — no Cloudflare Access identity found on this request.';
+  return `Forbidden — logged in as "${email}", which does not match the configured admin account.`;
 }
 
 /* ══════════════════════════════════════
