@@ -2,9 +2,9 @@
  * auth.js — session bootstrap for admin pages (index.html, users.html).
  *
  * Loaded before the page's own script. Confirms a valid session via
- * GET /api/auth/me, redirects to login.html if not authenticated, otherwise
- * stashes the user on window.currentUser, reveals the page, and fires
- * `tsd-auth-ready` so the page's own script can safely start rendering
+ * GET /api/admin/auth/me, redirects to /admin/login.html if not authenticated,
+ * otherwise stashes the user on window.currentUser, reveals the page, and
+ * fires `tsd-auth-ready` so the page's own script can safely start rendering
  * role-aware UI. Also owns the header user-badge/logout and the forced
  * password-change gate (must_change_password).
  *
@@ -19,7 +19,7 @@
 
   async function fetchMe() {
     try {
-      const res = await fetch('/api/auth/me', { credentials: 'same-origin' });
+      const res = await fetch('/api/admin/auth/me', { credentials: 'same-origin' });
       if (!res.ok) return null;
       const data = await res.json();
       return data.user || null;
@@ -43,8 +43,8 @@
     const btn = $('#btn-logout');
     if (!btn) return;
     btn.addEventListener('click', async () => {
-      try { await fetch('/api/auth/logout', { method: 'POST', credentials: 'same-origin' }); }
-      finally { window.location.href = '/login.html'; }
+      try { await fetch('/api/admin/auth/logout', { method: 'POST', credentials: 'same-origin' }); }
+      finally { window.location.href = '/admin/login.html'; }
     });
   }
 
@@ -77,7 +77,7 @@
       }
 
       try {
-        const res = await fetch('/api/auth/change-password', {
+        const res = await fetch('/api/admin/auth/change-password', {
           method: 'POST',
           credentials: 'same-origin',
           headers: { 'Content-Type': 'application/json' },
@@ -89,7 +89,7 @@
           errorEl.style.display = 'block';
           return;
         }
-        window.location.href = '/login.html';
+        window.location.href = '/admin/login.html';
       } catch {
         errorEl.textContent = 'Network error. Please try again.';
         errorEl.style.display = 'block';
@@ -103,7 +103,7 @@
 
     const user = await fetchMe();
     if (!user) {
-      window.location.href = '/login.html';
+      window.location.href = '/admin/login.html';
       return;
     }
 

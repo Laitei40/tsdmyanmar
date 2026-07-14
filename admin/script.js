@@ -15,7 +15,7 @@
    CONSTANTS
    ══════════════════════════════════════════════ */
 
-const API_BASE = '/api/news';
+const API_BASE = '/api/admin/news';
 
 const LANGS = [
   { code: 'en',  label: 'English' },
@@ -653,7 +653,7 @@ function openModal(item) {
   $('#inp-status').value   = item.status        || 'draft';
   $('#inp-date').value     = item.publish_date  || new Date().toISOString().slice(0, 10);
 
-  // Cosmetic only — the server is the real enforcement (see admin/functions/api/news).
+  // Cosmetic only — the server is the real enforcement (see functions/api/admin/news).
   // Editors can save an already-published article as published (no status change),
   // but cannot move a draft/archived article — or a new one — into 'published'.
   const publishedOption = $('#inp-status').querySelector('option[value="published"]');

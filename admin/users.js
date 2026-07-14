@@ -4,11 +4,11 @@
  * Mirrors the CRUD/modal patterns already used in script.js for articles,
  * but for admin_users. Waits for auth.js's `tsd-auth-ready` event before
  * doing anything, then redirects non-admins back to the dashboard (cosmetic —
- * the server enforces this on every /api/auth/users* route regardless).
+ * the server enforces this on every /api/admin/auth/users* route regardless).
  */
 'use strict';
 
-const API_BASE = '/api/auth/users';
+const API_BASE = '/api/admin/auth/users';
 
 let items = [];
 let editingId = null; // null = create mode
@@ -278,7 +278,7 @@ async function handleResetPassword(id) {
 window.addEventListener('tsd-auth-ready', (e) => {
   const user = e.detail.user;
   if (user.role !== 'admin') {
-    window.location.href = '/';
+    window.location.href = '/admin/';
     return;
   }
 
