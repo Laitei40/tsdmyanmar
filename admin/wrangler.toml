@@ -5,16 +5,6 @@ compatibility_date = "2026-01-07"
 # Pages output directory (vanilla HTML/CSS/JS — no build step needed)
 pages_build_output_dir = "public"
 
-[vars]
-# ADMIN_EMAIL — the Cloudflare Access verified email allowed to use admin APIs.
-# For local dev, set here. For production, set via Cloudflare dashboard (Settings > Environment Variables)
-# so it is never committed to the repository.
-ADMIN_EMAIL = "admin@tsdmyanmar.org"
-
-# DEV_MODE — set to "true" for local development to bypass Cloudflare Access auth.
-# NEVER set this in production. Remove or set to "false" before deploying.
-DEV_MODE = "true"
-
 # Bind Cloudflare R2 bucket for image uploads
 [[r2_buckets]]
 binding = "IMAGES"
@@ -26,5 +16,7 @@ binding = "UPDATES_DB"
 database_name = "tsd_updates"
 database_id = "bb376db4-497c-4ac3-9761-675b8a537422"  # replace if needed
 
-# Auth: Cloudflare Access (Zero Trust) protects the admin hostname at the edge.
-# Workers verify identity via the cf-access-authenticated-user-email header against env.ADMIN_EMAIL.
+# Auth: self-built email+password sessions (see admin/_lib/auth.js), backed by the
+# admin_users / admin_sessions tables in this D1 database. No Cloudflare Access,
+# no ADMIN_EMAIL, and no extra secrets to configure — session tokens are opaque
+# random values, stored server-side only as a SHA-256 hash.

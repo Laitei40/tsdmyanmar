@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Manage Users — TSD News Dashboard</title>
+  <link rel="icon" type="image/svg+xml" href="/assets/images/logo/favicon.svg" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+  <!-- ── Toast container ── -->
+  <div id="toast-container" class="toast-container"></div>
+
+  <div class="app-shell auth-pending">
+
+    <!-- ── Header ── -->
+    <header class="app-header">
+      <div class="app-header__brand">
+        <img src="/assets/images/logo/logo_en.svg" alt="" class="app-header__logo" />
+        <div>
+          <h1>Manage Users</h1>
+          <p class="muted">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><rect x="3" y="11" width="18" height="10" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+            Admin, Editor accounts for the News Dashboard
+          </p>
+        </div>
+      </div>
+      <div class="app-header__actions">
+        <div class="user-badge" id="user-badge" hidden>
+          <span class="user-badge__name" id="user-badge-name"></span>
+          <span class="user-badge__role" id="user-badge-role"></span>
+        </div>
+        <a href="/" class="ghost compact">&#8592; Dashboard</a>
+        <button class="ghost compact" id="btn-logout" type="button">Log out</button>
+        <button class="primary" id="btn-new-user" type="button">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+          New User
+        </button>
+      </div>
+    </header>
+
+    <main class="app-main">
+      <div id="users-table-area" class="table-card">
+        <div class="loading-state"><div class="spinner"></div><span>Loading…</span></div>
+      </div>
+    </main>
+  </div>
+
+  <!-- ══════════════════════════════════════════════
+       MODAL — Create / Edit user
+       ══════════════════════════════════════════════ -->
+  <div class="modal-backdrop" id="user-modal-backdrop" style="display:none">
+    <div class="modal modal--narrow">
+      <form class="news-form" id="user-form">
+        <div class="form-header">
+          <h3 id="user-form-title">New User</h3>
+          <button type="button" class="btn-icon" id="btn-user-modal-close" aria-label="Close">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+          </button>
+        </div>
+        <div class="modal-body">
+          <div class="field">
+            <label for="uf-name">Name</label>
+            <input id="uf-name" placeholder="Jane Doe" required />
+          </div>
+          <div class="field">
+            <label for="uf-email">Email</label>
+            <input type="email" id="uf-email" placeholder="jane@tsdmyanmar.org" required />
+          </div>
+          <div class="field">
+            <label for="uf-role">Role</label>
+            <select id="uf-role">
+              <option value="editor">Editor</option>
+              <option value="admin">Admin</option>
+            </select>
+          </div>
+          <div class="field" id="uf-disabled-field" style="display:none">
+            <label for="uf-disabled">Account status</label>
+            <select id="uf-disabled">
+              <option value="0">Active</option>
+              <option value="1">Disabled</option>
+            </select>
+          </div>
+          <p class="form-error" id="user-form-error" style="display:none"></p>
+        </div>
+        <div class="form-actions">
+          <button type="button" class="ghost" id="btn-user-cancel">Cancel</button>
+          <button type="submit" class="primary" id="btn-user-submit">Create</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════════════
+       MODAL — Show a one-time temp password
+       ══════════════════════════════════════════════ -->
+  <div class="modal-backdrop" id="temp-password-modal" style="display:none">
+    <div class="modal modal--narrow">
+      <div class="form-header">
+        <h3>Temporary password</h3>
+        <button type="button" class="btn-icon" id="btn-temp-password-close" aria-label="Close">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+        </button>
+      </div>
+      <div class="modal-body">
+        <p class="muted">Share this with the user through a secure channel. It won't be shown again — the account requires a password change on first login.</p>
+        <div class="temp-password-box"><code id="temp-password-value"></code></div>
+      </div>
+      <div class="form-actions">
+        <button type="button" class="primary" id="btn-temp-password-done">Done</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="auth.js"></script>
+  <script src="users.js"></script>
+</body>
+</html>

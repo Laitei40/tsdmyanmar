@@ -4,17 +4,17 @@
  * Accepts multipart/form-data with a "file" field.
  * Returns { url: "/api/images/<key>" }
  *
- * Auth: Cloudflare Access (Zero Trust) — admin only.
+ * Auth: session cookie (any authenticated Admin or Editor — uploading is
+ * part of drafting, not publishing). Same-origin only — no CORS.
  */
+
+import { requireAuth, json } from '../../_lib/auth.js';
 
 export async function onRequestPost(ctx) {
   const { request, env } = ctx;
 
-  /* ── Auth — Cloudflare Access (Zero Trust) ── */
-  const admin = verifyAdmin(request, env);
-  if (!admin) {
-    return json(403, { error: 'Forbidden' });
-  }
+  const { response } = await requireAuth(request, env);
+  if (response) return response;
 
   /* ── Parse multipart body ── */
   let formData;
@@ -58,13 +58,6 @@ export async function onRequestPost(ctx) {
    Helpers
    ══════════════════════════════════════════════ */
 
-function json(status, data) {
-  return new Response(JSON.stringify(data), {
-    status,
-    headers: { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*', 'Access-Control-Expose-Headers': 'ETag' },
-  });
-}
-
 function extFromMime(mime) {
   const map = {
     'image/jpeg': '.jpg',
@@ -74,22 +67,4 @@ function extFromMime(mime) {
     'image/svg+xml': '.svg',
   };
   return map[mime] || '';
-}
-
-/**
- * Verify the request comes from an allowed admin.
- * Cloudflare Access injects `cf-access-authenticated-user-email` on authenticated requests.
- * The allowed admin email is stored in env.ADMIN_EMAIL (set via Cloudflare dashboard).
- * Returns { email } on success, or null for non-admin requests.
- */
-function verifyAdmin(request, env) {
-  const email = request.headers
-    .get('cf-access-authenticated-user-email')
-    ?.toLowerCase();
-
-  const allowedAdmin = env.ADMIN_EMAIL?.toLowerCase();
-
-  if (!email || !allowedAdmin || email !== allowedAdmin) return null;
-
-  return { email };
 }

@@ -1,50 +1,35 @@
-// Unified API: /api/news  (collection)
-// GET  → list articles  (public: published only | admin: all statuses)
-// POST → create article  (admin only)
+// Admin News API: /api/news  (collection)
+// GET  → list articles  (any authenticated Admin/Editor sees all statuses)
+// POST → create article  (Admin or Editor; Editors cannot create as 'published')
 //
-// Auth: Cloudflare Access (Zero Trust) — trusts cf-access-authenticated-user-email header.
-// Admin identity verified against env.ADMIN_EMAIL (set in Cloudflare dashboard, never hardcoded).
-// Both the public site and admin dashboard consume this same endpoint.
+// Auth: session cookie, verified via admin/_lib/auth.js against admin_users/admin_sessions.
+// Same-origin only — no CORS headers (see _lib/auth.js).
+
+import { requireAuth, json } from '../../../_lib/auth.js';
 
 export async function onRequest(context) {
   const { request, env } = context;
   const db = env.UPDATES_DB;
   if (!db) return json(500, { error: 'D1 binding missing' });
 
-  const claims = verifyAdmin(request, env);
-  const isAdmin = !!claims;
-  const actor = claims?.email || 'anonymous';
-
-  // ── CORS for admin cross-origin (if admin is on a different subdomain) ──
-  if (request.method === 'OPTIONS') return handleCors(request);
+  const { user, response } = await requireAuth(request, env);
+  if (response) return response;
+  const actor = user.email;
 
   // ── GET: list ──
   if (request.method === 'GET') {
     const url = new URL(request.url);
     const p = Object.fromEntries(url.searchParams);
-    const SUPPORTED = ['en', 'mrh', 'my'];
-    const reqLang = (p.lang || '').toLowerCase();
-    const lang = SUPPORTED.includes(reqLang) ? reqLang : null;
 
-    // Build WHERE clause
     let where = '1=1';
     const vals = [];
 
-    if (isAdmin) {
-      // Admin can filter by status; default shows all
-      if (p.status) { where += ` AND status = ?`; vals.push(p.status); }
-    } else {
-      // Public only sees published
-      where += ` AND status = 'published'`;
-    }
-
+    if (p.status) { where += ` AND status = ?`; vals.push(p.status); }
     if (p.category) { where += ' AND category = ?'; vals.push(p.category); }
 
-    // Year filter
     const year = (p.year || '').trim();
     if (year) { where += ' AND substr(publish_date,1,4) = ?'; vals.push(year); }
 
-    // Text search
     const q = (p.q || p.search || '').trim();
     if (q) {
       const like = '%' + q + '%';
@@ -52,39 +37,30 @@ export async function onRequest(context) {
       vals.push(like, like, like, like);
     }
 
-    const limit = Math.min(parseInt(p.limit || (isAdmin ? '20' : '6')) || 6, 100);
+    const limit = Math.min(parseInt(p.limit || '20') || 20, 100);
     const offset = parseInt(p.offset || '0') || 0;
 
     const cntRow = await db.prepare(`SELECT COUNT(*) AS c FROM news WHERE ${where}`).bind(...vals).first();
     const total = cntRow?.c || 0;
 
-    // Admin gets all columns; public gets a subset
-    const cols = isAdmin
-      ? '*'
-      : 'id, slug, publish_date AS date, title, summary, body, category, featured_image, tags';
-
     const rows = await db.prepare(
-      `SELECT ${cols} FROM news WHERE ${where} ORDER BY publish_date DESC LIMIT ? OFFSET ?`
+      `SELECT * FROM news WHERE ${where} ORDER BY publish_date DESC LIMIT ? OFFSET ?`
     ).bind(...vals, limit, offset).all();
 
-    const items = (rows.results || []).map(r => {
-      const it = isAdmin ? rowToAdminItem(r) : rowToPublicItem(r);
-      return (!isAdmin && lang) ? localize(it, lang) : it;
-    });
+    const items = (rows.results || []).map(rowToAdminItem);
 
-    const headers = isAdmin
-      ? {}
-      : { 'Cache-Control': 'public, max-age=30' };
-
-    return json(200, { items, total }, headers);
+    return json(200, { items, total });
   }
 
-  // ── POST: create (admin only) ──
+  // ── POST: create ──
   if (request.method === 'POST') {
-    if (!isAdmin) return json(403, { error: forbiddenMessage(request, env) });
-
     const body = await request.json().catch(() => null);
     if (!body) return json(400, { error: 'Invalid JSON' });
+
+    if (user.role === 'editor' && body.status === 'published') {
+      return json(403, { error: 'Editors cannot publish articles — save as draft for an Admin to publish.' });
+    }
+
     const errs = validate(body);
     if (Object.keys(errs).length) return json(422, { errors: errs });
 
@@ -118,68 +94,8 @@ export async function onRequest(context) {
 }
 
 /* ══════════════════════════════════════
-   Auth — Cloudflare Access (Zero Trust)
-   ══════════════════════════════════════ */
-
-/**
- * Verify the request comes from an allowed admin.
- * Cloudflare Access injects `cf-access-authenticated-user-email` on authenticated requests.
- * The allowed admin email is stored in env.ADMIN_EMAIL (set via Cloudflare dashboard).
- * Returns { email } on success, or null for non-admin / public requests.
- */
-function verifyAdmin(request, env) {
-  // Local dev bypass — Wrangler doesn't inject Cloudflare Access headers.
-  // DEV_MODE must NEVER be "true" in production.
-  if (env.DEV_MODE === 'true') {
-    return { email: env.ADMIN_EMAIL || 'dev@localhost' };
-  }
-
-  const email = request.headers
-    .get('cf-access-authenticated-user-email')
-    ?.toLowerCase();
-
-  const allowedAdmin = env.ADMIN_EMAIL?.toLowerCase();
-
-  if (!email || !allowedAdmin || email !== allowedAdmin) return null;
-
-  return { email };
-}
-
-/**
- * Build a diagnostic message for 403 responses so a logged-in-but-unauthorized
- * user (or the site admin reading the error) can see exactly why access was denied,
- * without leaking anything to requests that never authenticated at all.
- */
-function forbiddenMessage(request, env) {
-  if (env.DEV_MODE === 'true') return 'Forbidden';
-  const email = request.headers.get('cf-access-authenticated-user-email')?.toLowerCase();
-  if (!email) return 'Forbidden — no Cloudflare Access identity found on this request.';
-  return `Forbidden — logged in as "${email}", which does not match the configured admin account.`;
-}
-
-/* ══════════════════════════════════════
    Helpers
    ══════════════════════════════════════ */
-
-function json(status, data, extra = {}) {
-  return new Response(JSON.stringify(data), {
-    status,
-    headers: { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*', 'Access-Control-Expose-Headers': 'ETag', ...extra },
-  });
-}
-
-function handleCors(req) {
-  return new Response(null, {
-    status: 204,
-    headers: {
-      'Access-Control-Allow-Origin': '*',
-      'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, OPTIONS',
-      'Access-Control-Allow-Headers': 'Content-Type, If-Match',
-      'Access-Control-Expose-Headers': 'ETag',
-      'Access-Control-Max-Age': '86400',
-    },
-  });
-}
 
 function sanitizeHtml(html) {
   if (!html || typeof html !== 'string') return '';
@@ -235,52 +151,12 @@ function validate(body) {
   return err;
 }
 
-/* ── Row mappers ── */
-
 function rowToAdminItem(r) {
   const it = { ...r };
-  // Expose date alias so consumers don't need to know about publish_date
   if (!it.date && it.publish_date) it.date = it.publish_date;
   for (const f of ['title', 'summary', 'body']) it[f] = parseI18n(it[f]);
   if (typeof it.tags === 'string') {
     try { it.tags = JSON.parse(it.tags); } catch { it.tags = []; }
   }
   return it;
-}
-
-function rowToPublicItem(r) {
-  const it = {
-    id: r.id,
-    slug: r.slug,
-    date: r.date || r.publish_date,
-    category: r.category || undefined,
-    image: r.featured_image || undefined,
-  };
-  it.title = parseI18n(r.title);
-  it.summary = parseI18n(r.summary);
-  it.body = parseI18n(r.body);
-  if (typeof r.tags === 'string') {
-    try { it.tags = JSON.parse(r.tags); } catch { it.tags = []; }
-  }
-  // Normalize lang keys
-  ['title', 'summary', 'body'].forEach(f => {
-    const obj = it[f];
-    if (!obj || typeof obj !== 'object') return;
-    if (obj.mara && !obj.mrh) obj.mrh = obj.mara;
-    Object.keys(obj).forEach(k => {
-      const m = k.match(/^([a-z]{2,3})[-_]/i);
-      if (m) { const b = m[1].toLowerCase(); if (!obj[b]) obj[b] = obj[k]; }
-    });
-  });
-  return it;
-}
-
-function localize(item, lang) {
-  const loc = { ...item };
-  for (const f of ['title', 'summary', 'body']) {
-    if (loc[f] && typeof loc[f] === 'object') {
-      loc[f] = loc[f][lang] || loc[f].en || Object.values(loc[f])[0] || '';
-    }
-  }
-  return loc;
 }

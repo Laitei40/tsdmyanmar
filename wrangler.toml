@@ -16,22 +16,13 @@ database_name = "tsd_updates"
 # Pin to specific D1 database (useful for local dev)
 database_id = "bb376db4-497c-4ac3-9761-675b8a537422"
 
-# Auth: Cloudflare Access (Zero Trust) protects admin routes at the edge.
-# Workers verify identity via cf-access-authenticated-user-email header against env.ADMIN_EMAIL.
-# Bind Cloudflare R2 bucket for image uploads
+# This site is public-read-only — no admin auth lives here. Article management
+# happens exclusively through the admin dashboard (separate Pages project, its
+# own D1-backed session auth — see admin/_lib/auth.js).
+# Bind Cloudflare R2 bucket so /api/images/:key can serve uploaded images.
 [[r2_buckets]]
 binding = "IMAGES"
 bucket_name = "tsd-images"
-
-[vars]
-# ADMIN_EMAIL — the Cloudflare Access verified email allowed to use admin APIs.
-# For local dev, set here. For production, set via Cloudflare dashboard (Settings > Environment Variables)
-# so it is never committed to the repository.
-ADMIN_EMAIL = "admin@tsdmyanmar.org"
-
-# DEV_MODE — set to "true" for local development to bypass Cloudflare Access auth.
-# NEVER set this in production. Remove or set to "false" before deploying.
-DEV_MODE = "true"
 
 # Optional: add other settings such as zone_id, account_id, or site configuration
 # Example:

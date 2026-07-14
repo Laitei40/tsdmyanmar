@@ -17,7 +17,7 @@
   <!-- ── Toast container ── -->
   <div id="toast-container" class="toast-container"></div>
 
-  <div class="app-shell">
+  <div class="app-shell auth-pending">
 
     <!-- ── Header ── -->
     <header class="app-header">
@@ -27,14 +27,22 @@
           <h1>News Dashboard</h1>
           <p class="muted">
             <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><rect x="3" y="11" width="18" height="10" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
-            Manage articles across 3 languages &middot; Protected by Cloudflare Access
+            Manage articles across 3 languages
           </p>
         </div>
       </div>
-      <button class="primary" id="btn-new" type="button">
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
-        New Article
-      </button>
+      <div class="app-header__actions">
+        <div class="user-badge" id="user-badge" hidden>
+          <span class="user-badge__name" id="user-badge-name"></span>
+          <span class="user-badge__role" id="user-badge-role"></span>
+        </div>
+        <a href="/users.html" class="ghost compact" id="link-manage-users" hidden>Manage Users</a>
+        <button class="ghost compact" id="btn-logout" type="button">Log out</button>
+        <button class="primary" id="btn-new" type="button">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+          New Article
+        </button>
+      </div>
     </header>
 
     <main class="app-main">
@@ -254,7 +262,41 @@
     </div>
   </div>
 
+  <!-- ══════════════════════════════════════════════
+       MODAL — Forced password change (must_change_password)
+       Non-dismissable: no close button, no backdrop-click-to-close.
+       ══════════════════════════════════════════════ -->
+  <div class="modal-backdrop" id="force-password-modal" hidden>
+    <div class="modal modal--narrow">
+      <form id="force-password-form" class="news-form">
+        <div class="form-header">
+          <h3>Set a new password</h3>
+        </div>
+        <div class="modal-body">
+          <p class="muted">You're signed in with a temporary password. Choose a new one to continue.</p>
+          <div class="field">
+            <label for="fp-current">Current (temporary) password</label>
+            <input type="password" id="fp-current" autocomplete="current-password" required />
+          </div>
+          <div class="field">
+            <label for="fp-new">New password</label>
+            <input type="password" id="fp-new" autocomplete="new-password" minlength="10" required />
+          </div>
+          <div class="field">
+            <label for="fp-confirm">Confirm new password</label>
+            <input type="password" id="fp-confirm" autocomplete="new-password" minlength="10" required />
+          </div>
+          <p class="form-error" id="fp-error" style="display:none"></p>
+        </div>
+        <div class="form-actions">
+          <button type="submit" class="primary">Set password &amp; continue</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
   <script src="https://cdn.jsdelivr.net/npm/quill@2.0.3/dist/quill.js"></script>
+  <script src="auth.js"></script>
   <script src="script.js"></script>
 </body>
 </html>

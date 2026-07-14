@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Log in — TSD News Dashboard</title>
+  <link rel="icon" type="image/svg+xml" href="/assets/images/logo/favicon.svg" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+  <div class="login-shell">
+    <div class="login-card card">
+      <img src="/assets/images/logo/logo_en.svg" alt="" class="login-logo" />
+      <h1>News Dashboard</h1>
+      <p class="muted login-sub">Sign in to manage articles</p>
+
+      <form id="login-form" novalidate>
+        <div class="field">
+          <label for="li-email">Email</label>
+          <input type="email" id="li-email" required autocomplete="username" />
+        </div>
+        <div class="field">
+          <label for="li-password">Password</label>
+          <input type="password" id="li-password" required autocomplete="current-password" />
+        </div>
+        <p class="form-error" id="li-error" style="display:none"></p>
+        <button type="submit" class="primary" id="li-submit">Log in</button>
+      </form>
+    </div>
+  </div>
+
+  <script src="login.js"></script>
+</body>
+</html>

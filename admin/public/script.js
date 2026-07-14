@@ -330,9 +330,10 @@ function renderTable() {
         <button class="btn-icon btn-edit" title="Edit" data-id="${item.id}">
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
         </button>
+        ${window.currentUser && window.currentUser.role === 'admin' ? `
         <button class="btn-icon danger btn-delete" title="Delete" data-id="${item.id}">
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>
-        </button>
+        </button>` : ''}
       </td>
     </tr>`;
   }).join('');
@@ -651,6 +652,15 @@ function openModal(item) {
   $('#inp-category').value = item.category      || '';
   $('#inp-status').value   = item.status        || 'draft';
   $('#inp-date').value     = item.publish_date  || new Date().toISOString().slice(0, 10);
+
+  // Cosmetic only — the server is the real enforcement (see admin/functions/api/news).
+  // Editors can save an already-published article as published (no status change),
+  // but cannot move a draft/archived article — or a new one — into 'published'.
+  const publishedOption = $('#inp-status').querySelector('option[value="published"]');
+  if (publishedOption) {
+    const isEditor = window.currentUser && window.currentUser.role === 'editor';
+    publishedOption.disabled = isEditor && (isNew || item.status !== 'published');
+  }
   $('#inp-tags').value     = (item.tags || []).join(', ');
   $('#inp-image').value    = item.featured_image || '';
 
@@ -840,7 +850,9 @@ async function handleDelete(id) {
    EVENT LISTENERS
    ══════════════════════════════════════════════ */
 
-document.addEventListener('DOMContentLoaded', () => {
+// Waits for auth.js to confirm a valid session (and set window.currentUser)
+// before doing anything — avoids a flash of admin-only UI before role is known.
+window.addEventListener('tsd-auth-ready', () => {
 
   /* ── Initial load ── */
   loadArticles(true);
