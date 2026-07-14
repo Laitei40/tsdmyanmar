@@ -27,9 +27,26 @@
   <div id="header"></div>
 
   <main>
-    <section class="page-section">
+    <div class="page-banner">
+      <nav class="breadcrumb" aria-label="Breadcrumb">
+        <a href="/" data-i18n="nav_home">Home</a>
+        <span class="sep" aria-hidden="true">/</span>
+        <span data-i18n="header_get_involved">Get Involved</span>
+        <span class="sep" aria-hidden="true">/</span>
+        <span class="current" data-i18n="join_our_team_title">Join our Team</span>
+      </nav>
       <h1 data-i18n="join_our_team_title">Join our Team</h1>
-      <p>See current vacancies and ways to contribute professionally to our programs and operations.</p>
+      <p class="lead">Vacancies and ways to contribute professionally.</p>
+    </div>
+
+    <section class="content-section">
+      <div class="coming-soon">
+        <span class="coming-soon__icon" aria-hidden="true">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/></svg>
+        </span>
+        <h2>No open vacancies listed right now</h2>
+        <p>Check back soon, or <a href="contact.html">contact us</a> to ask about upcoming opportunities.</p>
+      </div>
     </section>
   </main>
 

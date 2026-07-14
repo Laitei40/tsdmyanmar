@@ -3,33 +3,25 @@
    Clean minimal design · single-column focus · theme-aware
    ============================================================ */
 
-/* ── Tokens ── */
+/* ── Tokens — resolve to the site's global brand tokens (css/style.css)
+   so News & Updates matches the rest of the site instead of its own
+   isolated blue palette. --up-* aliases are kept so the rest of this
+   file doesn't need to change. ── */
 :root {
-  --up-bg:      #fafafa;
-  --up-surface: #ffffff;
-  --up-ink:     #111111;
-  --up-dim:     #666666;
-  --up-muted:   #999999;
-  --up-accent:  #0066ff;
-  --up-accent2: #0052cc;
-  --up-line:    #e5e5e5;
-  --up-line2:   #d0d0d0;
-  --up-radius:  10px;
-  --up-ease:    .18s ease;
-  --up-sans:    -apple-system, BlinkMacSystemFont, 'Segoe UI', Inter, Roboto, sans-serif;
+  --up-bg:      var(--color-bg);
+  --up-surface: var(--color-surface);
+  --up-ink:     var(--color-text);
+  --up-dim:     var(--color-muted);
+  --up-muted:   var(--color-muted);
+  --up-accent:  var(--color-primary);
+  --up-accent2: var(--color-accent);
+  --up-line:    var(--color-border);
+  --up-line2:   var(--color-border);
+  --up-radius:  var(--radius);
+  --up-ease:    var(--transition-fast);
+  --up-sans:    Inter, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
   --up-serif:   Georgia, 'Noto Serif', 'Times New Roman', serif;
   --up-w:       1120px;
-}
-[data-theme="dark"] {
-  --up-bg:      #0a0a0a;
-  --up-surface: #161616;
-  --up-ink:     #eeeeee;
-  --up-dim:     #aaaaaa;
-  --up-muted:   #777777;
-  --up-accent:  #4d94ff;
-  --up-accent2: #3d7ee6;
-  --up-line:    #222222;
-  --up-line2:   #333333;
 }
 
 /* ── Shell ── */
@@ -382,7 +374,7 @@
 .up-search input:focus {
   outline: none;
   border-color: var(--up-accent);
-  box-shadow: 0 0 0 3px rgba(0,102,255,.12);
+  box-shadow: 0 0 0 3px rgba(0,127,63,.16);
   background: rgba(255,255,255,.1);
 }
 [data-theme="light"] .up-search input:focus {
@@ -416,7 +408,7 @@
 .up-select:focus {
   outline: none;
   border-color: var(--up-accent);
-  box-shadow: 0 0 0 3px rgba(0,102,255,.12);
+  box-shadow: 0 0 0 3px rgba(0,127,63,.16);
 }
 
 /* ══════════════════════════════════════

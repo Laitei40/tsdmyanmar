@@ -23,83 +23,30 @@
   </script>
 </head>
 <body>
-  <header class="site-header" role="banner">
-    <div class="site-inner">
-      <a class="brand" href="/" data-i18n="site_title">
-        <img class="brand-logo" src="/assets/images/logo/logo_en.svg" alt="TSD Myanmar logo">
-        <span class="brand-text">TSD Myanmar</span>
-      </a>
-      <button class="nav-toggle" aria-controls="primary-nav" aria-expanded="false" aria-label="Toggle navigation">
-        <span class="hamburger" aria-hidden="true"></span>
-      </button>
-      <nav id="primary-nav" class="primary-nav" role="navigation" aria-label="Primary">
-        <ul>
-          <li class="has-dropdown">
-            <button class="drop-toggle" aria-haspopup="true" aria-expanded="false" data-i18n="header_about_us">About Us <span aria-hidden="true">+</span></button>
-            <ul class="dropdown" aria-label="About Us submenu">
-              <li><a href="about.html">About Us</a></li>
-              <li><a href="who-we-are.html">Who We Are</a></li>
-              <li><a href="contact.html">Contact Us</a></li>
-            </ul>
-          </li>
-
-          <li class="has-dropdown">
-            <button class="drop-toggle" aria-haspopup="true" aria-expanded="false" data-i18n="header_our_work">Our Work <span aria-hidden="true">+</span></button>
-            <ul class="dropdown" aria-label="Our Work submenu">
-              <li><a href="where-we-work.html">Where We Work</a></li>
-              <li><a href="what-we-do.html">What We Do</a></li>
-              <li><a href="our-approach.html">Our Approach</a></li>
-              <li><a href="education.html">Education</a></li>
-              <li><a href="food-security.html">Food Security</a></li>
-              <li><a href="inclusion.html">Inclusion</a></li>
-              <li><a href="relief-drr.html">Relief &amp; DRR</a></li>
-            </ul>
-          </li>
-
-          <li class="has-dropdown">
-            <button class="drop-toggle" aria-haspopup="true" aria-expanded="false" data-i18n="header_news">News <span aria-hidden="true">+</span></button>
-            <ul class="dropdown" aria-label="News submenu">
-              <li><a href="updates.html">Updates &amp; Reports</a></li>
-            </ul>
-          </li>
-
-          <li class="has-dropdown">
-            <button class="drop-toggle" aria-haspopup="true" aria-expanded="false" data-i18n="header_get_involved">Get Involved <span aria-hidden="true">+</span></button>
-            <ul class="dropdown" aria-label="Get Involved submenu">
-              <li><a href="get-involved.html">How to Get Involved</a></li>
-              <li><a href="partners.html">Partnership</a></li>
-              <li><a href="education-ambassadors.html">Education Ambassadors</a></li>
-              <li><a href="join-our-team.html">Join our Team</a></li>
-              <li><a href="donate.html">Donate</a></li>
-            </ul>
-          </li>
-        </ul>
-      </nav>
-      <div class="header-actions">
-        <div class="lang-wrap">
-          <label for="site-lang-select" class="visually-hidden">Language</label>
-          <select id="site-lang-select" class="lang-select" aria-label="Language">
-            <option value="en">English</option>
-            <option value="mrh">Mara</option>
-          </select>
-        </div>
-        <div class="theme-wrap">
-          <label for="site-theme-select" class="visually-hidden">Theme</label>
-          <select id="site-theme-select" class="theme-select" aria-label="Theme (System, Light, Dark)">
-            <option value="system">System</option>
-            <option value="light">Light</option>
-            <option value="dark">Dark</option>
-          </select>
-        </div>
-        <a class="btn btn-primary" href="donate.html">Donate</a>
-      </div>
-    </div>
-  </header>
+  <!-- Header loaded dynamically -->
+  <div id="header"></div>
 
   <main>
-    <section class="page-section">
+    <div class="page-banner">
+      <nav class="breadcrumb" aria-label="Breadcrumb">
+        <a href="/" data-i18n="nav_home">Home</a>
+        <span class="sep" aria-hidden="true">/</span>
+        <span data-i18n="header_get_involved">Get Involved</span>
+        <span class="sep" aria-hidden="true">/</span>
+        <span class="current" data-i18n="education_ambassadors_title">Education Ambassadors</span>
+      </nav>
       <h1 data-i18n="education_ambassadors_title">Education Ambassadors</h1>
-      <p>Support local teaching and learning through volunteer programs and resource development.</p>
+      <p class="lead">Support local teaching and learning as a volunteer.</p>
+    </div>
+
+    <section class="content-section">
+      <div class="coming-soon">
+        <span class="coming-soon__icon" aria-hidden="true">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M22 10 12 5 2 10l10 5 10-5Z"/><path d="M6 12v5c0 1.5 3 3 6 3s6-1.5 6-3v-5"/></svg>
+        </span>
+        <h2>Page coming soon</h2>
+        <p>We're preparing details on the Education Ambassadors programme. In the meantime, <a href="contact.html">get in touch</a> if you'd like to volunteer.</p>
+      </div>
     </section>
   </main>
 

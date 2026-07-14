@@ -7,6 +7,8 @@
 */
 :root{
 	--max-width:1100px;
+	--content-width:740px; /* readable measure for long-form/body-copy pages */
+
 	/* Brand */
 	--color-primary: #007f3f; /* brand green */
 	--color-accent:  #f08b29; /* brand orange */
@@ -25,9 +27,36 @@
 
 	/* Shadows & elevations */
 	--shadow: 0 6px 18px rgba(8,15,20,0.06);
+	--shadow-sm: 0 1px 3px rgba(8,15,20,0.06), 0 1px 2px rgba(8,15,20,0.04);
+	--shadow-md: 0 6px 18px rgba(8,15,20,0.08);
+	--shadow-lg: 0 20px 44px rgba(8,15,20,0.12);
+
+	/* Spacing scale */
+	--space-1:4px;
+	--space-2:8px;
+	--space-3:12px;
+	--space-4:16px;
+	--space-5:24px;
+	--space-6:32px;
+	--space-7:48px;
+	--space-8:64px;
+
+	/* Type scale */
+	--font-size-xs:0.8125rem;   /* 13px */
+	--font-size-sm:0.9375rem;   /* 15px */
+	--font-size-base:1rem;      /* 16px */
+	--font-size-lg:1.125rem;    /* 18px */
+	--font-size-xl:1.375rem;    /* 22px */
+	--font-size-2xl:1.75rem;    /* 28px */
+	--font-size-3xl:2.375rem;   /* 38px */
+	--line-height-tight:1.15;
+	--line-height-normal:1.5;
+	--line-height-relaxed:1.75;
 
 	/* Radii & motion */
 	--radius:10px;
+	--radius-lg:16px;
+	--radius-pill:999px;
 	--easing:cubic-bezier(.2,.9,.3,1);
 	--transition-fast: 220ms var(--easing);
 	--transition-medium: 360ms var(--easing);
@@ -50,6 +79,9 @@
 	--color-muted: #98a2ad; /* muted secondary */
 	--color-border: rgba(255,255,255,0.06);
 	--shadow: 0 6px 18px rgba(2,6,12,0.6);
+	--shadow-sm: 0 1px 3px rgba(2,6,12,0.5);
+	--shadow-md: 0 6px 18px rgba(2,6,12,0.55);
+	--shadow-lg: 0 20px 44px rgba(2,6,12,0.6);
 
 	/* Use muted brand colors in dark mode to avoid neon appearance */
 	--primary: var(--color-primary-muted);
@@ -61,17 +93,17 @@
 
 *{box-sizing:border-box}
 html,body{height:100%}
-body{font-family:Inter, ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial; margin:0; color:var(--text); background:var(--bg); -webkit-font-smoothing:antialiased}
+body{font-family:Inter, "Noto Sans Myanmar", ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial; margin:0; color:var(--text); background:var(--bg); -webkit-font-smoothing:antialiased}
 img{max-width:100%;height:auto;display:block}
 a{color:var(--primary)}
 
 /* Stronger, consistent section headings and spacing */
-h1,h2,h3{color:var(--text);line-height:1.15;margin:0 0 .6rem}
-h1{font-size:1.6rem;font-weight:800}
-h2{font-size:1.25rem;font-weight:700}
-h3{font-size:1rem;font-weight:700}
-.page-section{padding:36px 0}
-main{padding-top:22px}
+h1,h2,h3{color:var(--text);line-height:var(--line-height-tight);margin:0 0 .6rem;letter-spacing:-0.01em}
+h1{font-size:var(--font-size-2xl);font-weight:800}
+h2{font-size:var(--font-size-xl);font-weight:700}
+h3{font-size:var(--font-size-base);font-weight:700}
+.page-section{padding:var(--space-6) 0}
+main{padding-top:var(--space-5)}
 
 /* Improve readability for updates and stats */
 .updates-hero h1{font-size:1.6rem;margin-bottom:6px}
@@ -123,7 +155,7 @@ nav a:focus,nav a:hover{color:var(--primary);outline:2px solid transparent}
 .lang-wrap{margin-left:12px}
 
 /* Main container */
-main{max-width:var(--max-width);margin:18px auto;padding:0 16px}
+main{max-width:var(--max-width);margin:var(--space-4) auto;padding:0 16px}
 
 /* Page sections used as anchor targets for nav */
 .page-section{padding:28px 0 12px}
@@ -132,13 +164,13 @@ main{max-width:var(--max-width);margin:18px auto;padding:0 16px}
 .page-section{scroll-margin-top:88px}
 @media(max-width:719px){.page-section{scroll-margin-top:64px}}
 
-.hero-media-frame{border-radius:12px;overflow:hidden;box-shadow:0 6px 18px rgba(0,0,0,0.06)}
+.hero-media-frame{border-radius:var(--radius-lg);overflow:hidden;box-shadow:var(--shadow-lg)}
 
 /* Hero */
-.hero{display:grid;gap:18px;padding:18px;background:linear-gradient(180deg,rgba(0,0,0,0.02),transparent);border-radius:var(--radius);align-items:center}
-.hero-inner{display:flex;flex-direction:column;gap:12px}
-.hero h1{font-size:1.5rem;margin:0;line-height:1.05}
-.hero p.lead{color:var(--muted);margin:0;max-width:56ch}
+.hero{display:grid;gap:var(--space-5);padding:var(--space-5);background:linear-gradient(180deg,rgba(0,127,63,0.04),transparent 60%);border-radius:var(--radius-lg);align-items:center}
+.hero-inner{display:flex;flex-direction:column;gap:var(--space-3)}
+.hero h1{font-size:var(--font-size-2xl);margin:0;line-height:var(--line-height-tight);letter-spacing:-0.015em}
+.hero p.lead{color:var(--muted);margin:0;max-width:56ch;font-size:var(--font-size-lg);line-height:var(--line-height-relaxed)}
 .hero-motto{
   margin:8px 0 0;
   padding:10px 14px;
@@ -201,26 +233,126 @@ main{max-width:var(--max-width);margin:18px auto;padding:0 16px}
 .btn-ghost:hover{border-color:var(--primary);color:var(--primary)}
 
 /* Stats */
-.stats{display:flex;gap:12px;margin-top:6px;flex-wrap:wrap}
-.stat{background:var(--surface);padding:12px;border-radius:10px;flex:1;min-width:120px;box-shadow:0 1px 2px rgba(16,24,40,0.03)}
-.stat .num{font-size:1.25rem;font-weight:700;color:var(--primary);display:inline-block}
+.stats{display:flex;gap:var(--space-3);margin-top:6px;flex-wrap:wrap}
+.stat{background:var(--surface);padding:var(--space-4);border-radius:var(--radius);flex:1;min-width:120px;box-shadow:var(--shadow-sm);border:1px solid var(--color-border)}
+.stat .num{font-size:var(--font-size-xl);font-weight:700;color:var(--primary);display:inline-block}
 .num-suffix{font-weight:700;color:var(--primary);margin-left:6px;font-size:0.95rem;vertical-align:middle}
-.stat .label{font-size:0.85rem;color:var(--muted)}
+.stat .label{font-size:var(--font-size-xs);color:var(--muted)}
 
 /* Featured projects */
-.projects{margin-top:18px}
-.projects-grid{display:grid;grid-template-columns:1fr;gap:12px}
-.project{background:var(--surface);padding:12px;border-radius:10px;display:flex;gap:12px;align-items:flex-start}
+.projects{margin-top:var(--space-5)}
+.projects-grid{display:grid;grid-template-columns:1fr;gap:var(--space-4)}
+.project{background:var(--surface);padding:var(--space-4);border-radius:var(--radius);display:flex;gap:var(--space-4);align-items:flex-start;box-shadow:var(--shadow-sm);border:1px solid var(--color-border);transition:transform var(--transition-fast),box-shadow var(--transition-fast)}
+.project:hover,.project:focus-within{transform:translateY(-3px);box-shadow:var(--shadow-md)}
 .project .thumb{width:96px;height:64px;flex-shrink:0;background:transparent;border-radius:8px;display:flex;align-items:center;justify-content:center;color:#aaa}
 .project .thumb img.prog-icon{width:64px;height:64px;object-fit:contain;display:block}
-.project h3{margin:0;font-size:1rem}
-.project p{margin:6px 0 0;color:var(--muted);font-size:0.95rem}
+.project h3{margin:0;font-size:var(--font-size-base)}
+.project p{margin:6px 0 0;color:var(--muted);font-size:var(--font-size-sm)}
 
 /* Trust indicators */
-.trust{display:flex;gap:12px;margin-top:18px;flex-wrap:wrap}
-.trust .badge{background:var(--surface);padding:10px;border-radius:8px;min-width:160px}
-.badge h4{margin:0 0 6px;font-size:0.95rem}
-.badge p{margin:0;color:var(--muted);font-size:0.9rem}
+.trust{display:flex;gap:var(--space-3);margin-top:var(--space-5);flex-wrap:wrap}
+.trust .badge{background:var(--surface);padding:var(--space-4);border-radius:var(--radius);min-width:160px;border:1px solid var(--color-border)}
+.badge h4{margin:0 0 6px;font-size:var(--font-size-sm)}
+.badge p{margin:0;color:var(--muted);font-size:var(--font-size-xs)}
+
+/* ============================================
+   SHARED PRIMITIVES — cards, forms, breadcrumb,
+   interior-page banner, CTA band (used by the
+   content-page template across ~17 pages)
+   ============================================ */
+
+/* Generic card — base for .project/.badge/.stat and any new card content */
+.card{background:var(--surface);border:1px solid var(--color-border);border-radius:var(--radius);padding:var(--space-5);box-shadow:var(--shadow-sm)}
+
+/* Breadcrumb trail under the interior-page banner */
+.breadcrumb{display:flex;align-items:center;flex-wrap:wrap;gap:6px;font-size:var(--font-size-xs);color:var(--muted);margin:0 0 var(--space-3)}
+.breadcrumb a{color:var(--muted);text-decoration:none}
+.breadcrumb a:hover,.breadcrumb a:focus{color:var(--primary);text-decoration:underline}
+.breadcrumb .sep{opacity:0.6}
+.breadcrumb .current{color:var(--text);font-weight:600}
+
+/* Interior-page banner — lighter-weight sibling of the homepage .hero,
+   used at the top of every content page (about/education/donate/etc.) */
+.page-banner{padding:var(--space-6) 0 var(--space-5);border-bottom:1px solid var(--color-border);margin-bottom:var(--space-6)}
+.page-banner__inner{max-width:var(--max-width);margin:0 auto;padding:0 16px}
+.page-banner h1{font-size:var(--font-size-2xl);margin:0 0 var(--space-2)}
+.page-banner p.lead{color:var(--muted);max-width:64ch;margin:0;font-size:var(--font-size-lg)}
+@media(min-width:720px){.page-banner h1{font-size:var(--font-size-3xl)}}
+
+/* Content sections inside the template — readable measure for body copy */
+.content-section{max-width:var(--content-width);margin:0 auto var(--space-6)}
+.content-section h2{font-size:var(--font-size-xl);margin:0 0 var(--space-3)}
+.content-section p{color:var(--text);line-height:var(--line-height-relaxed);margin:0 0 var(--space-4)}
+.content-section p.muted{color:var(--muted)}
+.content-section.content-section--wide{max-width:var(--max-width)}
+
+/* Small icon-point cards — used to break a programme description into scannable points */
+.point-grid{display:grid;grid-template-columns:1fr;gap:var(--space-4);margin:0 0 var(--space-2)}
+@media(min-width:720px){.point-grid{grid-template-columns:repeat(3,1fr)}}
+.point-card{display:flex;gap:var(--space-3);align-items:flex-start;background:var(--surface);border:1px solid var(--color-border);border-radius:var(--radius);padding:var(--space-4);box-shadow:var(--shadow-sm)}
+.point-card__icon{flex:0 0 auto;width:36px;height:36px;border-radius:10px;background:rgba(0,127,63,0.1);color:var(--primary);display:flex;align-items:center;justify-content:center}
+[data-theme="dark"] .point-card__icon{background:rgba(94,169,122,0.16)}
+.point-card__icon svg{width:18px;height:18px}
+.point-card p{margin:0;color:var(--text);font-size:var(--font-size-sm);line-height:var(--line-height-normal)}
+a.point-card{text-decoration:none;transition:transform var(--transition-fast),box-shadow var(--transition-fast),border-color var(--transition-fast)}
+a.point-card:hover,a.point-card:focus-visible{transform:translateY(-3px);box-shadow:var(--shadow-md);border-color:var(--primary)}
+
+/* Hub/index link cards — used on overview pages (get-involved.html,
+   projects.html) to point to their dedicated sub-pages instead of
+   duplicating content inline */
+.link-card-grid{display:grid;grid-template-columns:1fr;gap:var(--space-4);margin:0 0 var(--space-2)}
+@media(min-width:600px){.link-card-grid{grid-template-columns:repeat(2,1fr)}}
+@media(min-width:960px){.link-card-grid{grid-template-columns:repeat(3,1fr)}}
+.link-card{display:flex;gap:var(--space-3);align-items:flex-start;background:var(--surface);border:1px solid var(--color-border);border-radius:var(--radius);padding:var(--space-4);box-shadow:var(--shadow-sm);text-decoration:none;color:inherit;transition:transform var(--transition-fast),box-shadow var(--transition-fast),border-color var(--transition-fast)}
+.link-card:hover,.link-card:focus-visible{transform:translateY(-3px);box-shadow:var(--shadow-md);border-color:var(--primary)}
+.link-card__icon{flex:0 0 auto;width:40px;height:40px;border-radius:10px;background:rgba(0,127,63,0.1);color:var(--primary);display:flex;align-items:center;justify-content:center}
+[data-theme="dark"] .link-card__icon{background:rgba(94,169,122,0.16)}
+.link-card__icon svg{width:20px;height:20px}
+.link-card__body{flex:1;min-width:0}
+.link-card__body h3{margin:0 0 4px;font-size:var(--font-size-base);color:var(--text)}
+.link-card__body p{margin:0;color:var(--muted);font-size:var(--font-size-sm)}
+.link-card__arrow{flex:0 0 auto;color:var(--muted);transition:transform var(--transition-fast),color var(--transition-fast)}
+.link-card:hover .link-card__arrow,.link-card:focus-visible .link-card__arrow{transform:translateX(3px);color:var(--primary)}
+
+/* Contact detail card (contact.html) */
+.contact-grid{display:grid;grid-template-columns:1fr;gap:var(--space-4);margin:0 0 var(--space-6)}
+@media(min-width:640px){.contact-grid{grid-template-columns:repeat(3,1fr)}}
+.contact-card{background:var(--surface);border:1px solid var(--color-border);border-radius:var(--radius);padding:var(--space-5);box-shadow:var(--shadow-sm);text-align:center}
+.contact-card__icon{width:40px;height:40px;margin:0 auto var(--space-3);border-radius:12px;background:rgba(0,127,63,0.1);color:var(--primary);display:flex;align-items:center;justify-content:center}
+[data-theme="dark"] .contact-card__icon{background:rgba(94,169,122,0.16)}
+.contact-card__icon svg{width:20px;height:20px}
+.contact-card h3{margin:0 0 6px;font-size:var(--font-size-sm);text-transform:uppercase;letter-spacing:0.04em;color:var(--muted)}
+.contact-card a,.contact-card p{margin:0;color:var(--text);font-weight:600;text-decoration:none;font-size:var(--font-size-base)}
+.contact-card a:hover{color:var(--primary);text-decoration:underline}
+
+/* "Coming soon" honest placeholder panel (Group B pages) */
+.coming-soon{max-width:var(--content-width);margin:0 auto var(--space-6);text-align:center;padding:var(--space-7) var(--space-5);border:1px dashed var(--color-border);border-radius:var(--radius-lg);background:var(--surface)}
+.coming-soon__icon{width:44px;height:44px;margin:0 auto var(--space-3);color:var(--primary);opacity:0.85;display:flex;align-items:center;justify-content:center}
+.coming-soon__icon svg{width:100%;height:100%}
+.coming-soon h2{margin:0 0 var(--space-2);font-size:var(--font-size-lg)}
+.coming-soon p{color:var(--muted);margin:0 auto;max-width:52ch}
+
+/* CTA band — closing call-to-action on every content page */
+.cta-band{background:linear-gradient(135deg,var(--color-primary) 0%,#00693a 100%);color:#fff;border-radius:var(--radius-lg);padding:var(--space-6) var(--space-5);margin:0 0 var(--space-6);display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:var(--space-4);box-shadow:var(--shadow-md)}
+.cta-band__text h3{color:#fff;margin:0 0 4px;font-size:var(--font-size-lg)}
+.cta-band__text p{color:rgba(255,255,255,0.85);margin:0;font-size:var(--font-size-sm)}
+.cta-band .btn-ghost{border-color:rgba(255,255,255,0.5);color:#fff}
+.cta-band .btn-ghost:hover{border-color:#fff;color:#fff;background:rgba(255,255,255,0.12)}
+.cta-band .btn-primary{background:#fff;color:var(--color-primary);box-shadow:none}
+.cta-band .btn-primary:hover{background:#fff;filter:brightness(0.97);transform:translateY(-2px)}
+[data-theme="dark"] .cta-band{background:linear-gradient(135deg,var(--color-primary-muted) 0%,#1f4f38 100%)}
+[data-theme="dark"] .cta-band .btn-primary{color:var(--color-primary-muted)}
+
+/* Form primitives — contact form, future forms */
+.form-field{display:flex;flex-direction:column;gap:6px;margin-bottom:var(--space-4)}
+.form-label{font-size:var(--font-size-sm);font-weight:600;color:var(--text)}
+.form-input,.form-textarea{font:inherit;font-size:var(--font-size-base);padding:10px 14px;border-radius:8px;border:1px solid var(--color-border);background:var(--surface);color:var(--text)}
+.form-input:focus,.form-textarea:focus{outline:none;border-color:var(--primary);box-shadow:0 0 0 3px rgba(0,127,63,0.14)}
+.form-textarea{resize:vertical;min-height:120px}
+
+@media(max-width:719px){
+  .cta-band{flex-direction:column;align-items:flex-start;text-align:left}
+}
 
 /* Footer */
 footer{padding:18px;background:transparent;text-align:center;color:var(--muted);margin-top:26px}
@@ -236,11 +368,11 @@ footer{padding:18px;background:transparent;text-align:center;color:var(--muted);
 
 /* Responsive */
 @media(min-width:720px){
-	.hero{grid-template-columns:1fr 360px}
-	.hero h1{font-size:2rem}
+	.hero{grid-template-columns:1fr 360px;padding:var(--space-6)}
+	.hero h1{font-size:var(--font-size-3xl)}
 	/* Make the stats row span the full hero width (including the right media column) and distribute items evenly across it. */
 	.hero .stats{
-		width: calc(100% + 360px + 18px); /* left column + right column + grid gap */
+		width: calc(100% + 360px + var(--space-5)); /* left column + right column + grid gap */
 		display:flex;
 		justify-content:space-between;
 		gap:12px; /* preserve original item spacing */

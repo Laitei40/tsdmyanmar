@@ -3,34 +3,26 @@
    Clean reading experience · minimal · theme-aware
    ============================================================ */
 
-/* ── Tokens ── */
+/* ── Tokens — resolve to the site's global brand tokens (css/style.css)
+   so the article page matches the rest of the site instead of its own
+   isolated blue palette. --ud-* aliases are kept so the rest of this
+   file doesn't need to change. ── */
 :root {
-  --ud-bg:      #fafafa;
-  --ud-surface: #ffffff;
-  --ud-ink:     #111111;
-  --ud-dim:     #555555;
-  --ud-muted:   #999999;
-  --ud-accent:  #0066ff;
-  --ud-accent2: #0052cc;
-  --ud-line:    #e5e5e5;
-  --ud-line2:   #d0d0d0;
-  --ud-radius:  10px;
-  --ud-ease:    .18s ease;
-  --ud-sans:    -apple-system, BlinkMacSystemFont, 'Segoe UI', Inter, Roboto, sans-serif;
+  --ud-bg:      var(--color-bg);
+  --ud-surface: var(--color-surface);
+  --ud-ink:     var(--color-text);
+  --ud-dim:     var(--color-muted);
+  --ud-muted:   var(--color-muted);
+  --ud-accent:  var(--color-primary);
+  --ud-accent2: var(--color-accent);
+  --ud-line:    var(--color-border);
+  --ud-line2:   var(--color-border);
+  --ud-radius:  var(--radius);
+  --ud-ease:    var(--transition-fast);
+  --ud-sans:    Inter, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
   --ud-serif:   Georgia, 'Noto Serif', 'Times New Roman', serif;
   --ud-w:       720px;
   --ud-w-wide:  960px;
-}
-[data-theme="dark"] {
-  --ud-bg:      #0a0a0a;
-  --ud-surface: #161616;
-  --ud-ink:     #eeeeee;
-  --ud-dim:     #aaaaaa;
-  --ud-muted:   #777777;
-  --ud-accent:  #4d94ff;
-  --ud-accent2: #3d7ee6;
-  --ud-line:    #222222;
-  --ud-line2:   #333333;
 }
 
 /* ── Shell ── */
@@ -376,13 +368,13 @@
 .ud-body a {
   color: var(--ud-accent);
   text-decoration: underline;
-  text-decoration-color: rgba(0,102,255,.3);
+  text-decoration-color: rgba(0,127,63,.35);
   text-underline-offset: 3px;
   transition: color var(--ud-ease), text-decoration-color var(--ud-ease);
 }
 .ud-body a:hover {
   color: var(--ud-accent2);
-  text-decoration-color: rgba(0,102,255,.6);
+  text-decoration-color: rgba(240,139,41,.6);
 }
 
 /* ══════════════════════════════════════

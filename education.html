@@ -27,9 +27,53 @@
   <div id="header"></div>
 
   <main>
-    <section class="page-section">
+    <div class="page-banner">
+      <nav class="breadcrumb" aria-label="Breadcrumb">
+        <a href="/" data-i18n="nav_home">Home</a>
+        <span class="sep" aria-hidden="true">/</span>
+        <span data-i18n="header_our_work">Our Work</span>
+        <span class="sep" aria-hidden="true">/</span>
+        <span class="current" data-i18n="education_title">Education</span>
+      </nav>
       <h1 data-i18n="education_title">Education</h1>
-      <p>Programs to improve access to quality education and learning resources for children and adults.</p>
+      <p class="lead" data-i18n="programme_education_body">Supporting life-long and life-sustaining education from early years through adult learning, including school support and community education activities.</p>
+    </div>
+
+    <section class="content-section content-section--wide">
+      <h2>Our approach</h2>
+      <div class="point-grid">
+        <div class="point-card reveal">
+          <span class="point-card__icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 10 12 5 2 10l10 5 10-5Z"/><path d="M6 12v5c0 1.5 3 3 6 3s6-1.5 6-3v-5"/></svg>
+          </span>
+          <p>Supporting children's access to quality schooling.</p>
+        </div>
+        <div class="point-card reveal">
+          <span class="point-card__icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+          </span>
+          <p>Community-based learning activities for youth and adults.</p>
+        </div>
+        <div class="point-card reveal">
+          <span class="point-card__icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20V10M18 20V4M6 20v-4"/></svg>
+          </span>
+          <p>Life-long, life-sustaining education across generations.</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="content-section content-section--wide">
+      <div class="cta-band">
+        <div class="cta-band__text">
+          <h3>Help us reach more students</h3>
+          <p>Your support funds school materials, teacher training, and community learning spaces.</p>
+        </div>
+        <div class="hero-ctas">
+          <a class="btn btn-primary" href="donate.html" data-i18n="nav_donate">Donate</a>
+          <a class="btn btn-ghost" href="get-involved.html" data-i18n="nav_get_involved">Get Involved</a>
+        </div>
+      </div>
     </section>
   </main>
 

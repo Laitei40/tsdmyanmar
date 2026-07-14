@@ -27,9 +27,26 @@
   <div id="header"></div>
 
   <main>
-    <section class="page-section">
+    <div class="page-banner">
+      <nav class="breadcrumb" aria-label="Breadcrumb">
+        <a href="/" data-i18n="nav_home">Home</a>
+        <span class="sep" aria-hidden="true">/</span>
+        <span data-i18n="header_our_work">Our Work</span>
+        <span class="sep" aria-hidden="true">/</span>
+        <span class="current" data-i18n="where_we_work_title">Where We Work</span>
+      </nav>
       <h1 data-i18n="where_we_work_title">Where We Work</h1>
-      <p>We partner with communities across Chin State and nearby regions to implement context-driven programs.</p>
+      <p class="lead">The regions and communities we partner with.</p>
+    </div>
+
+    <section class="content-section">
+      <div class="coming-soon">
+        <span class="coming-soon__icon" aria-hidden="true">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0Z"/><circle cx="12" cy="10" r="3"/></svg>
+        </span>
+        <h2>Page coming soon</h2>
+        <p>We're preparing a map and overview of the communities we work with. In the meantime, <a href="contact.html">get in touch</a> if you'd like to know more.</p>
+      </div>
     </section>
   </main>
 
