@@ -11,6 +11,9 @@ admin/dist/
 # Local D1 database state (if copied outside .wrangler)
 v3/
 
+# D1 export dumps (point-in-time backups, not source — keep locally, don't version)
+scripts/admin/backup-*.sql
+
 # OS files
 .DS_Store
 Thumbs.db
