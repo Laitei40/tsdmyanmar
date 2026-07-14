@@ -5,9 +5,9 @@
 -- ADDITIVE ONLY — safe to run once against production. Do NOT add this to
 -- schema.sql (that file DROPs and recreates the news tables from scratch).
 --
--- Local:  wrangler d1 execute tsd_updates --local  --persist-to .wrangler/state --file=admin/scripts/migrations/0001_admin_auth.sql
--- Remote: wrangler d1 execute tsd_updates --remote --file=admin/scripts/migrations/0001_admin_auth.sql
--- (run from the admin/ directory, where wrangler.toml lives)
+-- Local:  wrangler d1 execute tsd_updates --local  --persist-to .wrangler/state --file=scripts/admin/migrations/0001_admin_auth.sql
+-- Remote: wrangler d1 execute tsd_updates --remote --file=scripts/admin/migrations/0001_admin_auth.sql
+-- (run from the repo root, where wrangler.toml lives)
 
 CREATE TABLE admin_users (
   id INTEGER PRIMARY KEY AUTOINCREMENT,

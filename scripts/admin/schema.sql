@@ -1,5 +1,5 @@
 -- TSD Myanmar News Database Schema
--- Run: wrangler d1 execute tsd_updates --local --persist-to .wrangler/state --file=admin/scripts/schema.sql
+-- Run: wrangler d1 execute tsd_updates --local --persist-to .wrangler/state --file=scripts/admin/schema.sql
 
 DROP TABLE IF EXISTS news_changelog;
 DROP TABLE IF EXISTS news;
