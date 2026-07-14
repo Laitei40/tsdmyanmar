@@ -4,8 +4,12 @@
 // yourself, and you can't take the last remaining enabled Admin below one
 // (via role change, disable, or delete). Password changes go through
 // /api/auth/change-password (requires current password), not this route.
+// Password resets for OTHER users go through POST /api/auth/users/reset-password
+// (id in the body) — kept as a flat sibling file rather than nesting anything
+// under this dynamic segment, since Cloudflare Pages Functions had trouble
+// building a route table with both users/[id].js and users/[id]/ present.
 
-import { requireAdmin, destroyAllSessionsForUser, json } from '../../../../../_lib/auth.js';
+import { requireAdmin, destroyAllSessionsForUser, json } from '../../../../_lib/auth.js';
 
 async function remainingAdminCount(db, excludeId) {
   const row = await db.prepare(

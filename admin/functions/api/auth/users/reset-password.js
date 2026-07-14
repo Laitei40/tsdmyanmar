@@ -1,17 +1,21 @@
-// POST /api/auth/users/:id/reset-password — admin only.
+// POST /api/auth/users/reset-password — admin only. Body: { id }.
 // Generates a new temp password, forces a change on next login, clears any
 // lockout, and destroys that user's existing sessions.
+//
+// Flat file (id in the body, not the URL) rather than nesting under
+// users/[id]/ — see the note in users/[id].js for why.
 
-import { requireAdmin, hashPassword, generateTempPassword, destroyAllSessionsForUser, json } from '../../../../../_lib/auth.js';
+import { requireAdmin, hashPassword, generateTempPassword, destroyAllSessionsForUser, json } from '../../../../_lib/auth.js';
 
-export async function onRequestPost({ request, env, params }) {
+export async function onRequestPost({ request, env }) {
   const db = env.UPDATES_DB;
   if (!db) return json(500, { error: 'D1 binding missing' });
 
   const { response } = await requireAdmin(request, env);
   if (response) return response;
 
-  const id = Number(params.id);
+  const body = await request.json().catch(() => null);
+  const id = Number(body?.id);
   if (!id) return json(400, { error: 'Invalid id' });
 
   const existing = await db.prepare(`SELECT id FROM admin_users WHERE id = ?`).bind(id).first();

@@ -74,7 +74,10 @@ async function apiDelete(id) {
 }
 
 async function apiResetPassword(id) {
-  const res = await fetch(`${API_BASE}/${id}/reset-password`, { method: 'POST', credentials: 'same-origin' });
+  const res = await fetch(`${API_BASE}/reset-password`, {
+    method: 'POST', credentials: 'same-origin',
+    headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ id: Number(id) }),
+  });
   const data = await res.json().catch(() => ({}));
   if (!res.ok) throw new Error(data.error || `Reset failed: ${res.status}`);
   return data;
