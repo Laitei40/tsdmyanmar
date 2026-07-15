@@ -12,7 +12,7 @@
  *  • ACTIVATE — purge old cache versions automatically.
  */
 
-const CACHE_VERSION = 'tsd-v1';
+const CACHE_VERSION = 'tsd-v2';
 const STATIC_CACHE = `static-${CACHE_VERSION}`;
 const PAGE_CACHE   = `pages-${CACHE_VERSION}`;
 const IMG_CACHE    = `images-${CACHE_VERSION}`;
@@ -40,6 +40,7 @@ const APP_SHELL = [
   '/updates.html',
   '/updates-archive.html',
   '/update.html',
+  '/mara.html',
   '/what-we-do.html',
   '/where-we-work.html',
   '/who-we-are.html',
@@ -65,6 +66,7 @@ const APP_SHELL = [
   '/js/pages/updates.js',
   '/js/pages/update-detail.js',
   '/js/pages/updates-archive.js',
+  '/js/pages/mara.js',
 
   // Layout components
   '/components/header.html',

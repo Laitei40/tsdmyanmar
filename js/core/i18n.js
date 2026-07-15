@@ -123,13 +123,14 @@ function applySiteTranslations(){
     document.querySelectorAll('[data-i18n]').forEach(el => {
       const key = el.getAttribute('data-i18n');
       if (!key) return;
-      let text = '';
       const val = (window.I18N && window.I18N[key]);
+      let text;
       if (typeof val === 'string') text = val;
       else if (val && typeof val === 'object') text = val[lang] || val.en || '';
-      else text = '';
-
-      if (text !== undefined){
+      // Missing key (e.g. a stale cached translations file predating this
+      // key) — leave the element's existing text (the HTML's own fallback)
+      // alone instead of blanking it out.
+      if (text){
         // If there is a child .brand-text, only update that node
         const child = el.querySelector && el.querySelector('.brand-text');
         if (child) child.textContent = text; else el.textContent = text;
