@@ -140,6 +140,8 @@
         }
         let items = Array.isArray(data) ? data : (data.items || []);
         items.forEach(normalizeItemLangKeys);
+        // Mara topics live on their own page, not in the News archive.
+        items = items.filter(it => buildCategory(it).toLowerCase().indexOf('mara_') !== 0);
         allItems = items;
         populateYears(items);
         render();

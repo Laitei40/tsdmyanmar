@@ -297,6 +297,11 @@ main{max-width:var(--max-width);margin:var(--space-4) auto;padding:0 16px}
 a.point-card{text-decoration:none;transition:transform var(--transition-fast),box-shadow var(--transition-fast),border-color var(--transition-fast)}
 a.point-card:hover,a.point-card:focus-visible{transform:translateY(-3px);box-shadow:var(--shadow-md);border-color:var(--primary)}
 
+/* Back link above a filtered listing (e.g. mara.html category view) */
+.mara-back{display:inline-flex;align-items:center;gap:4px;color:var(--muted);text-decoration:none;font-size:var(--font-size-sm);font-weight:600;margin-bottom:var(--space-3)}
+.mara-back:hover,.mara-back:focus-visible{color:var(--primary)}
+#mara-listing-title{margin:0 0 var(--space-4)}
+
 /* Hub/index link cards — used on overview pages (get-involved.html,
    projects.html) to point to their dedicated sub-pages instead of
    duplicating content inline */

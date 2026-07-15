@@ -39,6 +39,7 @@
 
   "nav_updates": "အသစ်များ",
   "nav_updates_reports": "အသစ်များနှင့် အစီရင်ခံစာများ",
+  "nav_mara": "မာရာ",
   "nav_how_to_get_involved": "ပါဝင်နိုင်ပုံ",
   "nav_partnership": "မိတ်ဖက်အဖွဲ့အစည်း",
   "nav_education_ambassadors": "ပညာရေးသံတမန်များ",
@@ -61,6 +62,20 @@
   "latest_badge": "နောက်ဆုံး",
   "read_more": "ဖတ်ရှုရန်",
   "no_updates_body": "ကျွန်ုပ်တို့၏အစီအစဉ်များနှင့် ငွေကြေးအစီရင်ခံစာများအပေါ် နောက်ဆုံးရ အပ်ဒိတ်များကို ထုတ်ပြန်ပါသည်။ မကြာမီပြန်လည်စစ်ဆေးပါ။",
+
+  "mara_title": "မာရာ",
+  "mara_lead": "မာရာလူမျိုးများ၏ သမိုင်း၊ ပထဝီဝင်၊ ယဉ်ကျေးမှုနှင့် လူမှုဘဝများကို အမျိုးအစားအလိုက် လေ့လာနိုင်ပါသည်။",
+  "mara_back_to_categories": "← အမျိုးအစားအားလုံး",
+  "mara_cat_history": "သမိုင်း",
+  "mara_cat_geography": "ပထဝီဝင်",
+  "mara_cat_villages": "ကျေးရွာများ",
+  "mara_cat_population": "လူဦးရေ",
+  "mara_cat_education": "ပညာရေး",
+  "mara_cat_language": "ဘာသာစကား",
+  "mara_cat_culture": "ယဉ်ကျေးမှု",
+  "mara_cat_organizations": "အဖွဲ့အစည်းများ",
+  "mara_cat_statistics": "စာရင်းအင်း",
+  "mara_cat_global": "ကမ္ဘာတစ်ဝှမ်း မာရာ",
 
   "home_hero": "Together for Sustainable Development — supporting resilient communities in Chin State",
   "who_we_are_title": "Who We Are",

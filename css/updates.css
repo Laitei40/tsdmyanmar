@@ -165,52 +165,6 @@
   outline-offset: 2px;
 }
 
-/* ── "Mara" tab group — trigger + dropdown of topic sub-categories (desktop) ── */
-.up-tabs-row .up-tab-group {
-  position: relative;
-}
-.up-tab-group__trigger {
-  display: inline-flex;
-  align-items: center;
-  gap: 4px;
-}
-.up-tab-group__chevron {
-  transition: transform .18s ease;
-}
-.up-tab-group.open .up-tab-group__chevron {
-  transform: rotate(180deg);
-}
-.up-tabs-row .up-tab-group__menu {
-  position: absolute;
-  top: calc(100% + 8px);
-  left: 50%;
-  transform: translateX(-50%) translateY(-6px);
-  min-width: 340px;
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: 2px;
-  padding: 8px;
-  border-radius: 12px;
-  background: var(--up-surface);
-  border: 1px solid var(--up-line);
-  box-shadow: 0 18px 44px rgba(2,6,12,.22);
-  opacity: 0;
-  visibility: hidden;
-  pointer-events: none;
-  transition: opacity .18s ease, transform .18s ease, visibility .18s ease;
-  z-index: 120;
-}
-.up-tabs-row .up-tab-group.open .up-tab-group__menu {
-  opacity: 1;
-  visibility: visible;
-  pointer-events: auto;
-  transform: translateX(-50%) translateY(0);
-}
-.up-tab-group__menu .up-tab {
-  text-align: left;
-  width: 100%;
-}
-
 /* ── Right: Controls ── */
 .up-nav__right {
   display: flex;
@@ -307,26 +261,6 @@
   margin-bottom: .85rem;
 }
 
-/* ── "Mara" tab group in the mobile drawer — accordion, not a popover ── */
-.up-drawer .up-tab-group {
-  width: 100%;
-  display: flex;
-  flex-direction: column;
-  gap: 2px;
-}
-.up-drawer .up-tab-group__trigger {
-  width: 100%;
-  justify-content: space-between;
-}
-.up-drawer .up-tab-group__menu {
-  display: none;
-  flex-wrap: wrap;
-  gap: 4px;
-  padding: 4px 0 4px 10px;
-}
-.up-drawer .up-tab-group.open .up-tab-group__menu {
-  display: flex;
-}
 .up-drawer__controls {
   display: flex;
   flex-direction: column;
@@ -684,11 +618,13 @@
 .up-card__tag[data-cat="report"]       { background: #f3e8ff; color: #6d28d9; }
 .up-card__tag[data-cat="announcement"] { background: #fff3cd; color: #b45309; }
 .up-card__tag[data-cat="story"]        { background: #d1fae5; color: #047857; }
+.up-card__tag[data-cat^="mara_"]       { background: #fde8e8; color: #b91c1c; }
 .up-card__tag:not([data-cat])          { background: #e8f0fe; color: #1a56db; }
 [data-theme="dark"] .up-card__tag[data-cat="news"]         { background: rgba(29,86,219,.15); color: #93b4f4; }
 [data-theme="dark"] .up-card__tag[data-cat="report"]       { background: rgba(109,40,217,.15); color: #c4b5fd; }
 [data-theme="dark"] .up-card__tag[data-cat="announcement"] { background: rgba(180,83,9,.15); color: #fcd34d; }
 [data-theme="dark"] .up-card__tag[data-cat="story"]        { background: rgba(4,120,87,.15); color: #6ee7b7; }
+[data-theme="dark"] .up-card__tag[data-cat^="mara_"]       { background: rgba(185,28,28,.15); color: #f87171; }
 [data-theme="dark"] .up-card__tag:not([data-cat])          { background: rgba(29,86,219,.15); color: #93b4f4; }
 
 .up-card__title {
@@ -767,6 +703,9 @@
   opacity: .3;
   cursor: default;
   pointer-events: none;
+}
+.up-more__btn[hidden] {
+  display: none;
 }
 .up-more__btn:focus-visible {
   outline: 2px solid var(--up-accent);

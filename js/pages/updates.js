@@ -109,11 +109,7 @@
   }
 
   var CAT_LABELS = {
-    news: 'News', report: 'Report', announcement: 'Announcement', story: 'Story',
-    mara_history: 'History', mara_geography: 'Geography', mara_villages: 'Villages',
-    mara_population: 'Population', mara_education: 'Education', mara_language: 'Language',
-    mara_culture: 'Culture', mara_organizations: 'Organizations', mara_statistics: 'Statistics',
-    mara_global: 'Global Mara'
+    news: 'News', report: 'Report', announcement: 'Announcement', story: 'Story'
   };
 
   function estimateReadTime(item, lang) {
@@ -310,6 +306,8 @@
 
       // ── Filters ──
       items = items.filter(function (it) { return hasLangContent(it, lang); });
+      // Mara topics (history, geography, culture, etc.) live on their own page, not in News & Update.
+      items = items.filter(function (it) { return buildCategory(it).toLowerCase().indexOf('mara_') !== 0; });
       if (yearFilter) items = items.filter(function (it) { return (new Date(it.date)).getFullYear() === Number(yearFilter); });
       if (categoryFilter) {
         items = items.filter(function (it) {
@@ -365,6 +363,7 @@
       if (filter && reset) {
         var allItems = Array.isArray(data) ? data : (data.items || []);
         allItems.forEach(normalizeItemLangKeys);
+        allItems = allItems.filter(function (it) { return buildCategory(it).toLowerCase().indexOf('mara_') !== 0; });
         var years = Array.from(new Set(allItems.map(function (i) { return new Date(i.date).getFullYear(); }))).filter(function(y) { return !isNaN(y); }).sort(function (a, b) { return b - a; });
         filter.innerHTML = '';
         filter.appendChild(el('option', { value: '' }, 'All years'));

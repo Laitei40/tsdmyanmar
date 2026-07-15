@@ -1,0 +1,112 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Mara — TSD Myanmar</title>
+  <link rel="stylesheet" href="css/main.css">
+  <link rel="manifest" href="/manifest.json">
+  <link id="site-favicon" rel="icon" href="/assets/images/logo/logo_en.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="css/updates.css">
+  <script>
+    (function(){
+      try{
+        const k = 'tsd_theme';
+        const stored = localStorage.getItem(k) || 'system';
+        if (stored === 'system'){
+          const dark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+          document.documentElement.setAttribute('data-theme', dark? 'dark':'light');
+        } else {
+          document.documentElement.setAttribute('data-theme', stored);
+        }
+      }catch(e){}
+    })();
+  </script>
+</head>
+<body>
+  <!-- Header loaded dynamically -->
+  <div id="header"></div>
+
+  <main>
+    <div class="page-banner">
+      <nav class="breadcrumb" aria-label="Breadcrumb">
+        <a href="/" data-i18n="nav_home">Home</a>
+        <span class="sep" aria-hidden="true">/</span>
+        <span data-i18n="header_news">News</span>
+        <span class="sep" aria-hidden="true">/</span>
+        <span class="current" data-i18n="mara_title">Mara</span>
+      </nav>
+      <h1 data-i18n="mara_title">Mara</h1>
+      <p class="lead" data-i18n="mara_lead">Explore Mara history, geography, culture, and community life, organized by category.</p>
+    </div>
+
+    <!-- Category directory -->
+    <section class="content-section content-section--wide" id="mara-categories">
+      <div class="point-grid" id="mara-category-grid">
+        <a class="point-card" href="mara.html?cat=mara_history" data-cat="mara_history">
+          <span class="point-card__icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><polyline points="12 7 12 12 15 15"/></svg></span>
+          <p><strong data-i18n="mara_cat_history">History</strong></p>
+        </a>
+        <a class="point-card" href="mara.html?cat=mara_geography" data-cat="mara_geography">
+          <span class="point-card__icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 20l6-10 4 6 3-4 5 8H3Z"/></svg></span>
+          <p><strong data-i18n="mara_cat_geography">Geography</strong></p>
+        </a>
+        <a class="point-card" href="mara.html?cat=mara_villages" data-cat="mara_villages">
+          <span class="point-card__icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg></span>
+          <p><strong data-i18n="mara_cat_villages">Villages</strong></p>
+        </a>
+        <a class="point-card" href="mara.html?cat=mara_population" data-cat="mara_population">
+          <span class="point-card__icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg></span>
+          <p><strong data-i18n="mara_cat_population">Population</strong></p>
+        </a>
+        <a class="point-card" href="mara.html?cat=mara_education" data-cat="mara_education">
+          <span class="point-card__icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 10 12 5 2 10l10 5 10-5Z"/><path d="M6 12v5c0 1.5 3 3 6 3s6-1.5 6-3v-5"/></svg></span>
+          <p><strong data-i18n="mara_cat_education">Education</strong></p>
+        </a>
+        <a class="point-card" href="mara.html?cat=mara_language" data-cat="mara_language">
+          <span class="point-card__icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/></svg></span>
+          <p><strong data-i18n="mara_cat_language">Language</strong></p>
+        </a>
+        <a class="point-card" href="mara.html?cat=mara_culture" data-cat="mara_culture">
+          <span class="point-card__icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 21 8 3 8 12 2"/><line x1="6" y1="18" x2="6" y2="11"/><line x1="10" y1="18" x2="10" y2="11"/><line x1="14" y1="18" x2="14" y2="11"/><line x1="18" y1="18" x2="18" y2="11"/><line x1="3" y1="22" x2="21" y2="22"/></svg></span>
+          <p><strong data-i18n="mara_cat_culture">Culture</strong></p>
+        </a>
+        <a class="point-card" href="mara.html?cat=mara_organizations" data-cat="mara_organizations">
+          <span class="point-card__icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="7" width="20" height="14" rx="2" ry="2"/><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/></svg></span>
+          <p><strong data-i18n="mara_cat_organizations">Organizations</strong></p>
+        </a>
+        <a class="point-card" href="mara.html?cat=mara_statistics" data-cat="mara_statistics">
+          <span class="point-card__icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="20" x2="12" y2="10"/><line x1="18" y1="20" x2="18" y2="4"/><line x1="6" y1="20" x2="6" y2="16"/></svg></span>
+          <p><strong data-i18n="mara_cat_statistics">Statistics</strong></p>
+        </a>
+        <a class="point-card" href="mara.html?cat=mara_global" data-cat="mara_global">
+          <span class="point-card__icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg></span>
+          <p><strong data-i18n="mara_cat_global">Global Mara</strong></p>
+        </a>
+      </div>
+    </section>
+
+    <!-- Category listing (shown when ?cat= is present) -->
+    <section class="content-section content-section--wide" id="mara-listing" hidden>
+      <a href="mara.html" class="mara-back" data-i18n="mara_back_to_categories">&larr; All categories</a>
+      <h2 id="mara-listing-title"></h2>
+      <div class="up-controls__status" aria-live="polite"><span id="mara-loading"></span></div>
+      <div id="mara-listing-grid" class="up-grid" role="list" aria-label="Mara category articles"></div>
+      <div class="up-more">
+        <button id="mara-load-more" class="up-more__btn" data-i18n="load_more" aria-label="Load more articles" hidden>Load more</button>
+      </div>
+    </section>
+  </main>
+
+  <div id="footer"></div>
+
+  <script src="js/core/theme.js"></script>
+  <script src="js/core/icon-theme.js"></script>
+  <script src="js/core/header.js"></script>
+  <script src="js/layout.js"></script>
+  <script src="js/core/i18n.js"></script>
+  <script src="js/core/news.js"></script>
+  <script src="js/pages/mara.js"></script>
+  <script src="/js/sw-register.js"></script>
+</body>
+</html>
