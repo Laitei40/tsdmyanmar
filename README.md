@@ -84,7 +84,7 @@ For more information about Together for Sustainable Development (TSD Myanmar) an
 **News localization (build-time)**
 
 - **Source news content:** `news-content/source/en/*.json` (one file per article)
-- **Translated files (produced by Crowdin):** `news-content/translations/{lang}/*.json`
+- **Translated files (produced by Transifex):** `news-content/translations/{lang}/*.json`
 - **Build script:** run `npm run build` to generate localized static pages under the `news/` folder.
 
 Local preview (Cloudflare Pages emulator):
@@ -103,4 +103,4 @@ Cloudflare Pages (recommended):
 - Configure Pages to publish from the repo root (static assets live in this directory; `news/` must be included).
 - Add your `account_id` or other settings in `wrangler.toml` when deploying.
 
-Crowdin configuration is updated to treat `news-content/source/en/*.json` as sources and to export translations into `news-content/translations/%locale%/` so Crowdin can commit translations back to GitHub automatically.
+Transifex configuration is updated to treat `news-content/source/en/*.json` as sources and to export translations into `news-content/translations/%locale%/` so Transifex can commit translations back to GitHub automatically.
