@@ -1,43 +1,29 @@
-# Transifex configuration for tsdmyanmar
-# - Set the environment variable TX_TOKEN with your Transifex API token before using the Transifex CLI (tx)
-# - This file syncs the source English JSON to language folders (e.g. i18n/mrh/common.json, i18n/my/common.json)
+# Transifex GitHub Sync configuration for tsdmyanmar
+# Docs: https://help.transifex.com/en/articles/6265125-github-installation-and-configuration
 #
-# NOTE: the official Transifex CLI (`tx`) reads its config from `.tx/config` (INI format), not a
-# root-level `transifex.yml`. This file is kept as the project's declarative reference for how
-# resources map to the repo, matching the shape of the old crowdin.yml it replaces. If/when the
-# `tx` CLI is wired up, mirror these mappings into `.tx/config`.
+# This is the schema Transifex's GitHub Sync integration actually reads (Settings → Integrations →
+# GitHub → "Add a path to your YAML configuration file" → transifex.yml), which is a `git:` / `filters:`
+# structure — different from the legacy `tx` CLI's `.tx/config` (INI) format.
 
-version: "1"
+git:
+  filters:
+    # News articles: one JSON file per article under news-content/source/en/,
+    # translated files land under news-content/translations/<lang>/ with the same filename.
+    - filter_type: dir
+      file_format: KEYVALUEJSON
+      source_language: en
+      source_file_dir: news-content/source/en
+      source_file_extension: json
+      translation_files_expression: 'news-content/translations/<lang>'
 
-project_slug: tsdmyanmar
-api_token: $TX_TOKEN
+    # Shared UI strings
+    - filter_type: file
+      file_format: KEYVALUEJSON
+      source_language: en
+      source_file: i18n/en/common.json
+      translation_files_expression: 'i18n/<lang>/common.json'
 
-# Local repo base path (relative to this file)
-base_path: "."
-
-# Source language used in source files
-source_language: en
-
-# Keep hierarchy as-is to match our i18n folder structure
-preserve_hierarchy: true
-
-resources:
-  - resource_slug: news
-    source_file: "news-content/source/en/*.json"
-    translation_file: "news-content/translations/%locale%/%original_file_name%"
-    # Transifex will write translated article files back to the repo under `news-content/translations/{lang}/`
-    file_filter: "news-content/translations/<lang>/%original_file_name%"
-
-  # Keep existing i18n common.json mapping alongside news content
-  - resource_slug: common
-    source_file: "i18n/en/common.json"
-    translation_file: "i18n/%locale%/common.json"
-    languages:
-      - mrh
-      - my
-    file_filter: "i18n/<lang>/common.json"
-
-# Optional: add language mapping here if you need to map Transifex locale codes to project codes
-language_mapping:
-  mrh: mrh
-  my: my
+  settings:
+    language_mapping:
+      mrh: mrh
+      my: my

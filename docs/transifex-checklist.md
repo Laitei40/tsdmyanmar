@@ -6,10 +6,10 @@ Transifex Configuration Checklist
   - Target branch: `main`.
   - Commit author: choose a bot/service user account.
 
-2) Resources → Verify file mappings (or confirm `transifex.yml` / `.tx/config`):
-  - Source pattern: `news-content/source/en/*.json`
-  - Translation (export) pattern: `news-content/translations/%locale%/%original_file_name%`
-  - Confirm `preserve_hierarchy: true` is enabled.
+2) Integrations → GitHub → "Add a path to your YAML configuration file" → point it at `transifex.yml`:
+  - `git: filters:` entry for news articles — `filter_type: dir`, `source_file_dir: news-content/source/en`, `translation_files_expression: 'news-content/translations/<lang>'`.
+  - `git: filters:` entry for shared UI strings — `filter_type: file`, `source_file: i18n/en/common.json`, `translation_files_expression: 'i18n/<lang>/common.json'`.
+  - Use "Test configuration" in that same dialog to validate the YAML before applying.
 
 3) Resources → Settings for JSON files
   - i18n type: JSON (KEYVALUEJSON or generic JSON depending on resource).
@@ -37,4 +37,5 @@ Transifex Configuration Checklist
   - Do not enable file-name translation or allow translators to edit keys.
   - Keep article JSON schema stable (`slug`, `title`, `summary`, `body`, `date`).
   - Turn on Translation Memory & Glossary for consistency.
-  - The `tx` CLI reads `.tx/config` (INI format), not `transifex.yml` — if you wire up the CLI, mirror the resource mappings from `transifex.yml` into `.tx/config`.
+  - `news-content/source/en/*.json` articles use `KEYVALUEJSON`, so every field (including `id`, `slug`, `date`) is exposed as a translatable segment, not just `title`/`body_html`. Translators should leave non-text fields unchanged; switching the source files to Transifex's "Structured JSON" format (wrapping translatable fields as `{"string": "..."}`) would let Transifex exclude them automatically, if that becomes worth the source-file rework.
+  - The legacy `tx` CLI reads `.tx/config` (INI format), not `transifex.yml` — only relevant if someone wires up the CLI separately from GitHub Sync; the GitHub Sync integration itself reads `transifex.yml` directly.
